@@ -5,6 +5,17 @@ class World {
         new Chicken(),
         new Chicken()
     ];
+    clouds = [
+        new Cloud()
+    ];
+
+    backgroundObjects = [
+        new BackgroundObject('assets/img/5_background/layers/air.png', 0),
+        new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 0),
+        new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 0),
+        new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 0)
+    ];
+
     ctx;
     canvas;
     constructor(canvas) {
@@ -17,18 +28,27 @@ class World {
         //clearRect löscht das aktuelle img in der Canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        //Zeichnet den Charakter
-        this.ctx.drawImage(this.character.img,this.character.x, this.character.y, this.character.width, this.character.height);
+        //fügt die Elemente der Welt hinzu
+        this.addObjectsToMap(this.backgroundObjects);
+        this.addToMap(this.character, this.height);
+        this.addObjectsToMap(this.enemies);
+        this.addObjectsToMap(this.clouds);
 
-        //Fügt die Chicken als Gegner ein
-        this.enemies.forEach(enemy => {
-            this.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.width, enemy.height);
-        });
 
-        //Draw wird immer wieder aufgerufen
+        //DrawImage wird immer wieder aufgerufen
         let self = this;
         requestAnimationFrame(function() {
             self.draw();
         });
+    }
+
+    addObjectsToMap(objects) {
+        objects.forEach(o => {
+            this.addToMap(o);
+        });
+    }
+
+    addToMap(mo) {
+        this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
     }
 }
