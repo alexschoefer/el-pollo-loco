@@ -1,4 +1,7 @@
 class Chicken extends MoveableObject {
+    y = 250;
+    height = 120;
+    width = 100;
     constructor() {
         super().loadImage('assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.x = 200 + Math.random() * 500; //Positionierung der Chicken zwischen 200 und 700
