@@ -1,6 +1,7 @@
 class Character extends MoveableObject {
-    height = 350;
-    y = 30;
+    height = 300;
+    width = 150;
+    y = 130;
     imagesCharacterWalking = [
         'assets/img/2_character_pepe/2_walk/W-21.png',
         'assets/img/2_character_pepe/2_walk/W-22.png',
@@ -10,8 +11,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/2_walk/W-26.png'
     ];
 
-    currentImage = 0;
-
+    
     constructor() {
         super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png')
         this.loadImages(this.imagesCharacterWalking);

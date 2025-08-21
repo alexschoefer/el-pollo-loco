@@ -14,4 +14,16 @@ main {
 
 canvas {
     background-color: black;
+    border-radius: 20px;
 }
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  background-image: url(./assets/img/5_background/complete_background.png);
+  background-position: center;
+}
+
