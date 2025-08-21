@@ -1,6 +1,6 @@
-class Keyboard {
-    keyboardLeft;
-    keyboardRight;
-    keyboardUp;
-    keyboardSpace;
+class GameKeyBoard{
+    LEFT = false;
+    RIGHT = false;
+    UP = false;
+    SPACE = false;
 }
