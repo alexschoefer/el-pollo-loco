@@ -10,15 +10,34 @@ class World {
     ];
 
     backgroundObjects = [
+        new BackgroundObject('assets/img/5_background/layers/air.png', -720),
+        new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', -720),
+        new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', -720),
+        new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', -720),
         new BackgroundObject('assets/img/5_background/layers/air.png', 0),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 0),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 0),
-        new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 0)
+        new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 0),
+        new BackgroundObject('assets/img/5_background/layers/air.png', 720),
+        new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720),
+        new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720),
+        new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720),
+        new BackgroundObject('assets/img/5_background/layers/air.png', 720*2),
+        new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 720*2),
+        new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 720*2),
+        new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 720*2),
+        new BackgroundObject('assets/img/5_background/layers/air.png', 720*3),
+        new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720*3),
+        new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720*3),
+        new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720*3),
+
+
     ];
 
     ctx;
     canvas;
     keyboard;
+    camera_x = 0;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -36,12 +55,17 @@ class World {
         //clearRect löscht das aktuelle img in der Canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+        //verschiebt die Kamera nach links
+        this.ctx.translate(this.camera_x, 0);
+
         //fügt die Elemente der Welt hinzu
         this.addObjectsToMap(this.backgroundObjects);
         this.addToMap(this.character, this.height);
         this.addObjectsToMap(this.enemies);
         this.addObjectsToMap(this.clouds);
 
+        //verschiebt die Kamera nach rechts
+        this.ctx.translate(-this.camera_x, 0);
 
         //DrawImage wird immer wieder aufgerufen
         let self = this;
@@ -63,7 +87,7 @@ class World {
             this.ctx.scale(-1,1);
             mo.x = mo.x * -1;
         }
-        
+
         this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
 
         if(mo.otherDirection){
