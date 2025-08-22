@@ -1,10 +1,10 @@
 class MoveableObject {
-    x=150;
-    y=180;
+    x = 150;
+    y = 180;
     img;
-    height=200;
-    width=100;
-    imageCache=[];
+    height = 200;
+    width = 100;
+    imageCache = [];
     currentImage = 0;
     speed = 0.15;
     otherDirection = false;
@@ -31,5 +31,13 @@ class MoveableObject {
         setInterval(() => {
             this.x -= this.speed;
         }, 1000 / 60);
+    }
+
+    playAnimation(images) {
+        //Walk animation
+        let indexImage = this.currentImage % this.imagesWalking.length;
+        let path = this.imagesWalking[indexImage];
+        this.img = this.imageCache[path];
+        this.currentImage++;
     }
 }
