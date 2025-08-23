@@ -30,6 +30,17 @@ const level1 = new Level(
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720 * 3),
+    ],
 
-    ]
+    generateRandomBottles(3,8)
 )
+
+function generateRandomBottles(min = 3, max = 8) {
+    let bottles = [];
+    let count = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    for (let i = 0; i < count; i++) {
+        bottles.push(new Bottles());
+    }
+    return bottles;
+}

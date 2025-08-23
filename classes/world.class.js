@@ -35,7 +35,7 @@ class World {
         level1.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
-                this.statusbar.setPercentage(this.character.energy);
+                this.statusbarHealth.setPercentage(this.character.energy);
             }
         })
     }
@@ -67,6 +67,9 @@ class World {
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
         this.addObjectsToMap(this.level.clouds);
+        this.addObjectsToMap(this.level.bottles);
+
+    
 
         //verschiebt die Kamera nach rechts
         this.ctx.translate(-this.camera_x, 0);
