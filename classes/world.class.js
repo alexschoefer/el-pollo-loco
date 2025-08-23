@@ -5,7 +5,9 @@ class World {
     canvas;
     keyboard;
     camera_x = 0;
-    statusbar = new Statusbar();
+    statusbarHealth = new StatusbarHealth();
+    statusbarCoins = new StatusbarCoins();
+    statusbarBottles = new StatusbarBottles();
     throwableObjects = [];
 
     constructor(canvas, keyboard) {
@@ -44,7 +46,7 @@ class World {
             this.throwableObjects.push(bottle);
         }
     }   
-d
+
     draw() {
         //clearRect löscht das aktuelle img in der Canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -54,11 +56,11 @@ d
         this.addObjectsToMap(this.level.backgroundObjects);
 
 
-
         this.ctx.translate(-this.camera_x, 0);
-
-        this.addObjectsToMap([this.statusbar]);
-        this.ctx.translate(this.camera_x, 0);
+        this.addObjectsToMap([this.statusbarHealth]);
+        this.addObjectsToMap([this.statusbarCoins]);
+        this.addObjectsToMap([this.statusbarBottles]);
+         this.ctx.translate(this.camera_x, 0);
 
         //fügt die Elemente der Welt hinzu
         this.addToMap(this.character, this.height);
