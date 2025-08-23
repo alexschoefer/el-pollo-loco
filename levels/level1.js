@@ -6,6 +6,7 @@ const level1 = new Level(
         new EndBoss()
     ],
     [
+        new Cloud(),
         new Cloud()
     ],
     [

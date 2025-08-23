@@ -3,4 +3,5 @@ class GameKeyBoard{
     RIGHT = false;
     UP = false;
     SPACE = false;
+    D = false;
 }
