@@ -8,6 +8,7 @@ class World {
     statusbarHealth = new StatusbarHealth();
     statusbarCoins = new StatusbarCoins();
     statusbarBottles = new StatusbarBottles();
+    statusbarEndboss = new StatusbarEndboss();
     throwableObjects = [];
     bottleCollection = [];
     coinsCollection = [];
@@ -102,6 +103,7 @@ class World {
         this.addObjectsToMap([this.statusbarHealth]);
         this.addObjectsToMap([this.statusbarCoins]);
         this.addObjectsToMap([this.statusbarBottles]);
+        this.addObjectsToMap([this.statusbarEndboss]);
         this.ctx.translate(this.camera_x, 0);
 
         //fügt die Elemente der Welt hinzu
