@@ -32,10 +32,11 @@ const level1 = new Level(
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720 * 3),
     ],
 
-    generateRandomBottles(3,8)
+    generateRandomBottles(3,8),
+    generateRandomCoins(4,8)
 )
 
-function generateRandomBottles(min = 3, max = 8) {
+function generateRandomBottles(min, max) {
     let bottles = [];
     let count = Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -43,4 +44,15 @@ function generateRandomBottles(min = 3, max = 8) {
         bottles.push(new Bottles());
     }
     return bottles;
+}
+
+
+function generateRandomCoins(min, max) {
+    let coins = [];
+    let count = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    for (let i = 0; i < count; i++) {
+        coins.push(new Coins());
+    }
+    return coins;
 }

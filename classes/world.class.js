@@ -9,6 +9,7 @@ class World {
     statusbarCoins = new StatusbarCoins();
     statusbarBottles = new StatusbarBottles();
     throwableObjects = [];
+    bottleCollection = [];
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -27,6 +28,7 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrowObjects();
+            this.checkCollisionsBottle();
         }, 200);
     }
 
@@ -39,13 +41,29 @@ class World {
             }
         })
     }
- 
+
+    checkCollisionsBottle() {
+        level1.bottles.forEach((bottle) => {
+            if (this.character.isColliding(bottle)) {
+                this.bottleCollection.push(bottle);
+                this.statusbarBottles.setPercentage(this.bottleCollection.length * 20);
+                this.removeBottleFromMap(bottle);
+            }
+        })
+    }
+
+    removeBottleFromMap(bottle) {
+        level1.bottles = level1.bottles.filter(b => b !== bottle);
+    }
+
+    
+
     checkThrowObjects() {
-        if(this.keyboard.D) {
+        if (this.keyboard.D) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 150)
             this.throwableObjects.push(bottle);
         }
-    }   
+    }
 
     draw() {
         //clearRect löscht das aktuelle img in der Canvas
@@ -60,7 +78,7 @@ class World {
         this.addObjectsToMap([this.statusbarHealth]);
         this.addObjectsToMap([this.statusbarCoins]);
         this.addObjectsToMap([this.statusbarBottles]);
-         this.ctx.translate(this.camera_x, 0);
+        this.ctx.translate(this.camera_x, 0);
 
         //fügt die Elemente der Welt hinzu
         this.addToMap(this.character, this.height);
@@ -68,8 +86,9 @@ class World {
         this.addObjectsToMap(this.throwableObjects);
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.bottles);
+        this.addObjectsToMap(this.level.coins);
 
-    
+
 
         //verschiebt die Kamera nach rechts
         this.ctx.translate(-this.camera_x, 0);
