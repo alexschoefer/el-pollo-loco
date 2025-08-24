@@ -10,6 +10,10 @@ class World {
     statusbarBottles = new StatusbarBottles();
     throwableObjects = [];
     bottleCollection = [];
+    coinsCollection = [];
+    maxCoins = level1.coins.length;
+    
+    
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -29,6 +33,7 @@ class World {
             this.checkCollisions();
             this.checkThrowObjects();
             this.checkCollisionsBottle();
+            this.checkCollisionCoins();
         }, 200);
     }
 
@@ -52,16 +57,35 @@ class World {
         })
     }
 
+    checkCollisionCoins() {
+        level1.coins.forEach((coin) => {
+            if (this.character.isColliding(coin)) {
+                console.log('Coin getroffen');
+                console.log(this.maxCoins);
+                
+                this.coinsCollection.push(coin);
+                console.log(this.coinsCollection.length);
+                this.statusbarCoins.setPercentage(Math.min(this.coinsCollection.length / this.level.maxCoins * 100, 100));
+                this.removeCoinsFromMap(coin);
+            }
+        })
+    }
+
     removeBottleFromMap(bottle) {
         level1.bottles = level1.bottles.filter(b => b !== bottle);
     }
 
-    
+
+    removeCoinsFromMap(coin) {
+        level1.coins = level1.coins.filter(b => b !== coin);
+    }
 
     checkThrowObjects() {
-        if (this.keyboard.D) {
+        if (this.keyboard.D && this.bottleCollection.length > 0) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 150)
             this.throwableObjects.push(bottle);
+            this.bottleCollection.pop();
+            this.statusbarBottles.setPercentage(this.bottleCollection.length * 20);
         }
     }
 

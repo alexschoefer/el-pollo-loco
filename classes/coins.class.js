@@ -29,7 +29,7 @@ class Coins extends DrawableObject  {
     }
 
     setRandomCoinPosition() {
-        this.x = Math.floor(Math.random() * 1800 + 200);
-        this.y = Math.floor(Math.random() * 100 + 160);
+        this.x = Math.floor(Math.random() * 1600 + 200);
+        this.y = Math.floor(Math.random() * 100 + 80);
     }
 }

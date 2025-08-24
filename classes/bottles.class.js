@@ -28,6 +28,6 @@ class Bottles extends DrawableObject {
     }
 
     setRandomBottlePosition() {
-        this.x = Math.random() * 2200 + 200;
+        this.x = Math.random() * 1600 + 200;
     }
 }
