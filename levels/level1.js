@@ -1,13 +1,13 @@
 const coins = generateRandomCoins(4, 8);
-const bottles = generateRandomBottles(3, 8);
+const bottles = generateRandomBottles(5, 8);
 const maxCoins = coins.length;
+const maxBottles = bottles.length;
 
 const level1 = new Level(
     [
         // new Chicken(),
         // new Chicken(),
         // new Chicken(),
-        new EndBoss()
     ],
     [
         new Cloud(),
@@ -37,7 +37,9 @@ const level1 = new Level(
     ],
     bottles,
     coins,
-    coins.length
+    coins.length,
+    bottles.length,
+    new EndBoss()
 )
 
 function generateRandomBottles(min, max) {
