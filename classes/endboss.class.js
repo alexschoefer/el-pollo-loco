@@ -4,6 +4,7 @@ class EndBoss extends MoveableObject {
     width = 350;
     y = 20;
     isAttacking = false;
+    speed = 10;
 
     offset = {
         top: 80,
@@ -59,13 +60,17 @@ class EndBoss extends MoveableObject {
         this.loadImages(this.IMAGES_HURT_ENDBOSS);
         this.loadImages(this.IMAGES_DEAD_ENDBOSS);
         this.loadImages(this.IMAGES_ATTACK_ENDBOSS);
+        this.loadImages(this.IMAGES_WALK_ENDBOSS);
         this.x = 2000; //Positionierung der Endboss
         this.animateEndboss();
+        this.speed = 2; // dauerhaft festgelegte Geschwindigkeit
+        this.isMoving = false;
     }
+
 
     animateEndboss() {
         let lastX = this.x;
-    
+
         setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD_ENDBOSS);
@@ -78,7 +83,7 @@ class EndBoss extends MoveableObject {
             } else {
                 this.playAnimation(this.IMAGES_ALERT_ENDBOSS);
             }
-    
+
             lastX = this.x;
         }, 200);
     }
@@ -92,8 +97,23 @@ class EndBoss extends MoveableObject {
     }
 
     moveLeftEndboss() {
-        this.x -= this.speed * 100; 
-        console.log('Endboss bewegt sich nach vorne');
-        
+        if (this.isMoving) {
+            this.otherDirection = false; // nach links → Spiegeln!
+            this.x -= this.speed;
+            console.log('Endboss läuft nach links');
+        }
+    }
+    
+    moveRightEndboss() {
+        console.log('isMoving:', this.isMoving);
+        if (this.isMoving) {
+            this.otherDirection = true; // nach rechts → Nicht spiegeln
+            this.x += this.speed;
+            console.log('Endboss läuft nach rechts');
+        }
+    }
+
+    stopMovement() {
+        this.isMoving = false;
     }
 } 

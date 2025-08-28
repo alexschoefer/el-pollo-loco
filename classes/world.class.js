@@ -10,6 +10,7 @@ class World {
     statusbarCoins = new StatusbarCoins();
     statusbarBottles = new StatusbarBottles();
     statusbarEndboss = new StatusbarEndboss();
+    chicken = new Chicken();
     throwableObjects = [];
     bottleCollection = [];
     coinsCollection = [];
@@ -39,17 +40,26 @@ class World {
             this.checkCollisionCoins();
             this.checkCollisionEndboss();
             this.checkCollisionEndbossCharacter();
+            this.checkEndbossDistanceToCharacter();
         }, 200);
     }
 
     //prüft eine Collision mit einem anderen Objekt Chicken und reduziert die Energie des Characters
     checkCollisionsChickens() {
         level1.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
-                this.character.hit();
-                this.statusbarHealth.setPercentage(this.character.energy);
+            if (this.character.isColliding(enemy) && !enemy.isDead) {
+                if (this.character.y + this.character.height <= enemy.y + enemy.height / 2) {
+                    if (enemy instanceof Chicken) {
+                        enemy.isDead = true;
+                        enemy.speed = 0;
+                        this.removeDeadChickenFromMap(enemy);
+                    }
+                } else {
+                    this.character.hit();
+                    this.statusbarHealth.setPercentage(this.character.energy);
+                }
             }
-        })
+        });
     }
 
     checkCollisionsBottle() {
@@ -76,10 +86,7 @@ class World {
     checkCollisionCoins() {
         level1.coins.forEach((coin) => {
             if (this.character.isColliding(coin)) {
-                console.log('Coin getroffen');
-                console.log(this.maxCoins);
                 this.coinsCollection.push(coin);
-                console.log(this.coinsCollection.length);
                 this.statusbarCoins.setPercentage(Math.min(this.coinsCollection.length / this.level.maxCoins * 100, 100));
                 this.removeCoinsFromMap(coin);
             }
@@ -102,6 +109,12 @@ class World {
 
     removeCoinsFromMap(coin) {
         level1.coins = level1.coins.filter(b => b !== coin);
+    }
+
+    removeDeadChickenFromMap(enemy) {
+        setTimeout(() => {
+            level1.enemies = level1.enemies.filter(e => e !== enemy);
+        }, 2500);
     }
 
     checkThrowObjects() {
@@ -182,4 +195,17 @@ class World {
         this.ctx.restore();
     }
 
+    checkEndbossDistanceToCharacter() {
+        let distance = this.character.x - this.endboss.x;
+        if (Math.abs(distance) < 300) {
+            this.endboss.isMoving = true;
+            if (distance > 0) {
+                this.endboss.moveRightEndboss();
+            } else {
+                this.endboss.moveLeftEndboss();
+            }
+        } else {
+            this.endboss.stopMovement();
+        }
+    }
 }
