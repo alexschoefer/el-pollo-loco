@@ -23,12 +23,12 @@ class StatusbarCoins extends DrawableObject {
 
     setPercentage(percentage) {
         this.percentage = percentage; // => Ermittlung einer Zahl zwischen 0 ... 5 
-        let path = this.IMAGES_STATUSBAR_COINS[this.resovleImageIndex()];
+        let path = this.IMAGES_STATUSBAR_COINS[this.resolveImageIndex()];
         this.img = this.imageCache[path];
 
     }
 
-    resovleImageIndex() {
+    resolveImageIndex() {
         if (this.percentage == 100) {
             return 5;
         } else if (this.percentage > 80) {
