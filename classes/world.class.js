@@ -11,6 +11,7 @@ class World {
     statusbarBottles = new StatusbarBottles();
     statusbarEndboss = new StatusbarEndboss();
     chicken = new Chicken();
+    smallchicken = new SmallChicken();
     throwableObjects = [];
     bottleCollection = [];
     coinsCollection = [];
@@ -36,11 +37,12 @@ class World {
         setInterval(() => {
             this.checkCollisionsChickens();
             this.checkThrowObjects();
-            this.checkCollisionsBottle();
+            this.checkCollisionsBottleCharacter();
             this.checkCollisionCoins();
             this.checkCollisionEndboss();
             this.checkCollisionEndbossCharacter();
             this.checkEndbossDistanceToCharacter();
+            this.checkCollisionBottleEnemies();
         }, 200);
     }
 
@@ -48,8 +50,8 @@ class World {
     checkCollisionsChickens() {
         level1.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy) && !enemy.isDead) {
-                if (this.character.y + this.character.height <= enemy.y + enemy.height / 2) {
-                    if (enemy instanceof Chicken) {
+                if ((this.character.y + this.character.height) < (enemy.y + enemy.height * 0.75)) {
+                    if (enemy instanceof Chicken || enemy instanceof SmallChicken) {
                         enemy.isDead = true;
                         enemy.speed = 0;
                         this.removeDeadChickenFromMap(enemy);
@@ -62,7 +64,7 @@ class World {
         });
     }
 
-    checkCollisionsBottle() {
+    checkCollisionsBottleCharacter() {
         level1.bottles.forEach((bottle) => {
             if (this.character.isColliding(bottle)) {
                 this.bottleCollection.push(bottle);
@@ -72,8 +74,21 @@ class World {
         })
     }
 
+    checkCollisionBottleEnemies() {
+        this.throwableObjects.forEach((bottle) => {
+            level1.enemies.forEach((enemy) => {
+                if(enemy.isColliding(bottle) && !enemy.isDead) {
+                    enemy.isDead = true;
+                    enemy.speed = 0;
+                    this.removeDeadChickenFromMap(enemy);
+                    bottle.hasSplashed = true;
+                }
+            });
+        });
+    }
+
     checkCollisionEndbossCharacter() {
-        if (this.endboss.isColliding(this.character) && !this.endboss.isDead) {
+        if (this.endboss.isColliding(this.character)) {
             this.character.hit();
             this.statusbarHealth.setPercentage(this.character.energy);
             this.endboss.attackEndboss();        
@@ -95,11 +110,12 @@ class World {
 
     checkCollisionEndboss() {
         this.throwableObjects.forEach((bottle) => {
-            if(this.endboss.isColliding(bottle)) {
+            if (this.endboss.isColliding(bottle)) {
                 this.endboss.hit();
+                bottle.hasSplashed = true;
                 this.statusbarEndboss.setPercentage(this.endboss.energy);
             }
-        })
+        });
     }
 
     removeBottleFromMap(bottle) {

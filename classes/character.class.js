@@ -133,7 +133,7 @@ class Character extends MoveableObject {
                 let now = new Date().getTime();
                 let sleepingTime = now - this.lastIdleTime;
         
-                if (sleepingTime > 5000) {
+                if (sleepingTime > 10000) {
                     this.isSleeping = true;
                 }
             }
