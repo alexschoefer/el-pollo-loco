@@ -8,7 +8,7 @@ class EndBoss extends MoveableObject {
 
     offset = {
         top: 80,
-        bottom: 20,
+        bottom: 60,
         left: 20,
         right: 20
     };
@@ -74,6 +74,7 @@ class EndBoss extends MoveableObject {
         setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD_ENDBOSS);
+                this.speed = 0;
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT_ENDBOSS);
             } else if (this.isAttacking) {

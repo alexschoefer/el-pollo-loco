@@ -5,10 +5,10 @@ const maxBottles = bottles.length;
 
 const level1 = new Level(
     [
-        // new Chicken(),
-        // new Chicken(),
-        // new Chicken(),
-        // new SmallChicken()
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new SmallChicken()
     ],
     [
         new Cloud(),

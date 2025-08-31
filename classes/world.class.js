@@ -73,7 +73,7 @@ class World {
     }
 
     checkCollisionEndbossCharacter() {
-        if (this.endboss.isColliding(this.character)) {
+        if (this.endboss.isColliding(this.character) && !this.endboss.isDead) {
             this.character.hit();
             this.statusbarHealth.setPercentage(this.character.energy);
             this.endboss.attackEndboss();        
