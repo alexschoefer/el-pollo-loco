@@ -1,44 +1,92 @@
 <!DOCTYPE html>
 <html lang="en" translate="no">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El pollo loco</title>
-    <!-- CSS -->
-     <link rel="stylesheet" href="./styles.css">
-     <link rel="stylesheet" href="./styles/fonts.css">
-    <!-- Scripts --> 
-    <script src="./classes/drawable-object.class.js"></script>
-     <script src="./classes/moveable-object.class.js"></script>
-     <script src="./classes/throwable-object.class.js"></script>
-     <script src="./classes//statusbar-health.class.js"></script>
-     <script src="./classes//statusbar-coins.class.js"></script>
-     <script src="./classes//statusbar-bottles.class.js"></script>
-     <script src="./classes/statusbar-endboss.class.js"></script>
-     <script src="./classes/bottles.class.js"></script>
-     <script src="./classes/coins.class.js"></script>
-     <script src="./classes/world.class.js"></script>
-     <script src="./classes/character.class.js"></script>
-     <script src="./classes/chicken.class.js"></script>
-     <script src="./classes/small-chicken.class.js"></script>
-     <script src="./classes/endboss.class.js"></script>
-     <script src="./classes/cloud.class.js"></script>
-     <script src="./classes/background-object.class.js"></script>
-     <script src="./classes/keyboard.class.js"></script>
-     <script src="./classes/level.class.js"></script>
-     <script src="./levels/level1.js"></script>
-     <script src="./scripts/game.js"></script>
 
-<body onload="init()">
-    <div class="background-overlay"></div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El pollo loco</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles/fonts.css">
+  <!-- Scripts -->
+  <script src="./classes/drawable-object.class.js"></script>
+  <script src="./classes/moveable-object.class.js"></script>
+  <script src="./classes/throwable-object.class.js"></script>
+  <script src="./classes//statusbar-health.class.js"></script>
+  <script src="./classes//statusbar-coins.class.js"></script>
+  <script src="./classes//statusbar-bottles.class.js"></script>
+  <script src="./classes/statusbar-endboss.class.js"></script>
+  <script src="./classes/bottles.class.js"></script>
+  <script src="./classes/coins.class.js"></script>
+  <script src="./classes/world.class.js"></script>
+  <script src="./classes/character.class.js"></script>
+  <script src="./classes/chicken.class.js"></script>
+  <script src="./classes/small-chicken.class.js"></script>
+  <script src="./classes/endboss.class.js"></script>
+  <script src="./classes/cloud.class.js"></script>
+  <script src="./classes/background-object.class.js"></script>
+  <script src="./classes/keyboard.class.js"></script>
+  <script src="./classes/level.class.js"></script>
+  <script src="./levels/level1.js"></script>
+  <script src="./scripts/game.js"></script>
+
+<body>
+  <div class="game-wrapper">
     <div class="main-background">
+      <div class="legal-notice-btn-container">
+        <button class="btn-legal-notice">Legal notice</button>
+      </div>
       <main>
         <h1>El pollo loco</h1>
-        <canvas id="canvas" height="480px" width="720px"></canvas>
-        <div class="startscreen">
-
+        <!-- Canvas -->
+        <canvas id="canvas" height="480px" width="720px" class="d_none"></canvas>
+        <!-- Startscreen -->
+        <div id="startgame" class="game-content-wrapper d_none">
+          <div class="startscreen">
+            <div class="start-btn-container">
+              <button class="btn-start">Start game</button>
+              <button class="btn-controls">Controls</button>
+            </div>
+          </div>
         </div>
+
+        <!-- Controll-Screen -->
+        <div id="control-overlay" class="control-content-wrapper">
+          <div class="controlscreen">
+            <h2>Control overview</h1>
+              <p>For the game you only need your keyboard</p>
+            <div class="control-container-wrapper">
+              <div class="control-container">
+                <div class="control-button">
+                  <span class="key">←</span>
+                  <span class="key-description">Move left</span>
+                </div>
+                <div class="control-button">
+                  <span class="key">→</span>
+                  <span class="key-description">Move right</span>
+                </div>
+              </div>
+              <div>
+                <div class="control-button">
+                  <span class="key">SPACE</span>
+                  <span class="key-description">Jump</span>
+                </div>
+                <div class="control-button">
+                  <span class="key">D</span>
+                  <span class="key-description">Throw bottles</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button class="btn-close-control-overview">Close control overview</button>
+            </div>
+          </div>
+        </div>
+
       </main>
     </div>
-  </body>
+  </div>
+
+</body>
+
 </html>
