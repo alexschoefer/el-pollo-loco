@@ -41,20 +41,20 @@
         <!-- Canvas -->
         <canvas id="canvas" height="480px" width="720px" class="d_none"></canvas>
         <!-- Startscreen -->
-        <div id="startgame" class="game-content-wrapper d_none">
+        <div id="startgame" class="game-content-wrapper">
           <div class="startscreen">
             <div class="start-btn-container">
               <button class="btn-start">Start game</button>
-              <button class="btn-controls">Controls</button>
+              <button class="btn-controls" onclick="showControlOverview()">Controls</button>
             </div>
           </div>
         </div>
 
         <!-- Controll-Screen -->
-        <div id="control-overlay" class="control-content-wrapper">
+        <div id="control-overlay" class="control-content-wrapper d_none">
           <div class="controlscreen">
             <h2>Control overview</h1>
-              <p>For the game you only need your keyboard</p>
+              <p>For playing character Pepe you only need your keyboard</p>
             <div class="control-container-wrapper">
               <div class="control-container">
                 <div class="control-button">
@@ -78,7 +78,7 @@
               </div>
             </div>
             <div>
-              <button class="btn-close-control-overview">Close control overview</button>
+              <button class="btn-close-control-overview" onclick="closeControlOverview()">Close control overview</button>
             </div>
           </div>
         </div>

@@ -22,3 +22,18 @@ window.addEventListener('keyup', (event) => {
     if (event.code === 'Space') keyboard.SPACE = false;
     if (event.code === 'KeyD') keyboard.D = false;
 });
+
+
+function showControlOverview() {
+    let startgameRef = document.getElementById('startgame');
+    let controlOverviewRef = document.getElementById('control-overlay');
+    startgameRef.classList.add('d_none');
+    controlOverviewRef.classList.remove('d_none');
+}
+
+function closeControlOverview() {
+    let startgameRef = document.getElementById('startgame');
+    let controlOverviewRef = document.getElementById('control-overlay');
+    startgameRef.classList.remove('d_none');
+    controlOverviewRef.classList.add('d_none');
+}
