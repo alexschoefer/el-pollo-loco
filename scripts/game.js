@@ -37,3 +37,17 @@ function closeControlOverview() {
     startgameRef.classList.remove('d_none');
     controlOverviewRef.classList.add('d_none');
 }
+
+function chooseGameLevel() {
+    let startgameRef = document.getElementById('startgame');
+    let gameLevelOverviewRef = document.getElementById('game-level-overlay');
+    startgameRef.classList.add('d_none');
+    gameLevelOverviewRef.classList.remove('d_none');
+}
+
+function closeGameLevelOverlay() {
+    let startgameRef = document.getElementById('startgame');
+    let gameLevelOverviewRef = document.getElementById('game-level-overlay');
+    startgameRef.classList.remove('d_none');
+    gameLevelOverviewRef.classList.add('d_none');
+}

@@ -44,7 +44,7 @@
         <div id="startgame" class="game-content-wrapper">
           <div class="startscreen">
             <div class="start-btn-container">
-              <button class="btn-start">Start game</button>
+              <button class="btn-start" onclick="chooseGameLevel()">Start game</button>
               <button class="btn-controls" onclick="showControlOverview()">Controls</button>
             </div>
           </div>
@@ -54,33 +54,70 @@
         <div id="control-overlay" class="control-content-wrapper d_none">
           <div class="controlscreen">
             <h2>Control overview</h1>
-              <p>For playing character Pepe you only need your keyboard</p>
-            <div class="control-container-wrapper">
-              <div class="control-container">
-                <div class="control-button">
-                  <span class="key">←</span>
-                  <span class="key-description">Move left</span>
+              <div class="control-slogan">
+                <p>For playing character Pepe you only need your keyboard or the mobile keys</p>
+              </div>
+              <div class="control-container-wrapper">
+                <div class="control-container">
+                  <div class="control-button">
+                    <span class="key">←</span>
+                    <span class="key-description">Move left</span>
+                  </div>
+                  <div class="control-button">
+                    <span class="key">→</span>
+                    <span class="key-description">Move right</span>
+                  </div>
                 </div>
-                <div class="control-button">
-                  <span class="key">→</span>
-                  <span class="key-description">Move right</span>
+                <div>
+                  <div class="control-button">
+                    <span class="key">SPACE</span>
+                    <span class="key-description">Jump</span>
+                  </div>
+                  <div class="control-button">
+                    <span class="key">D</span>
+                    <span class="key-description">Throw bottles</span>
+                  </div>
                 </div>
               </div>
               <div>
-                <div class="control-button">
-                  <span class="key">SPACE</span>
-                  <span class="key-description">Jump</span>
-                </div>
-                <div class="control-button">
-                  <span class="key">D</span>
-                  <span class="key-description">Throw bottles</span>
-                </div>
+                <button class="btn-close-control-overview" onclick="closeControlOverview()">Close control
+                  overview</button>
+              </div>
+          </div>
+        </div>
+
+        <!-- Game - Story -->
+        <div id="game-level-overlay" class="gamelevel-content-wrapper d_none">
+          <div class="game-introduction-container">
+            <h2>
+              El Pollo Loco – The desert adventure begins!
+            </h2>
+            <div class="game-description-container">
+              <p class="game-description">
+                You are Pepe, a brave hero in search of coins and adventures!
+                Accompany him through the hot desert, collect bottles and coins, and face wild chickens.
+                Defeat enemies by jumping or throwing bottles <br> — But be careful:
+                Only bottles can defeat the final boss at the end — <span class="highlight-giant-chicken">The Giant Chicken</span>
+              </p>
+            </div>
+            <div>
+              <p>Are you up to the challenge? Choose your level.</p>
+            </div>
+            <div class="btn-level-container">
+              <div class="btn-level-beginner-container">
+                <button class="btn-level">Beginner</button>
+                <p>Easier and fewer enemies, lots of bottles and coins to collect.</p>
+              </div>
+              <div class="btn-level-expert-container">
+                <button class="btn-level">Expert</button>
+                <p>More difficult and more enemies, fewer bottles and coins to collect.</p>
               </div>
             </div>
             <div>
-              <button class="btn-close-control-overview" onclick="closeControlOverview()">Close control overview</button>
+              <button class="btn-close-gamelevel-overview" onclick="closeGameLevelOverlay()">Back to Startscreen</button>
             </div>
           </div>
+
         </div>
 
       </main>
