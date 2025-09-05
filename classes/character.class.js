@@ -92,6 +92,9 @@ class Character extends MoveableObject {
     animateCharacter() {
 
         setInterval(() => {
+
+            if (this.isDead()) return; 
+
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
                 this.otherDirection = false;
@@ -133,7 +136,7 @@ class Character extends MoveableObject {
                 let now = new Date().getTime();
                 let sleepingTime = now - this.lastIdleTime;
         
-                if (sleepingTime > 5000) {
+                if (sleepingTime > 10000) {
                     this.isSleeping = true;
                 }
             }

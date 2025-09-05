@@ -11,12 +11,15 @@ class World {
     statusbarBottles = new StatusbarBottles();
     statusbarEndboss = new StatusbarEndboss();
     chicken = new Chicken();
+    smallchicken = new SmallChicken();
     throwableObjects = [];
     bottleCollection = [];
     coinsCollection = [];
     maxCoins = level1.coins.length;
-    
-    
+    endScreen = null;
+    gameIsOver = false;
+
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -34,13 +37,16 @@ class World {
 
     run() {
         setInterval(() => {
+            if (this.gameIsOver) return; 
             this.checkCollisionsChickens();
             this.checkThrowObjects();
-            this.checkCollisionsBottle();
+            this.checkCollisionsBottleCharacter();
             this.checkCollisionCoins();
             this.checkCollisionEndboss();
             this.checkCollisionEndbossCharacter();
             this.checkEndbossDistanceToCharacter();
+            this.checkCollisionBottleEnemies();
+            this.checkGameOver();
         }, 200);
     }
 
@@ -48,8 +54,8 @@ class World {
     checkCollisionsChickens() {
         level1.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy) && !enemy.isDead) {
-                if (this.character.y + this.character.height <= enemy.y + enemy.height / 2) {
-                    if (enemy instanceof Chicken) {
+                if ((this.character.y + this.character.height) < (enemy.y + enemy.height * 0.75)) {
+                    if (enemy instanceof Chicken || enemy instanceof SmallChicken) {
                         enemy.isDead = true;
                         enemy.speed = 0;
                         this.removeDeadChickenFromMap(enemy);
@@ -62,7 +68,7 @@ class World {
         });
     }
 
-    checkCollisionsBottle() {
+    checkCollisionsBottleCharacter() {
         level1.bottles.forEach((bottle) => {
             if (this.character.isColliding(bottle)) {
                 this.bottleCollection.push(bottle);
@@ -72,14 +78,27 @@ class World {
         })
     }
 
+    checkCollisionBottleEnemies() {
+        this.throwableObjects.forEach((bottle) => {
+            level1.enemies.forEach((enemy) => {
+                if (enemy.isColliding(bottle) && !enemy.isDead) {
+                    enemy.isDead = true;
+                    enemy.speed = 0;
+                    this.removeDeadChickenFromMap(enemy);
+                    bottle.hasSplashed = true;
+                }
+            });
+        });
+    }
+
     checkCollisionEndbossCharacter() {
-        if (this.endboss.isColliding(this.character) && !this.endboss.isDead) {
+        if (this.endboss.isColliding(this.character)) {
             this.character.hit();
             this.statusbarHealth.setPercentage(this.character.energy);
-            this.endboss.attackEndboss();        
-            this.endboss.moveLeftEndboss();            
+            this.endboss.attackEndboss();
+            this.endboss.moveLeftEndboss();
         } else {
-            this.endboss.stopAttackEndboss(); 
+            this.endboss.stopAttackEndboss();
         }
     }
 
@@ -95,11 +114,12 @@ class World {
 
     checkCollisionEndboss() {
         this.throwableObjects.forEach((bottle) => {
-            if(this.endboss.isColliding(bottle)) {
+            if (this.endboss.isColliding(bottle)) {
                 this.endboss.hit();
+                bottle.hasSplashed = true;
                 this.statusbarEndboss.setPercentage(this.endboss.energy);
             }
-        })
+        });
     }
 
     removeBottleFromMap(bottle) {
@@ -157,6 +177,10 @@ class World {
         //verschiebt die Kamera nach rechts
         this.ctx.translate(-this.camera_x, 0);
 
+        if (this.endScreen && this.endScreen.visible) {
+            this.endScreen.draw(this.ctx);
+        }
+
         //DrawImage wird immer wieder aufgerufen
         let self = this;
         requestAnimationFrame(function () {
@@ -206,6 +230,22 @@ class World {
             }
         } else {
             this.endboss.stopMovement();
+        }
+    }
+
+    checkGameOver() {
+        if (this.character.isDead()) {
+            let screen = new Endscreen(); // erstelle Dummy-Objekt
+            this.endScreen = new Endscreen(screen.IMAGE_GAMEOVER[0]); // Bild aus Array verwenden
+            this.endScreen.show();
+            this.gameIsOver = true;
+        }
+    
+        if (this.endboss.isDead()) {
+            let screen = new Endscreen();
+            this.endScreen = new Endscreen(screen.IMAGE_WIN[0]);
+            this.endScreen.show();
+            this.gameIsOver = true;
         }
     }
 }

@@ -63,7 +63,7 @@ class EndBoss extends MoveableObject {
         this.loadImages(this.IMAGES_WALK_ENDBOSS);
         this.x = 2000; //Positionierung der Endboss
         this.animateEndboss();
-        this.speed = 2; // dauerhaft festgelegte Geschwindigkeit
+        this.speed = 2; 
         this.isMoving = false;
     }
 
@@ -79,7 +79,7 @@ class EndBoss extends MoveableObject {
                 this.playAnimation(this.IMAGES_HURT_ENDBOSS);
             } else if (this.isAttacking) {
                 this.playAnimation(this.IMAGES_ATTACK_ENDBOSS);
-            } else if (this.x !== lastX) {
+            } else if (this.x !== lastX && !this.isAttacking) {
                 this.playAnimation(this.IMAGES_WALK_ENDBOSS);
             } else {
                 this.playAnimation(this.IMAGES_ALERT_ENDBOSS);
