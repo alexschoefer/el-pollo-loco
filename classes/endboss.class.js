@@ -63,7 +63,7 @@ class EndBoss extends MoveableObject {
         this.loadImages(this.IMAGES_WALK_ENDBOSS);
         this.x = 2000; //Positionierung der Endboss
         this.animateEndboss();
-        this.speed = 2; // dauerhaft festgelegte Geschwindigkeit
+        this.speed = 2; 
         this.isMoving = false;
     }
 

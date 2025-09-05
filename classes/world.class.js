@@ -16,8 +16,10 @@ class World {
     bottleCollection = [];
     coinsCollection = [];
     maxCoins = level1.coins.length;
-    
-    
+    endScreen = null;
+    gameIsOver = false;
+
+
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -35,6 +37,7 @@ class World {
 
     run() {
         setInterval(() => {
+            if (this.gameIsOver) return; 
             this.checkCollisionsChickens();
             this.checkThrowObjects();
             this.checkCollisionsBottleCharacter();
@@ -43,6 +46,7 @@ class World {
             this.checkCollisionEndbossCharacter();
             this.checkEndbossDistanceToCharacter();
             this.checkCollisionBottleEnemies();
+            this.checkGameOver();
         }, 200);
     }
 
@@ -77,7 +81,7 @@ class World {
     checkCollisionBottleEnemies() {
         this.throwableObjects.forEach((bottle) => {
             level1.enemies.forEach((enemy) => {
-                if(enemy.isColliding(bottle) && !enemy.isDead) {
+                if (enemy.isColliding(bottle) && !enemy.isDead) {
                     enemy.isDead = true;
                     enemy.speed = 0;
                     this.removeDeadChickenFromMap(enemy);
@@ -91,10 +95,10 @@ class World {
         if (this.endboss.isColliding(this.character)) {
             this.character.hit();
             this.statusbarHealth.setPercentage(this.character.energy);
-            this.endboss.attackEndboss();        
-            this.endboss.moveLeftEndboss();            
+            this.endboss.attackEndboss();
+            this.endboss.moveLeftEndboss();
         } else {
-            this.endboss.stopAttackEndboss(); 
+            this.endboss.stopAttackEndboss();
         }
     }
 
@@ -173,6 +177,10 @@ class World {
         //verschiebt die Kamera nach rechts
         this.ctx.translate(-this.camera_x, 0);
 
+        if (this.endScreen && this.endScreen.visible) {
+            this.endScreen.draw(this.ctx);
+        }
+
         //DrawImage wird immer wieder aufgerufen
         let self = this;
         requestAnimationFrame(function () {
@@ -222,6 +230,22 @@ class World {
             }
         } else {
             this.endboss.stopMovement();
+        }
+    }
+
+    checkGameOver() {
+        if (this.character.isDead()) {
+            let screen = new Endscreen(); // erstelle Dummy-Objekt
+            this.endScreen = new Endscreen(screen.IMAGE_GAMEOVER[0]); // Bild aus Array verwenden
+            this.endScreen.show();
+            this.gameIsOver = true;
+        }
+    
+        if (this.endboss.isDead()) {
+            let screen = new Endscreen();
+            this.endScreen = new Endscreen(screen.IMAGE_WIN[0]);
+            this.endScreen.show();
+            this.gameIsOver = true;
         }
     }
 }
