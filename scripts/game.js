@@ -3,7 +3,11 @@ let canvas;
 let world;
 let keyboard = new GameKeyBoard();
 
-function init() {
+function startGameLevelBeginner() {
+    let gameLevelOverviewRef = document.getElementById('game-level-overlay');
+    gameLevelOverviewRef.classList.add('d_none');
+    let canvasRef = document.getElementById('canvas');
+    canvasRef.classList.remove('d_none');
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
 }
