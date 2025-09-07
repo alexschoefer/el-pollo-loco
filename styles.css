@@ -380,3 +380,28 @@ p, h2 {
   gap: 30px;
   margin-top: 20px;
 }
+
+.fullscreen-btn-container {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.btn-fullscreen {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-fullscreen img {
+  width: 40px;
+  height: 40px;
+  filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+  transition: transform 0.2s ease;
+}
+
+.btn-fullscreen:hover img {
+  transform: scale(1.1);
+}

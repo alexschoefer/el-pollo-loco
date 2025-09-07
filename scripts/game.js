@@ -8,12 +8,13 @@ let currentLevel = null;
 function startGameLevelBeginner() {
     currentLevel = 'beginner';
     saveSelectedLevelToLocalStorage(currentLevel);
-    let gameLevelOverviewRef = document.getElementById('game-level-overlay');
-    gameLevelOverviewRef.classList.add('d_none');
-    let canvasRef = document.getElementById('canvas');
+    document.getElementById('game-level-overlay').classList.add('d_none');
+    const canvasRef = document.getElementById('canvas');
     canvasRef.classList.remove('d_none');
     canvas = canvasRef;
-    let levelInstance = createLevel1(); // neues Level erzeugen
+
+    // Level starten
+    let levelInstance = createLevelBeginner();
     world = new World(canvas, keyboard, levelInstance);
 }
 
@@ -115,4 +116,3 @@ function restartGame() {
         world = new World(canvasRef, keyboard, createLevelExpert());
     }
 }
-
