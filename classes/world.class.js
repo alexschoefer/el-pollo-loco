@@ -1,7 +1,5 @@
 class World {
-    character = new Character();
     endboss = new EndBoss();
-    level = level1;
     ctx;
     canvas;
     keyboard;
@@ -11,20 +9,36 @@ class World {
     statusbarBottles = new StatusbarBottles();
     statusbarEndboss = new StatusbarEndboss();
     chicken = new Chicken();
+    smallchicken = new SmallChicken();
     throwableObjects = [];
     bottleCollection = [];
     coinsCollection = [];
-    maxCoins = level1.coins.length;
-    
-    
+    endScreen = null;
+    gameIsOver = false;
+    animationFrameId = null;
 
-    constructor(canvas, keyboard) {
+    constructor(canvas, keyboard, level) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
+        this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
         this.keyboard = keyboard;
+        this.level = level;
+        this.maxCoins = this.level.coins.length;
+        this.maxBottles = this.level.bottles.length;
+        this.audioManager = new AudioManager();
+        this.character = new Character(this.audioManager);
         this.draw();
         this.setWorld();
         this.run();
+        this.soundIcon = new Image();
+        this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
+        this.soundIcon.src = this.isMuted
+            ? "assets/img-main-background/muted-icon.png"
+            : "assets/img-main-background/unmuted-icon.png";
+        this.soundIconLoaded = false;
+        this.soundIcon.onload = () => {
+            this.soundIconLoaded = true;
+        };
     }
 
     setWorld() {
@@ -34,22 +48,25 @@ class World {
 
     run() {
         setInterval(() => {
+            if (this.gameIsOver) return;
             this.checkCollisionsChickens();
             this.checkThrowObjects();
-            this.checkCollisionsBottle();
+            this.checkCollisionsBottleCharacter();
             this.checkCollisionCoins();
             this.checkCollisionEndboss();
             this.checkCollisionEndbossCharacter();
             this.checkEndbossDistanceToCharacter();
+            this.checkCollisionBottleEnemies();
+            this.checkGameOver();
         }, 200);
     }
 
     //prüft eine Collision mit einem anderen Objekt Chicken und reduziert die Energie des Characters
     checkCollisionsChickens() {
-        level1.enemies.forEach((enemy) => {
+        this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy) && !enemy.isDead) {
-                if (this.character.y + this.character.height <= enemy.y + enemy.height / 2) {
-                    if (enemy instanceof Chicken) {
+                if ((this.character.y + this.character.height) < (enemy.y + enemy.height * 0.75)) {
+                    if (enemy instanceof Chicken || enemy instanceof SmallChicken) {
                         enemy.isDead = true;
                         enemy.speed = 0;
                         this.removeDeadChickenFromMap(enemy);
@@ -57,37 +74,54 @@ class World {
                 } else {
                     this.character.hit();
                     this.statusbarHealth.setPercentage(this.character.energy);
+                    this.audioManager.play('hurt');
                 }
             }
         });
     }
 
-    checkCollisionsBottle() {
-        level1.bottles.forEach((bottle) => {
+    checkCollisionsBottleCharacter() {
+        this.level.bottles.forEach((bottle) => {
             if (this.character.isColliding(bottle)) {
                 this.bottleCollection.push(bottle);
-                this.statusbarBottles.setPercentage(Math.min(this.bottleCollection.length / this.level.maxBottles * 100, 100));
+                this.updateBottleStatusbar();
+                this.audioManager.play('bottle');
                 this.removeBottleFromMap(bottle);
             }
         })
     }
 
+    checkCollisionBottleEnemies() {
+        this.throwableObjects.forEach((bottle) => {
+            this.level.enemies.forEach((enemy) => {
+                if (enemy.isColliding(bottle) && !enemy.isDead) {
+                    enemy.isDead = true;
+                    enemy.speed = 0;
+                    this.removeDeadChickenFromMap(enemy);
+                    bottle.hasSplashed = true;
+                }
+            });
+        });
+    }
+
     checkCollisionEndbossCharacter() {
-        if (this.endboss.isColliding(this.character) && !this.endboss.isDead) {
+        if (this.endboss.isColliding(this.character)) {
             this.character.hit();
+            this.audioManager.play('hurt');
             this.statusbarHealth.setPercentage(this.character.energy);
-            this.endboss.attackEndboss();        
-            this.endboss.moveLeftEndboss();            
+            this.endboss.attackEndboss();
+            this.endboss.moveLeftEndboss();
         } else {
-            this.endboss.stopAttackEndboss(); 
+            this.endboss.stopAttackEndboss();
         }
     }
 
     checkCollisionCoins() {
-        level1.coins.forEach((coin) => {
+        this.level.coins.forEach((coin) => {
             if (this.character.isColliding(coin)) {
                 this.coinsCollection.push(coin);
                 this.statusbarCoins.setPercentage(Math.min(this.coinsCollection.length / this.level.maxCoins * 100, 100));
+                this.audioManager.play('coin');
                 this.removeCoinsFromMap(coin);
             }
         })
@@ -95,25 +129,26 @@ class World {
 
     checkCollisionEndboss() {
         this.throwableObjects.forEach((bottle) => {
-            if(this.endboss.isColliding(bottle)) {
+            if (this.endboss.isColliding(bottle)) {
                 this.endboss.hit();
+                bottle.hasSplashed = true;
                 this.statusbarEndboss.setPercentage(this.endboss.energy);
             }
-        })
+        });
     }
 
     removeBottleFromMap(bottle) {
-        level1.bottles = level1.bottles.filter(b => b !== bottle);
+        this.level.bottles = this.level.bottles.filter(b => b !== bottle);
     }
 
 
     removeCoinsFromMap(coin) {
-        level1.coins = level1.coins.filter(b => b !== coin);
+        this.level.coins = this.level.coins.filter(b => b !== coin);
     }
 
     removeDeadChickenFromMap(enemy) {
         setTimeout(() => {
-            level1.enemies = level1.enemies.filter(e => e !== enemy);
+            this.level.enemies = this.level.enemies.filter(e => e !== enemy);
         }, 2500);
     }
 
@@ -122,7 +157,7 @@ class World {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 150)
             this.throwableObjects.push(bottle);
             this.bottleCollection.pop();
-            this.statusbarBottles.setPercentage(this.bottleCollection.length * 20);
+            this.updateBottleStatusbar();
         }
     }
 
@@ -151,17 +186,33 @@ class World {
         this.addObjectsToMap(this.level.bottles);
         this.addObjectsToMap(this.level.coins);
 
-
-
-
         //verschiebt die Kamera nach rechts
         this.ctx.translate(-this.camera_x, 0);
 
-        //DrawImage wird immer wieder aufgerufen
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
-        });
+        if (this.endScreen && this.endScreen.visible) {
+            this.endScreen.draw(this.ctx);
+        }
+
+        this.animationFrameId = requestAnimationFrame(() => this.draw());
+        this.drawSoundIcon();
+        // //DrawImage wird immer wieder aufgerufen
+        // let self = this;
+        // requestAnimationFrame(function () {
+        //     self.draw();
+        // });
+    }
+
+    drawSoundIcon() {
+        if (!this.soundIconLoaded) return;
+        const iconSize = 40;
+        const padding = 60;
+
+        const x = this.canvas.width - iconSize - padding;
+        const y = padding;
+
+        this.soundIconBounds = { x, y, width: iconSize, height: iconSize };
+
+        this.ctx.drawImage(this.soundIcon, x, y, iconSize, iconSize);
     }
 
     addObjectsToMap(objects) {
@@ -208,4 +259,82 @@ class World {
             this.endboss.stopMovement();
         }
     }
+
+    checkGameOver() {
+        if (this.character.isDead()) {
+            this.endScreen = new Endscreen(Endscreen.IMAGE_GAMEOVER);
+            this.endScreen.show();
+            this.gameIsOver = true;
+            this.showEndscreenButtons();
+        }
+
+        if (this.endboss.isDead()) {
+            this.endScreen = new Endscreen(Endscreen.IMAGE_WIN);
+            this.endScreen.show();
+            this.gameIsOver = true;
+            this.showEndscreenButtons();
+        }
+    }
+
+    showEndscreenButtons() {
+        const btnContainer = document.getElementById('btn-endscreen-container');
+        btnContainer.classList.remove('d_none');
+    }
+
+    updateBottleStatusbar() {
+        const percentage = Math.min(
+            (this.bottleCollection.length / this.level.maxBottles) * 100,
+            100
+        );
+        this.statusbarBottles.setPercentage(percentage);
+    }
+
+    resetWorld() {
+        // Stop Animationen / Intervall
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+        }
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+
+        // Entferne Endscreen und setze Flag zurück
+        this.endScreen = null;
+        this.gameIsOver = false;
+
+        // Falls nötig: Kamera zurücksetzen
+        this.camera_x = 0;
+
+        // Starte den Loop neu
+        this.draw();
+        this.run();
+    }
+
+    toggleSound() {
+        this.isMuted = !this.isMuted;
+        this.soundIcon.src = this.isMuted
+            ? "assets/img-main-background/muted-icon.png"
+            : "assets/img-main-background/unmuted-icon.png";
+        this.audioManager.muteAll(this.isMuted);
+        localStorage.setItem("isMuted", JSON.stringify(this.isMuted));
+    }
+
+    handleCanvasClick(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        const clickY = event.clientY - rect.top;
+    
+        const bounds = this.soundIconBounds;
+    
+        if (
+            bounds &&
+            clickX >= bounds.x &&
+            clickX <= bounds.x + bounds.width &&
+            clickY >= bounds.y &&
+            clickY <= bounds.y + bounds.height
+        ) {
+            this.toggleSound();
+        }
+    }
+
 }
