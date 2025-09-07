@@ -1,7 +1,7 @@
 class World {
     character = new Character();
     endboss = new EndBoss();
-    level = level1;
+    // level = level1;
     ctx;
     canvas;
     keyboard;
@@ -18,13 +18,14 @@ class World {
     maxCoins = level1.coins.length;
     endScreen = null;
     gameIsOver = false;
+    animationFrameId = null;
 
 
-
-    constructor(canvas, keyboard) {
+    constructor(canvas, keyboard, level) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.level = level; 
         this.draw();
         this.setWorld();
         this.run();
@@ -181,11 +182,13 @@ class World {
             this.endScreen.draw(this.ctx);
         }
 
-        //DrawImage wird immer wieder aufgerufen
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
-        });
+        this.animationFrameId = requestAnimationFrame(() => this.draw());
+
+        // //DrawImage wird immer wieder aufgerufen
+        // let self = this;
+        // requestAnimationFrame(function () {
+        //     self.draw();
+        // });
     }
 
     addObjectsToMap(objects) {
@@ -260,5 +263,25 @@ class World {
             100
         );
         this.statusbarBottles.setPercentage(percentage);
+    }
+    resetWorld() {
+        // Stop Animationen / Intervall
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+        }
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+    
+        // Entferne Endscreen und setze Flag zurück
+        this.endScreen = null;
+        this.gameIsOver = false;
+    
+        // Falls nötig: Kamera zurücksetzen
+        this.camera_x = 0;
+    
+        // Starte den Loop neu
+        this.draw();
+        this.run();
     }
 }
