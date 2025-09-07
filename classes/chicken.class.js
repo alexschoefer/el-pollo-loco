@@ -27,9 +27,8 @@ class Chicken extends MoveableObject {
         this.loadImages(this.IMAGES_WALKING_CHICKEN);
         this.loadImages(this.IMAGE_DEAD_CHICKEN);
         this.x = 400 + Math.random() * 500; //Positionierung der Chicken zwischen 200 und 700
-        this.speed = 0.15 + Math.random()*0.25;
+        this.speed = 0.15 + Math.random() * 0.25;
         this.animateEnemy();
-
     }
 
     animateEnemy() {
@@ -44,7 +43,5 @@ class Chicken extends MoveableObject {
                 this.playAnimation(this.IMAGES_WALKING_CHICKEN);
             }
         }, 200);
-
-
     }
 }
