@@ -239,6 +239,7 @@ class World {
             this.endScreen = new Endscreen(screen.IMAGE_GAMEOVER[0]); // Bild aus Array verwenden
             this.endScreen.show();
             this.gameIsOver = true;
+            this.showEndscreenButtons(); 
         }
     
         if (this.endboss.isDead()) {
@@ -246,6 +247,12 @@ class World {
             this.endScreen = new Endscreen(screen.IMAGE_WIN[0]);
             this.endScreen.show();
             this.gameIsOver = true;
+            this.showEndscreenButtons(); 
         }
+    }
+
+    showEndscreenButtons() {
+        const btnContainer = document.getElementById('btn-endscreen-container');
+        btnContainer.classList.remove('d_none');
     }
 }

@@ -70,7 +70,7 @@ canvas {
 }
 
 .d_none {
-  display: none;
+  display: none !important;
 }
 
 .start-btn-container {
@@ -345,4 +345,38 @@ p, h2 {
 .btn-close-gamelevel-overview:hover {
   background-color: rgb(170, 70, 70);
   color: black;
+}
+
+.btn-restart-game {
+  width: 220px;
+  height: 60px;
+  font-size: 24px;
+  background-color: darkgreen;
+  border-radius: 20px;
+  font-family: 'rye', Arial, Helvetica, sans-serif;
+  color: white;
+  cursor: pointer;
+  border: unset;
+  border: 2px solid;
+  z-index: 999;
+}
+
+.btn-back-to-menu {
+  width: 200px;
+  height: 60px;
+  font-size: 24px;
+  background-color: darkred;
+  border-radius: 20px;
+  font-family: 'rye', Arial, Helvetica, sans-serif;
+  color: white;
+  cursor: pointer;
+  border: unset;
+  border: 2px solid;
+  z-index: 999;
+}
+
+.btn-endscreen-container {
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
 }

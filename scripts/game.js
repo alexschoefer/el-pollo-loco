@@ -2,6 +2,7 @@
 let canvas;
 let world;
 let keyboard = new GameKeyBoard();
+let gameIsOver = false;
 
 function startGameLevelBeginner() {
     let gameLevelOverviewRef = document.getElementById('game-level-overlay');
@@ -13,7 +14,7 @@ function startGameLevelBeginner() {
 }
 
 window.addEventListener('keydown', (event) => {
-
+    if (gameIsOver) return;
     if (event.code === 'ArrowRight') keyboard.RIGHT = true;
     if (event.code === 'ArrowLeft') keyboard.LEFT = true;
     if (event.code === 'Space') keyboard.SPACE = true;
@@ -21,6 +22,7 @@ window.addEventListener('keydown', (event) => {
 });
 
 window.addEventListener('keyup', (event) => {
+    if (gameIsOver) return;
     if (event.code === 'ArrowRight') keyboard.RIGHT = false;
     if (event.code === 'ArrowLeft') keyboard.LEFT = false;
     if (event.code === 'Space') keyboard.SPACE = false;
@@ -54,4 +56,13 @@ function closeGameLevelOverlay() {
     let gameLevelOverviewRef = document.getElementById('game-level-overlay');
     startgameRef.classList.remove('d_none');
     gameLevelOverviewRef.classList.add('d_none');
+}
+
+function goBackToMainMenu() {
+    let btnContainer = document.getElementById('btn-endscreen-container');
+    let startgameRef = document.getElementById('startgame');
+    let canvasRef = document.getElementById('canvas');
+    canvasRef.classList.add('d_none');
+    btnContainer.classList.add('d_none');
+    startgameRef.classList.remove('d_none');
 }

@@ -2,14 +2,21 @@ class Endscreen extends DrawableObject {
     constructor(imagePath) {
         super();
         this.loadImage(imagePath);
-        this.visible = false;
+        this.visible = false; 
 
-        this.width = 320;  
-        this.height = 300; 
+        if (imagePath === this.IMAGE_GAMEOVER[0]) {
+            this.width = 320;  // Beispielwerte, passe an
+            this.height = 300;
+        } else if (imagePath === this.IMAGE_WIN[0]) {
+            this.width = 300;
+            this.height = 150;
+        }
 
         // Statische Position, Mitte im Canvas 720x480
         this.x = (720 - this.width) / 2;  
         this.y = (480 - this.height) / 2;
+
+
     }
 
     IMAGE_GAMEOVER = [
