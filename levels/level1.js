@@ -1,5 +1,5 @@
-const coins = generateRandomCoins(4, 8);
-const bottles = generateRandomBottles(7, 10);
+const coins = generateRandomCoins(5, 10);
+const bottles = generateRandomBottles(6, 10);
 const maxCoins = coins.length;
 const maxBottles = bottles.length;
 
@@ -38,6 +38,11 @@ const level1 = new Level(
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720 * 3),
+        new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 4),
+        new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 720 * 4),
+        new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 720 * 4),
+        new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 720 * 4),
+
     ],
     bottles,
     coins,

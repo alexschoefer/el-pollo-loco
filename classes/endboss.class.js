@@ -117,4 +117,13 @@ class EndBoss extends MoveableObject {
     stopMovement() {
         this.isMoving = false;
     }
+
+    hit() {
+        this.energy -= 8;
+        if (this.energy < 0) {
+            this.energy = 0;
+        }
+        this.lastHit = new Date().getTime();
+
+    }
 } 

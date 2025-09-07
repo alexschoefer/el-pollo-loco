@@ -1,4 +1,4 @@
-class Coins extends DrawableObject  {
+class Coins extends DrawableObject {
     x = 200;
     y;
     height = 150;
@@ -6,26 +6,25 @@ class Coins extends DrawableObject  {
 
     offset = {
         top: 40,
-         bottom: 40,
+        bottom: 40,
         left: 40,
         right: 40
     };
 
-      IMAGES_COINS = [
+    IMAGES_COINS = [
         'assets/img/8_coin/coin_1.png',
         'assets/img/8_coin/coin_2.png'
     ]
 
     constructor() {
-        super(); 
+        super();
         this.loadImage(this.getRandomCoinImages());
         this.setRandomCoinPosition();
-        console.log(`Coin position x=${this.x}, y=${this.y}`);
     }
 
     getRandomCoinImages() {
         let randomCoinImage = Math.floor(Math.random() * 2);
-         return this.IMAGES_COINS[randomCoinImage];  
+        return this.IMAGES_COINS[randomCoinImage];
     }
 
     setRandomCoinPosition() {

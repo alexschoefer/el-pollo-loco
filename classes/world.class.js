@@ -72,7 +72,7 @@ class World {
         level1.bottles.forEach((bottle) => {
             if (this.character.isColliding(bottle)) {
                 this.bottleCollection.push(bottle);
-                this.statusbarBottles.setPercentage(Math.min(this.bottleCollection.length / this.level.maxBottles * 100, 100));
+                this.updateBottleStatusbar(); 
                 this.removeBottleFromMap(bottle);
             }
         })
@@ -142,7 +142,7 @@ class World {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 150)
             this.throwableObjects.push(bottle);
             this.bottleCollection.pop();
-            this.statusbarBottles.setPercentage(this.bottleCollection.length * 20);
+            this.updateBottleStatusbar();
         }
     }
 
@@ -235,24 +235,30 @@ class World {
 
     checkGameOver() {
         if (this.character.isDead()) {
-            let screen = new Endscreen(); // erstelle Dummy-Objekt
-            this.endScreen = new Endscreen(screen.IMAGE_GAMEOVER[0]); // Bild aus Array verwenden
+            this.endScreen = new Endscreen(Endscreen.IMAGE_GAMEOVER);
             this.endScreen.show();
             this.gameIsOver = true;
-            this.showEndscreenButtons(); 
+            this.showEndscreenButtons();
         }
     
         if (this.endboss.isDead()) {
-            let screen = new Endscreen();
-            this.endScreen = new Endscreen(screen.IMAGE_WIN[0]);
+            this.endScreen = new Endscreen(Endscreen.IMAGE_WIN);
             this.endScreen.show();
             this.gameIsOver = true;
-            this.showEndscreenButtons(); 
+            this.showEndscreenButtons();
         }
     }
 
     showEndscreenButtons() {
         const btnContainer = document.getElementById('btn-endscreen-container');
         btnContainer.classList.remove('d_none');
+    }
+
+    updateBottleStatusbar() {
+        const percentage = Math.min(
+            (this.bottleCollection.length / this.level.maxBottles) * 100,
+            100
+        );
+        this.statusbarBottles.setPercentage(percentage);
     }
 }
