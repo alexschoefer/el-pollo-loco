@@ -1,7 +1,7 @@
 class World {
     character = new Character();
     endboss = new EndBoss();
-    // level = level1;
+    // level = level;
     ctx;
     canvas;
     keyboard;
@@ -15,7 +15,6 @@ class World {
     throwableObjects = [];
     bottleCollection = [];
     coinsCollection = [];
-    maxCoins = level1.coins.length;
     endScreen = null;
     gameIsOver = false;
     animationFrameId = null;
@@ -25,7 +24,9 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
-        this.level = level; 
+        this.level = level;
+        this.maxCoins = this.level.coins.length;
+        this.maxBottles = this.level.bottles.length; 
         this.draw();
         this.setWorld();
         this.run();
@@ -53,7 +54,7 @@ class World {
 
     //prüft eine Collision mit einem anderen Objekt Chicken und reduziert die Energie des Characters
     checkCollisionsChickens() {
-        level1.enemies.forEach((enemy) => {
+        this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy) && !enemy.isDead) {
                 if ((this.character.y + this.character.height) < (enemy.y + enemy.height * 0.75)) {
                     if (enemy instanceof Chicken || enemy instanceof SmallChicken) {
@@ -70,7 +71,7 @@ class World {
     }
 
     checkCollisionsBottleCharacter() {
-        level1.bottles.forEach((bottle) => {
+        this.level.bottles.forEach((bottle) => {
             if (this.character.isColliding(bottle)) {
                 this.bottleCollection.push(bottle);
                 this.updateBottleStatusbar(); 
@@ -81,7 +82,7 @@ class World {
 
     checkCollisionBottleEnemies() {
         this.throwableObjects.forEach((bottle) => {
-            level1.enemies.forEach((enemy) => {
+            this.level.enemies.forEach((enemy) => {
                 if (enemy.isColliding(bottle) && !enemy.isDead) {
                     enemy.isDead = true;
                     enemy.speed = 0;
@@ -104,7 +105,7 @@ class World {
     }
 
     checkCollisionCoins() {
-        level1.coins.forEach((coin) => {
+        this.level.coins.forEach((coin) => {
             if (this.character.isColliding(coin)) {
                 this.coinsCollection.push(coin);
                 this.statusbarCoins.setPercentage(Math.min(this.coinsCollection.length / this.level.maxCoins * 100, 100));
@@ -124,17 +125,17 @@ class World {
     }
 
     removeBottleFromMap(bottle) {
-        level1.bottles = level1.bottles.filter(b => b !== bottle);
+        this.level.bottles = this.level.bottles.filter(b => b !== bottle);
     }
 
 
     removeCoinsFromMap(coin) {
-        level1.coins = level1.coins.filter(b => b !== coin);
+        this.level.coins = this.level.coins.filter(b => b !== coin);
     }
 
     removeDeadChickenFromMap(enemy) {
         setTimeout(() => {
-            level1.enemies = level1.enemies.filter(e => e !== enemy);
+            this.level.enemies = this.level.enemies.filter(e => e !== enemy);
         }, 2500);
     }
 

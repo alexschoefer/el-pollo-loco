@@ -1,18 +1,19 @@
-function createLevelBeginner() {
-    // Generiere Coins und Bottles frisch
-    const coins = generateRandomCoins(5, 10);
-    const bottles = generateRandomBottles(6, 10);
+function createLevelExpert() {
+    const coins = generateRandomCoins(5, 8);
+    const bottles = generateRandomBottles(6, 8);
     const maxCoins = coins.length;
     const maxBottles = bottles.length;
-
-    // Erzeuge neue Gegner (hier z.B. keine, falls du willst kannst du welche hinzufügen)
     const enemies = [
-        // new Chicken(),
-        // new Chicken(),
-        // new SmallChicken()
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new Chicken(),
+        new SmallChicken(),
+        new SmallChicken(),
+        new SmallChicken()
     ];
-
-    // Wolken
     const clouds = [
         new Cloud(),
         new Cloud(),
@@ -21,43 +22,34 @@ function createLevelBeginner() {
         new Cloud()
     ];
 
-    // Hintergrund-Objekte
+
     const backgroundObjects = [
         new BackgroundObject('assets/img/5_background/layers/air.png', -720),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', -720),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', -720),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', -720),
-
         new BackgroundObject('assets/img/5_background/layers/air.png', 0),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 0),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 0),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 0),
-
         new BackgroundObject('assets/img/5_background/layers/air.png', 720),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720),
-
         new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 2),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 720 * 2),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 720 * 2),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 720 * 2),
-
         new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720 * 3),
-
         new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 4),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 720 * 4),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 720 * 4),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 720 * 4),
     ];
-
-    // Endboss neu erzeugen
-    const endboss = new EndBoss();
-
-    // Level-Instanz zurückgeben
+    const endboss = new EndBoss(); 
     return new Level(
         enemies,
         clouds,

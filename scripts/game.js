@@ -12,8 +12,9 @@ function startGameLevelBeginner() {
     gameLevelOverviewRef.classList.add('d_none');
     let canvasRef = document.getElementById('canvas');
     canvasRef.classList.remove('d_none');
-    canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard, level1);
+    canvas = canvasRef;
+    let levelInstance = createLevel1(); // neues Level erzeugen
+    world = new World(canvas, keyboard, levelInstance);
 }
 
 function startGameLevelExpert() {
@@ -23,8 +24,9 @@ function startGameLevelExpert() {
     gameLevelOverviewRef.classList.add('d_none');
     let canvasRef = document.getElementById('canvas');
     canvasRef.classList.remove('d_none');
-    canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard, level2);
+    canvas = canvasRef;
+    let levelInstance = createLevelExpert(); 
+    world = new World(canvas, keyboard, levelInstance);
 }
 
 window.addEventListener('keydown', (event) => {
@@ -88,9 +90,12 @@ function saveSelectedLevelToLocalStorage(currentLevel) {
 
 function restartGame() {
     if (world) {
-        world.resetWorld();
+        // Stoppe alte World Animationen und Intervalle
+        if (world.animationFrameId) cancelAnimationFrame(world.animationFrameId);
+        if (world.intervalId) clearInterval(world.intervalId);
     }
 
+    // Buttons & Endscreen verstecken
     const btnContainer = document.getElementById('btn-endscreen-container');
     btnContainer.classList.add('d_none');
 
@@ -105,9 +110,9 @@ function restartGame() {
     // Neues Spiel starten basierend auf gespeichertem Level
     let selectedLevel = localStorage.getItem('selectedLevel');
     if (selectedLevel === 'beginner') {
-        startGameLevelBeginner();
+        world = new World(canvasRef, keyboard, createLevelBeginner());
     } else {
-        startGameLevelExpert();
+        world = new World(canvasRef, keyboard, createLevelExpert());
     }
 }
 
