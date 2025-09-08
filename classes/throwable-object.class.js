@@ -1,5 +1,6 @@
 class ThrowableObject extends MoveableObject {
 
+    audioManager;
     hasSplashed = false;
 
     IMAGES_BOTTLES_THROWING = [
@@ -18,7 +19,7 @@ class ThrowableObject extends MoveableObject {
         'assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
     ]
 
-    constructor(x, y) {
+    constructor(x, y, audioManager) {
         super();
         this.loadImages(this.IMAGES_BOTTLES_THROWING);
         this.loadImages(this.IMAGES_BOTTLES_SPLASH);
@@ -29,6 +30,7 @@ class ThrowableObject extends MoveableObject {
         this.img = this.imageCache[this.IMAGES_BOTTLES_THROWING[0]];
         this.throwBottle();
         this.animateBottle();
+        this.audioManager = audioManager;
     }
 
     throwBottle() {
@@ -40,11 +42,18 @@ class ThrowableObject extends MoveableObject {
     }
 
     animateBottle() {
+        let soundPlayed = false;
+
         setInterval(() => {
             if (this.hasSplashed) {
                 this.playAnimation(this.IMAGES_BOTTLES_SPLASH);
             } else {
                 this.playAnimation(this.IMAGES_BOTTLES_THROWING);
+
+                if (!soundPlayed) {
+                    this.audioManager.play('throw');
+                    soundPlayed = true;
+                }
             }
         }, 100);
     }

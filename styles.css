@@ -239,6 +239,10 @@ p, h2 {
   align-items: center;
 }
 
+.controlscreen h2 {
+  color: rgb(203, 175, 17);
+}
+
 .game-introduction-container {
   width: 780px;
   height: 480px;

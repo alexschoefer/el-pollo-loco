@@ -4,6 +4,12 @@ let world;
 let keyboard = new GameKeyBoard();
 let gameIsOver = false;
 let currentLevel = null;
+let audioManager;
+
+function initMenuSound() {
+    audioManager = new AudioManager();
+    audioManager.play('menu');
+}
 
 function startGameLevelBeginner() {
     currentLevel = 'beginner';
@@ -12,7 +18,8 @@ function startGameLevelBeginner() {
     const canvasRef = document.getElementById('canvas');
     canvasRef.classList.remove('d_none');
     canvas = canvasRef;
-
+    // Stoppe Menümusik
+    audioManager.sounds.menu.pause();
     // Level starten
     let levelInstance = createLevelBeginner();
     world = new World(canvas, keyboard, levelInstance);
@@ -26,7 +33,9 @@ function startGameLevelExpert() {
     let canvasRef = document.getElementById('canvas');
     canvasRef.classList.remove('d_none');
     canvas = canvasRef;
-    let levelInstance = createLevelExpert(); 
+    // Stoppe Menümusik
+    audioManager.sounds.menu.pause();
+    let levelInstance = createLevelExpert();
     world = new World(canvas, keyboard, levelInstance);
 }
 
@@ -83,6 +92,9 @@ function goBackToMainMenu() {
     canvasRef.classList.add('d_none');
     btnContainer.classList.add('d_none');
     startgameRef.classList.remove('d_none');
+    if (!audioManager.isMuted) {
+        audioManager.play('menu');
+    }
 }
 
 function saveSelectedLevelToLocalStorage(currentLevel) {
