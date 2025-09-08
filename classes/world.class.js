@@ -30,6 +30,11 @@ class World {
         this.draw();
         this.setWorld();
         this.run();
+        if (!this.audioManager.isMuted) {
+            this.audioManager.sounds.game.play().catch((e) => {
+                console.warn('Autoplay blockiert den Gamesound:', e);
+            });
+        }
         this.soundIcon = new Image();
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
         this.soundIcon.src = this.isMuted
@@ -154,7 +159,7 @@ class World {
 
     checkThrowObjects() {
         if (this.keyboard.D && this.bottleCollection.length > 0) {
-            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 150)
+            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 150, this.audioManager)
             this.throwableObjects.push(bottle);
             this.bottleCollection.pop();
             this.updateBottleStatusbar();
@@ -266,13 +271,19 @@ class World {
             this.endScreen.show();
             this.gameIsOver = true;
             this.showEndscreenButtons();
-        }
-
-        if (this.endboss.isDead()) {
+            this.audioManager.sounds.game.pause();
+            if (!this.audioManager.isMuted) {
+                this.audioManager.play('gameover');
+            }
+        } else if (this.endboss.isDead()) {
             this.endScreen = new Endscreen(Endscreen.IMAGE_WIN);
             this.endScreen.show();
             this.gameIsOver = true;
             this.showEndscreenButtons();
+            this.audioManager.sounds.game.pause();
+            if (!this.audioManager.isMuted) {
+                this.audioManager.play('win');
+            }
         }
     }
 
@@ -317,15 +328,19 @@ class World {
             : "assets/img-main-background/unmuted-icon.png";
         this.audioManager.muteAll(this.isMuted);
         localStorage.setItem("isMuted", JSON.stringify(this.isMuted));
+        if (!this.isMuted) {
+            this.audioManager.sounds.game.play().catch((e) => {
+                console.warn('Konnte Gamesound nicht abspielen:', e);
+            });
+        }
     }
 
     handleCanvasClick(event) {
         const rect = this.canvas.getBoundingClientRect();
         const clickX = event.clientX - rect.left;
         const clickY = event.clientY - rect.top;
-    
         const bounds = this.soundIconBounds;
-    
+
         if (
             bounds &&
             clickX >= bounds.x &&
