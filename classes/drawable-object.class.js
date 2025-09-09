@@ -32,30 +32,30 @@ class DrawableObject {
     }
 
     drawFrame(ctx) {
-        if (this instanceof Chicken || this instanceof SmallChicken || this instanceof Chicken)  {
-            ctx.beginPath();
-            ctx.lineWidth = "6";
-            ctx.strokeStyle = "blue";
-            ctx.strokeRect(
-                this.x + this.offset.left,
-                this.y + this.offset.top,
-                this.width - this.offset.left - this.offset.right,
-                this.height - this.offset.top - this.offset.bottom
-            );
-            ctx.stroke();
-        }
+        // if (this instanceof Chicken || this instanceof SmallChicken || this instanceof Chicken)  {
+        //     ctx.beginPath();
+        //     ctx.lineWidth = "6";
+        //     ctx.strokeStyle = "blue";
+        //     ctx.strokeRect(
+        //         this.x + this.offset.left,
+        //         this.y + this.offset.top,
+        //         this.width - this.offset.left - this.offset.right,
+        //         this.height - this.offset.top - this.offset.bottom
+        //     );
+        //     ctx.stroke();
+        // }
 
-        if (this instanceof Chicken || this instanceof SmallChicken || this instanceof Chicken)  {
-            ctx.beginPath();
-            ctx.lineWidth = "6";
-            ctx.strokeStyle = "red";
-            ctx.strokeRect(
-                this.x,
-                this.y,
-                this.width,
-                this.height
-            );
-            ctx.stroke();
-        }
+        // if (this instanceof Chicken || this instanceof SmallChicken || this instanceof Chicken)  {
+        //     ctx.beginPath();
+        //     ctx.lineWidth = "6";
+        //     ctx.strokeStyle = "red";
+        //     ctx.strokeRect(
+        //         this.x,
+        //         this.y,
+        //         this.width,
+        //         this.height
+        //     );
+        //     ctx.stroke();
+        // }
     }
 }

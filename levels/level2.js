@@ -3,22 +3,13 @@ function createLevelExpert() {
     const bottles = generateRandomBottles(6, 8);
     const maxCoins = coins.length;
     const maxBottles = bottles.length;
-    const enemies = [
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
-        new SmallChicken(),
-        new SmallChicken(),
-        new SmallChicken(),
-        new SmallChicken(),
-        new SmallChicken()
-    ];
+    // 🐔 Chicken: ab X=600, alle 400px
+    const chickens = generateEnemies(Chicken, 4, 400, 400);
+
+    // 🐣 SmallChicken: ab X=3000, alle 300px
+    const smallChickens = generateEnemies(SmallChicken, 5, 500, 300);
+
+    const enemies = [...chickens, ...smallChickens];
     const clouds = [
         new Cloud(),
         new Cloud(),

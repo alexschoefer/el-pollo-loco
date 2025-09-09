@@ -6,10 +6,10 @@ let gameIsOver = false;
 let currentLevel = null;
 let audioManager;
 
-// function initMenuSound() {
-//     audioManager = new AudioManager();
-//     audioManager.play('menu');
-// }
+function initMenuSound() {
+    audioManager = new AudioManager();
+    audioManager.play('menu');
+}
 
 function startGameLevelBeginner() {
     currentLevel = 'beginner';
@@ -143,4 +143,17 @@ function closeLegalNotice() {
     let legalNoticeRef = document.getElementById('legal-notice');
     startgameRef.classList.remove('d_none');
     legalNoticeRef.classList.add('d_none');
+}
+
+
+function generateEnemies(Type, count, startX, spacing) {
+    const enemies = [];
+
+    for (let i = 0; i < count; i++) {
+        const enemy = new Type();
+        enemy.x = startX + i * spacing;
+        enemies.push(enemy);
+    }
+
+    return enemies;
 }

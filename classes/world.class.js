@@ -173,19 +173,15 @@ class World {
     draw() {
         //clearRect löscht das aktuelle img in der Canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
         //verschiebt die Kamera nach links
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
-
-
         this.ctx.translate(-this.camera_x, 0);
         this.addObjectsToMap([this.statusbarHealth]);
         this.addObjectsToMap([this.statusbarCoins]);
         this.addObjectsToMap([this.statusbarBottles]);
         this.addObjectsToMap([this.statusbarEndboss]);
         this.ctx.translate(this.camera_x, 0);
-
         //fügt die Elemente der Welt hinzu
         this.addToMap(this.character, this.height);
         this.addToMap(this.endboss, this.height);
@@ -194,14 +190,11 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.bottles);
         this.addObjectsToMap(this.level.coins);
-
         //verschiebt die Kamera nach rechts
         this.ctx.translate(-this.camera_x, 0);
-
         if (this.endScreen && this.endScreen.visible) {
             this.endScreen.draw(this.ctx);
         }
-
         this.animationFrameId = requestAnimationFrame(() => this.draw());
         this.drawSoundIcon();
     }
@@ -214,6 +207,10 @@ class World {
         const y = padding;
         this.soundIconBounds = { x, y, width: iconSize, height: iconSize };
         this.ctx.drawImage(this.soundIcon, x, y, iconSize, iconSize);
+    }
+
+    drawFullscreenIcon() {
+
     }
 
     addObjectsToMap(objects) {
@@ -266,6 +263,7 @@ class World {
             this.endScreen = new Endscreen(Endscreen.IMAGE_GAMEOVER);
             this.endScreen.show();
             this.gameIsOver = true;
+            this.stopEnemies();
             this.showEndscreenButtons();
             this.audioManager.sounds.game.pause();
             if (!this.audioManager.isMuted) {
@@ -275,6 +273,7 @@ class World {
             this.endScreen = new Endscreen(Endscreen.IMAGE_WIN);
             this.endScreen.show();
             this.gameIsOver = true;
+            this.stopEnemies();
             this.showEndscreenButtons();
             this.audioManager.sounds.game.pause();
             if (!this.audioManager.isMuted) {
@@ -336,7 +335,6 @@ class World {
         const clickX = event.clientX - rect.left;
         const clickY = event.clientY - rect.top;
         const bounds = this.soundIconBounds;
-
         if (
             bounds &&
             clickX >= bounds.x &&
@@ -346,6 +344,13 @@ class World {
         ) {
             this.toggleSound();
         }
+    }
+
+    stopEnemies() {
+        this.level.enemies.forEach(enemy => {
+            enemy.speed = 0;
+        });
+        this.endboss.speed = 0;  // Falls der Endboss auch stoppen soll
     }
 
 }
