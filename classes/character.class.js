@@ -126,6 +126,7 @@ class Character extends MoveableObject {
                 this.playAnimation(this.IMAGES_WALKING_CHARACTER);
             } else if (this.isSleeping) {
                 this.playAnimation(this.IMAGES_LONG_IDLE_CHARACTER);
+                this.startSnoreSound();
             } else {
                 this.playAnimation(this.IMAGES_IDLE_CHARACTER);
             }
@@ -136,6 +137,7 @@ class Character extends MoveableObject {
                 this.lastIdleTime = new Date().getTime();
                 this.isSleeping = false;
                 this.lastX = this.x;
+                this.stopSnoreSound();
             } else {
                 let now = new Date().getTime();
                 let sleepingTime = now - this.lastIdleTime;
@@ -149,19 +151,35 @@ class Character extends MoveableObject {
 
     startWalkSound() {
         if (this.audioManager.isMuted) return;
-    
+
         const sound = this.audioManager.sounds['walk'];
         if (sound && sound.paused) {
             sound.loop = true;
             sound.play();
         }
     }
-    
+
     stopWalkSound() {
         const sound = this.audioManager.sounds['walk'];
         if (sound && !sound.paused) {
             sound.pause();
             sound.currentTime = 0;
+        }
+    }
+
+    startSnoreSound() {
+        const snoreSound = this.audioManager.sounds['snore'];
+        if (snoreSound && snoreSound.paused && !this.audioManager.isMuted) {
+            snoreSound.currentTime = 0;
+            snoreSound.play();
+        }
+    }
+
+    stopSnoreSound() {
+        const snoreSound = this.audioManager.sounds['snore'];
+        if (snoreSound && !snoreSound.paused) {
+            snoreSound.pause();
+            snoreSound.currentTime = 0;
         }
     }
 }

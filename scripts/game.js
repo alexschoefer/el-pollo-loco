@@ -6,10 +6,10 @@ let gameIsOver = false;
 let currentLevel = null;
 let audioManager;
 
-function initMenuSound() {
-    audioManager = new AudioManager();
-    audioManager.play('menu');
-}
+// function initMenuSound() {
+//     audioManager = new AudioManager();
+//     audioManager.play('menu');
+// }
 
 function startGameLevelBeginner() {
     currentLevel = 'beginner';
@@ -127,4 +127,20 @@ function restartGame() {
     } else {
         world = new World(canvasRef, keyboard, createLevelExpert());
     }
+}
+
+function openLegalNotice() {
+    let startgameRef = document.getElementById('startgame');
+    let legalNoticeRef = document.getElementById('legal-notice');
+    startgameRef.classList.add('d_none');
+    legalNoticeRef.classList.remove('d_none');
+    legalNoticeRef.innerHTML = "";
+    legalNoticeRef.innerHTML += showLegalNoticeTemplate();
+}
+
+function closeLegalNotice() {
+    let startgameRef = document.getElementById('startgame');
+    let legalNoticeRef = document.getElementById('legal-notice');
+    startgameRef.classList.remove('d_none');
+    legalNoticeRef.classList.add('d_none');
 }

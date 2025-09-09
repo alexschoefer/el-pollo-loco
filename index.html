@@ -8,6 +8,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./styles/fonts.css">
+  <link rel="stylesheet" href="./styles/legal-notice.css">
   <link rel="shortcut icon" href="./assets/favicon/sombrero-26735_1280.png" type="image/x-icon">
   <!-- Scripts -->
   <script src="./classes/drawable-object.class.js"></script>
@@ -33,12 +34,14 @@
   <script src="./levels/level1.js"></script>
   <script src="./levels/level2.js"></script>
   <script src="./scripts/game.js"></script>
+  <script src="./scripts/template.js"></script>
 </head>
+
 <body onload="initMenuSound()">
   <div class="game-wrapper">
     <div class="main-background">
       <div class="legal-notice-btn-container">
-        <button class="btn-legal-notice">Legal notice</button>
+        <button class="btn-legal-notice" onclick="openLegalNotice()">Legal notice</button>
       </div>
       <main>
         <h1>El pollo loco</h1>
@@ -54,6 +57,9 @@
             </div>
           </div>
         </div>
+
+        <!-- Legal-Notice -->
+        <div id="legal-notice" class="legal-notice-wrapper d_none"></div>
 
         <!-- Controll-Screen -->
         <div id="control-overlay" class="control-content-wrapper d_none">
@@ -99,7 +105,8 @@
             </h2>
             <div class="game-description-container">
               <p class="game-description">
-                <span class="highlight-words">¡Hola, amigo!</span> You are <span class="highlight-words">Pepe</span>, a brave hero in search of coins and adventures!
+                <span class="highlight-words">¡Hola, amigo!</span> You are <span class="highlight-words">Pepe</span>, a
+                brave hero in search of coins and adventures!
                 Accompany him through the hot desert, <span class="highlight-words">collect bottles</span> and <span
                   class="highlight-words">coins</span> and <span class="highlight-words">face wild chickens.</span> <br>
                 Defeat enemies by jumping or throwing bottles. <br>
@@ -136,3 +143,4 @@
 </body>
 
 </html>
+

@@ -156,6 +156,19 @@ canvas {
   padding-right: 30px;
 }
 
+.legal-notice-screen {
+  width: 780px;
+  height: 480px;
+  border-radius: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-direction: column;
+  background-color: white;
+  border: 3px solid;
+  padding-right: 30px;
+}
+
 .control-button {
   display: flex;
   justify-content: space-between;

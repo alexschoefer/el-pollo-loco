@@ -74,6 +74,7 @@ class World {
                     if (enemy instanceof Chicken || enemy instanceof SmallChicken) {
                         enemy.isDead = true;
                         enemy.speed = 0;
+                        this.audioManager.play('chickenHurt');
                         this.removeDeadChickenFromMap(enemy);
                     }
                 } else {
@@ -102,6 +103,7 @@ class World {
                 if (enemy.isColliding(bottle) && !enemy.isDead) {
                     enemy.isDead = true;
                     enemy.speed = 0;
+                    this.audioManager.play('chickenHurt');
                     this.removeDeadChickenFromMap(enemy);
                     bottle.hasSplashed = true;
                 }
@@ -113,6 +115,7 @@ class World {
         if (this.endboss.isColliding(this.character)) {
             this.character.hit();
             this.audioManager.play('hurt');
+            this.audioManager.play('endbossAttack');
             this.statusbarHealth.setPercentage(this.character.energy);
             this.endboss.attackEndboss();
             this.endboss.moveLeftEndboss();
@@ -136,6 +139,7 @@ class World {
         this.throwableObjects.forEach((bottle) => {
             if (this.endboss.isColliding(bottle)) {
                 this.endboss.hit();
+                this.audioManager.play('chickenHurt');
                 bottle.hasSplashed = true;
                 this.statusbarEndboss.setPercentage(this.endboss.energy);
             }
@@ -200,23 +204,15 @@ class World {
 
         this.animationFrameId = requestAnimationFrame(() => this.draw());
         this.drawSoundIcon();
-        // //DrawImage wird immer wieder aufgerufen
-        // let self = this;
-        // requestAnimationFrame(function () {
-        //     self.draw();
-        // });
     }
 
     drawSoundIcon() {
         if (!this.soundIconLoaded) return;
         const iconSize = 40;
         const padding = 60;
-
         const x = this.canvas.width - iconSize - padding;
         const y = padding;
-
         this.soundIconBounds = { x, y, width: iconSize, height: iconSize };
-
         this.ctx.drawImage(this.soundIcon, x, y, iconSize, iconSize);
     }
 
