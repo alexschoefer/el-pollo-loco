@@ -10,10 +10,14 @@ class AudioManager {
             game: new Audio('assets/audio/game-background-sound.mp3'),
             gameover: new Audio('assets/audio/character-lose.wav'),
             win: new Audio('assets/audio/character-win.mp3'),
-            menu: new Audio('assets/audio/game-menu.mp3')
+            menu: new Audio('assets/audio/game-menu.mp3'),
+            chickenHurt: new Audio('assets/audio/chicken-hurt.wav'),
+            endbossAttack: new Audio('assets/audio/chicken-attack.wav'),
+            snore: new Audio('assets/audio/character-snore.wav')
         };
         this.sounds.game.loop = true;
-        this.sounds.menu.loop = true;
+        this.sounds.snore.loop = true;
+        // this.sounds.menu.loop = true;
         this.sounds.game.volume = 0.2; 
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
         this.muteAll(this.isMuted);
@@ -35,6 +39,13 @@ class AudioManager {
                 sound.pause();
                 sound.currentTime = 0; // zurückspulen
             }
+        }
+    }
+    
+    stopAllSounds() {
+        for (const sound of Object.values(this.sounds)) {
+            sound.pause();
+            sound.currentTime = 0;
         }
     }
 }

@@ -5,12 +5,11 @@ function createLevelBeginner() {
     const maxCoins = coins.length;
     const maxBottles = bottles.length;
 
-    // Erzeuge neue Gegner (hier z.B. keine, falls du willst kannst du welche hinzufügen)
-    const enemies = [
-        // new Chicken(),
-        // new Chicken(),
-        // new SmallChicken()
-    ];
+    const chickens = generateEnemies(Chicken, 3, 500, 400);
+
+    const smallChickens = generateEnemies(SmallChicken, 3, 550, 300);
+
+    const enemies = [...chickens, ...smallChickens];
 
     // Wolken
     const clouds = [
