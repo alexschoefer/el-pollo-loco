@@ -1,9 +1,9 @@
 html,
 body {
-  overflow-x: hidden;
-  overflow-y: auto;
   margin: 0;
   padding: 0;
+  height: 100%;
+  overflow: hidden;
   font-family: 'rye', Arial, Helvetica, sans-serif;
 }
 
@@ -19,10 +19,12 @@ main {
 }
 
 canvas {
-    background-color: black;
-    border: 3px solid;
-    border-radius: 20px;
-    opacity: 1;
+  background-color: black;
+  border: 3px solid;
+  border-radius: 20px;
+  opacity: 1;
+  max-width: 100%;
+  height: auto;
 }
 
 .game-content-wrapper {

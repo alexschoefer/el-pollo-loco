@@ -41,4 +41,11 @@ class AudioManager {
             }
         }
     }
+    
+    stopAllSounds() {
+        for (const sound of Object.values(this.sounds)) {
+            sound.pause();
+            sound.currentTime = 0;
+        }
+    }
 }
