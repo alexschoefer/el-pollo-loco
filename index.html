@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./styles/fonts.css">
   <link rel="stylesheet" href="./styles/legal-notice.css">
+  <link rel="stylesheet" href="./styles/media-queries.css">
   <link rel="shortcut icon" href="./assets/favicon/sombrero-26735_1280.png" type="image/x-icon">
   <!-- Scripts -->
   <script src="./classes/drawable-object.class.js"></script>
@@ -38,6 +39,7 @@
 </head>
 
 <body onload="initMenuSound()">
+  <!-- Game Wrapper -->
   <div class="game-wrapper">
     <div class="main-background">
       <div class="legal-notice-btn-container">
@@ -45,6 +47,7 @@
       </div>
       <main>
         <h1>El pollo loco</h1>
+
         <!-- Canvas -->
         <canvas id="canvas" height="480px" width="720px" class="d_none"></canvas>
 
@@ -58,16 +61,16 @@
           </div>
         </div>
 
-        <!-- Legal-Notice -->
+        <!-- Legal Notice -->
         <div id="legal-notice" class="legal-notice-wrapper d_none"></div>
 
-        <!-- Controll-Screen -->
+        <!-- Control Screen -->
         <div id="control-overlay" class="control-content-wrapper d_none"></div>
 
-        <!-- Game - Story -->
+        <!-- Game Level Intro -->
         <div id="game-level-overlay" class="gamelevel-content-wrapper d_none"></div>
 
-        <!-- Restart-Buttons -->
+        <!-- Endscreen Buttons -->
         <div id="btn-endscreen-container" class="btn-endscreen-container d_none">
           <button class="btn-restart-game" onclick="restartGame()">Restart game</button>
           <button class="btn-back-to-menu" onclick="goBackToMainMenu()">Back to menu</button>
@@ -76,6 +79,10 @@
     </div>
   </div>
 
+  <!-- ROTATE MESSAGE -->
+  <div id="rotate-message">
+    🔄 Please turn your device to landscape to play the game.
+  </div>
 </body>
 
 </html>

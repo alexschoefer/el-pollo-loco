@@ -22,35 +22,26 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.level = level;
-    
         this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
-    
         this.maxCoins = this.level.coins.length;
         this.maxBottles = this.level.bottles.length;
-    
         this.audioManager = new AudioManager();
         this.character = new Character(this.audioManager);
         this.endboss = this.level.endboss;
-    
         this.statusbarHealth = new StatusbarHealth();
         this.statusbarCoins = new StatusbarCoins();
         this.statusbarBottles = new StatusbarBottles();
         this.statusbarEndboss = new StatusbarEndboss();
-    
         this.throwableObjects = [];
         this.bottleCollection = [];
         this.coinsCollection = [];
         this.endScreen = null;
         this.gameIsOver = false;
-    
         this.camera_x = 0;
         this.animationFrameId = null;
-    
         this.setWorld();
         this.draw();
         this.run();
-    
-        // ⬇️ Hintergrundmusik starten
         if (!this.audioManager.isMuted) {
             this.audioManager.sounds.game.play().catch((e) => {
                 console.warn('Autoplay blockiert den Gamesound:', e);

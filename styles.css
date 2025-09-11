@@ -19,13 +19,14 @@ main {
 }
 
 canvas {
-  background-color: black;
+  max-width: 100%;
+  height: auto; /* Höhe proportional zur Breite */
+  display: block;
   border: 3px solid;
   border-radius: 20px;
-  opacity: 1;
-  max-width: 100%;
-  height: auto;
+  background-color: black;
 }
+
 
 .game-content-wrapper {
   width: 780px;
@@ -423,4 +424,28 @@ p, h2 {
 
 .btn-fullscreen:hover img {
   transform: scale(1.1);
+}
+
+#rotate-message {
+  display: none; /* Standardmäßig unsichtbar */
+  
+  position: fixed;   /* Fixiert an der Viewport */
+  top: 0;
+  left: 0;
+  width: 100vw;      /* Volle Breite */
+  height: 100vh;     /* Volle Höhe */
+  
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  font-family: 'rye', Arial, Helvetica, sans-serif;
+  font-size: 2rem;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  
+  z-index: 9999; /* Ganz oben */
 }
