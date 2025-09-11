@@ -15,12 +15,12 @@ class MoveableObject extends DrawableObject {
     }
 
     isAboveGround() {
-        if(this instanceof ThrowableObject) {
+        if (this instanceof ThrowableObject) {
             return true;
         } else {
             return this.y < 135;
         }
-        
+
     }
 
     jump() {
@@ -47,8 +47,8 @@ class MoveableObject extends DrawableObject {
     isColliding(mo) {
         return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
             this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
-            this.x + this.offset.left < mo.x + mo.width - this.offset.right &&
-            this.y + this.offset.top < mo.y + mo.height - mo.offset.right;
+            this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+            this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;  // <- gefixt!
     }
 
     hit() {
@@ -68,5 +68,21 @@ class MoveableObject extends DrawableObject {
         let timepassed = new Date().getTime() - this.lastHit; // Differenz in ms
         timepassed = timepassed / 1000; //Differenz in s
         return timepassed < 1;
+    }
+
+
+    isCharacterFallingOnEnemy(mo) {
+        if (mo.isDead) return false;
+        const isFalling = this.speedY < 0;
+        if (!isFalling) return false;
+        const hitboxPadding = 10;
+        const feet = this.y + this.height;
+        const verticalOverlap =
+            feet > mo.y &&
+            feet < mo.y + mo.height + hitboxPadding;
+        const horizontalOverlap =
+            this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+            this.x + this.offset.left < mo.x + mo.width - mo.offset.right;
+        return verticalOverlap && horizontalOverlap;
     }
 }

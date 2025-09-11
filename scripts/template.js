@@ -120,9 +120,5 @@ function showGameLevelTemplate() {
             </div>
           </div>
         </div>
-        <div id="btn-endscreen-container" class="btn-endscreen-container d_none">
-          <button class="btn-restart-game" onclick="restartGame()">Restart game</button>
-          <button class="btn-back-to-menu" onclick="goBackToMainMenu()">Back to menu</button>
-        </div>
     `
 }

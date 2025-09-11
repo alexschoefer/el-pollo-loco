@@ -127,27 +127,18 @@ class World {
 
     //prüft eine Collision mit einem anderen Objekt Chicken und reduziert die Energie des Characters
     checkCollisionsChickens() {
-        this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy) && !enemy.isDead) {
-                // Nur wenn Charakter nach unten fällt (also vom Gegner runter springt)
-                if (this.character.speedY > 0 && (this.character.y + this.character.height) < (enemy.y + enemy.height * 0.75)) {
-
-
-                    console.log("Treffer von oben!");
-                    if (enemy instanceof Chicken || enemy instanceof SmallChicken) {
-                        enemy.isDead = true;
-                        enemy.speed = 0;
-                        this.audioManager.play('chickenHurt');
-                        this.removeDeadChickenFromMap(enemy);
-
-                        // Charakter bekommt einen kleinen Bounce-Up Effekt
-                        this.character.speedY = -15; // Beispielwert zum Hochspringen nach Treffer
-                    }
-                } else {
-                    this.character.hit();
-                    this.statusbarHealth.setPercentage(this.character.energy);
-                    this.audioManager.play('hurt');
-                }
+        this.level.enemies.forEach(enemy => {
+            const feet = this.character.y + this.character.height;
+            if (this.character.isCharacterFallingOnEnemy(enemy) && !enemy.isDead) {
+                enemy.energy = 0; 
+                enemy.isDead = true;
+                enemy.speed = 0;
+                this.audioManager.play('chickenHurt');
+                this.removeDeadChickenFromMap(enemy);
+            } else if (this.character.isColliding(enemy) && !enemy.isDead) {
+                this.character.hit();
+                this.statusbarHealth.setPercentage(this.character.energy);
+                this.audioManager.play('hurt');
             }
         });
     }
