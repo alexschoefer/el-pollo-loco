@@ -57,10 +57,11 @@ window.addEventListener('keyup', (event) => {
 
 
 function showControlOverview() {
-    let startgameRef = document.getElementById('startgame');
-    let controlOverviewRef = document.getElementById('control-overlay');
-    startgameRef.classList.add('d_none');
-    controlOverviewRef.classList.remove('d_none');
+    document.getElementById('startgame').classList.add('d_none');
+
+    const controlOverlay = document.getElementById('control-overlay');
+    controlOverlay.classList.remove('d_none');
+    controlOverlay.innerHTML = showControlTemplate();
 }
 
 function closeControlOverview() {
@@ -71,10 +72,14 @@ function closeControlOverview() {
 }
 
 function chooseGameLevel() {
-    let startgameRef = document.getElementById('startgame');
-    let gameLevelOverviewRef = document.getElementById('game-level-overlay');
-    startgameRef.classList.add('d_none');
-    gameLevelOverviewRef.classList.remove('d_none');
+    // Alle anderen Overlays schließen
+    document.getElementById('legal-notice').innerHTML = '';
+    document.getElementById('control-overlay').innerHTML = '';
+    document.getElementById('startgame').classList.add('d_none');
+
+    const gameLevelOverlay = document.getElementById('game-level-overlay');
+    gameLevelOverlay.classList.remove('d_none');
+    gameLevelOverlay.innerHTML = showGameLevelTemplate();
 }
 
 function closeGameLevelOverlay() {
@@ -103,24 +108,16 @@ function saveSelectedLevelToLocalStorage(currentLevel) {
 
 function restartGame() {
     if (world) {
-        // Stoppe alte World Animationen und Intervalle
         if (world.animationFrameId) cancelAnimationFrame(world.animationFrameId);
         if (world.intervalId) clearInterval(world.intervalId);
     }
-
-    // Buttons & Endscreen verstecken
     const btnContainer = document.getElementById('btn-endscreen-container');
     btnContainer.classList.add('d_none');
-
-    // Canvas löschen
     let canvasRef = document.getElementById('canvas');
     let ctx = canvasRef.getContext('2d');
     ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-
-    // Neue Tastatur erzeugen
     keyboard = new GameKeyBoard();
 
-    // Neues Spiel starten basierend auf gespeichertem Level
     let selectedLevel = localStorage.getItem('selectedLevel');
     if (selectedLevel === 'beginner') {
         world = new World(canvasRef, keyboard, createLevelBeginner());
@@ -132,8 +129,14 @@ function restartGame() {
 function openLegalNotice() {
     let startgameRef = document.getElementById('startgame');
     let legalNoticeRef = document.getElementById('legal-notice');
+    let controlOverviewRef = document.getElementById('control-overlay');
+    controlOverviewRef.innerHTML = "";
+    let gameLevelOverviewRef = document.getElementById('game-level-overlay');
+    gameLevelOverviewRef.innerHTML = "";
     startgameRef.classList.add('d_none');
     legalNoticeRef.classList.remove('d_none');
+    const canvasRef = document.getElementById('canvas');
+    canvasRef.classList.add('d_none');
     legalNoticeRef.innerHTML = "";
     legalNoticeRef.innerHTML += showLegalNoticeTemplate();
 }
@@ -143,12 +146,12 @@ function closeLegalNotice() {
     let legalNoticeRef = document.getElementById('legal-notice');
     startgameRef.classList.remove('d_none');
     legalNoticeRef.classList.add('d_none');
+    legalNoticeRef.innerHTML = "";
 }
 
 
 function generateEnemies(Type, count, startX, spacing) {
     const enemies = [];
-
     for (let i = 0; i < count; i++) {
         const enemy = new Type();
         enemy.x = startX + i * spacing;

@@ -48,3 +48,81 @@ function showLegalNoticeTemplate() {
             </div>
     `
 }
+
+function showControlTemplate() {
+    return `
+        <div class="controlscreen">
+            <h2>Control overview</h2>
+            <div class="control-slogan">
+                <p>For playing character Pepe you only need your keyboard or the mobile keys.</p>
+            </div>
+            <div class="control-container-wrapper">
+                <div class="control-container">
+                    <div class="control-button">
+                        <span class="key">←</span>
+                        <span class="key-description">Move left</span>
+                    </div>
+                    <div class="control-button">
+                        <span class="key">→</span>
+                        <span class="key-description">Move right</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="control-button">
+                        <span class="key">SPACE</span>
+                        <span class="key-description">Jump</span>
+                    </div>
+                    <div class="control-button">
+                        <span class="key">D</span>
+                        <span class="key-description">Throw bottles</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button class="btn-close-control-overview" onclick="closeControlOverview()">Close control overview</button>
+            </div>
+        </div>
+    `;
+}
+
+function showGameLevelTemplate() {
+    return `
+         <div class="game-introduction-container">
+            <h2>
+              El Pollo Loco – The desert adventure begins!
+            </h2>
+            <div class="game-description-container">
+              <p class="game-description">
+                <span class="highlight-words">¡Hola, amigo!</span> You are <span class="highlight-words">Pepe</span>, a
+                brave hero in search of coins and adventures!
+                Accompany him through the hot desert, <span class="highlight-words">collect bottles</span> and <span
+                  class="highlight-words">coins</span> and <span class="highlight-words">face wild chickens.</span> <br>
+                Defeat enemies by jumping or throwing bottles. <br>
+                <span class="highlight-words">But be careful:</span> Only bottles can defeat the final boss at the end.
+                <br> <span class="highlight-words-endboss">The Giant
+                  Chicken</span>
+              </p>
+              <p> Are you up to the challenge? <span class="highlight-words">Choose your level.</span></p>
+            </div>
+            <div class="btn-level-container">
+              <div class="btn-level-beginner-container">
+                <button class="btn-level" onclick="startGameLevelBeginner()">Beginner</button>
+                <p>Easier and fewer enemies, lots of bottles and coins to collect.</p>
+              </div>
+              <div class="btn-level-expert-container">
+                <button class="btn-level" onclick="startGameLevelExpert()">Expert</button>
+                <p>More difficult and more enemies, fewer bottles and coins to collect.</p>
+              </div>
+            </div>
+            <div>
+              <button class="btn-close-gamelevel-overview" onclick="closeGameLevelOverlay()">Back to
+                Startscreen</button>
+            </div>
+          </div>
+        </div>
+        <div id="btn-endscreen-container" class="btn-endscreen-container d_none">
+          <button class="btn-restart-game" onclick="restartGame()">Restart game</button>
+          <button class="btn-back-to-menu" onclick="goBackToMainMenu()">Back to menu</button>
+        </div>
+    `
+}
