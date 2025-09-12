@@ -11,16 +11,9 @@ h1 {
   font-size: 48px;
 }
 
-main {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    z-index: 2;
-}
-
 canvas {
   max-width: 100%;
-  height: auto; /* Höhe proportional zur Breite */
+  height: auto; 
   display: block;
   border: 3px solid;
   border-radius: 20px;
@@ -56,13 +49,14 @@ canvas {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
   min-height: 100vh;
   background-image: url('assets/img-main-background/cactus-9085905_1920.jpg');
   background-position: center;
 }
 
 
-.game-wrapper {
+/* .game-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -70,7 +64,7 @@ canvas {
   height: 100%;
   background-color: rgba(0,0,0,0.3);
   z-index: 1;
-}
+} */
 
 .d_none {
   display: none !important;
@@ -427,25 +421,20 @@ p, h2 {
 }
 
 #rotate-message {
-  display: none; /* Standardmäßig unsichtbar */
-  
-  position: fixed;   /* Fixiert an der Viewport */
+  display: none; 
+  position: fixed; 
   top: 0;
   left: 0;
-  width: 100vw;      /* Volle Breite */
-  height: 100vh;     /* Volle Höhe */
-  
+  width: 100vw; 
+  height: 100vh;    
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
   font-family: 'rye', Arial, Helvetica, sans-serif;
   font-size: 2rem;
-  
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 20px;
   box-sizing: border-box;
-  
-  z-index: 9999; /* Ganz oben */
 }

@@ -6,6 +6,11 @@ let gameIsOver = false;
 let currentLevel = null;
 let audioManager;
 
+function initMenu() {
+    initMenuSound();
+    initTouchButtons();
+}
+
 function initMenuSound() {
     audioManager = new AudioManager();
     audioManager.play('menu');
@@ -54,6 +59,54 @@ window.addEventListener('keyup', (event) => {
     if (event.code === 'Space') keyboard.SPACE = false;
     if (event.code === 'KeyD') keyboard.D = false;
 });
+
+function initTouchButtons() {
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+    const btnJump = document.getElementById('btn-jump');
+    const btnThrow = document.getElementById('btn-throw');
+
+    if (!btnLeft || !btnRight || !btnJump || !btnThrow) return;
+
+    // Bewegung
+    btnLeft.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = true;
+    });
+    btnLeft.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = false;
+    });
+
+    btnRight.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = true;
+    });
+    btnRight.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = false;
+    });
+
+    // Springen
+    btnJump.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = true;
+    });
+    btnJump.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = false;
+    });
+
+    // Werfen
+    btnThrow.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.D = true;
+    });
+    btnThrow.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.D = false;
+    });
+}
 
 
 function showControlOverview() {
@@ -160,3 +213,4 @@ function generateEnemies(Type, count, startX, spacing) {
 
     return enemies;
 }
+

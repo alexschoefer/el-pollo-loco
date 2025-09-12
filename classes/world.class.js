@@ -47,7 +47,7 @@ class World {
                 console.warn('Autoplay blockiert den Gamesound:', e);
             });
         }
-    
+
         // ⬇️ SOUND ICON vorbereiten
         this.soundIcon = new Image();
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
@@ -58,7 +58,7 @@ class World {
         this.soundIcon.onload = () => {
             this.soundIconLoaded = true;
         };
-    
+
         // ⬇️ FULLSCREEN ICON vorbereiten
         this.fullscreenIcon = new Image();
         this.isFullscreen = JSON.parse(localStorage.getItem('isFullscreen')) || false;
@@ -69,25 +69,25 @@ class World {
         this.fullscreenIcon.onload = () => {
             this.fullscreenIconLoaded = true;
         };
-    
+
         // ⬇️ WINDOW RESIZE EVENT (nur im Vollbild)
         window.addEventListener('resize', () => {
             if (document.fullscreenElement) {
                 this.resizeCanvas();
             }
         });
-    
+
         // ⬇️ FULLSCREEN CHANGE EVENT (automatisch skalieren & Icon ändern)
         document.addEventListener('fullscreenchange', () => {
             const isFullscreen = !!document.fullscreenElement;
-    
+
             if (isFullscreen) {
                 this.resizeCanvas(); // automatisch anpassen
             } else {
                 this.canvas.width = 720;
                 this.canvas.height = 480;
             }
-    
+
             this.isFullscreen = isFullscreen;
             this.fullscreenIcon.src = this.isFullscreen
                 ? "assets/img-main-background/fullscreen-minimize.png"
@@ -116,12 +116,11 @@ class World {
         }, 200);
     }
 
-    //prüft eine Collision mit einem anderen Objekt Chicken und reduziert die Energie des Characters
     checkCollisionsChickens() {
         this.level.enemies.forEach(enemy => {
             const feet = this.character.y + this.character.height;
             if (this.character.isCharacterFallingOnEnemy(enemy) && !enemy.isDead) {
-                enemy.energy = 0; 
+                enemy.energy = 0;
                 enemy.isDead = true;
                 enemy.speed = 0;
                 this.audioManager.play('chickenHurt');
@@ -219,9 +218,7 @@ class World {
     }
 
     draw() {
-        //clearRect löscht das aktuelle img in der Canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        //verschiebt die Kamera nach links
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
         this.ctx.translate(-this.camera_x, 0);
@@ -230,7 +227,6 @@ class World {
         this.addObjectsToMap([this.statusbarBottles]);
         this.addObjectsToMap([this.statusbarEndboss]);
         this.ctx.translate(this.camera_x, 0);
-        //fügt die Elemente der Welt hinzu
         this.addToMap(this.character, this.height);
         this.addToMap(this.endboss, this.height);
         this.addObjectsToMap(this.level.enemies);
@@ -238,7 +234,6 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.bottles);
         this.addObjectsToMap(this.level.coins);
-        //verschiebt die Kamera nach rechts
         this.ctx.translate(-this.camera_x, 0);
         if (this.endScreen && this.endScreen.visible) {
             this.endScreen.draw(this.ctx);
@@ -318,7 +313,7 @@ class World {
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            this.audioManager.stopAllSounds(); // hier alle Sounds stoppen
+            this.audioManager.stopAllSounds();
             if (!this.audioManager.isMuted) {
                 this.audioManager.play('gameover');
             }
@@ -328,7 +323,7 @@ class World {
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            this.audioManager.stopAllSounds(); // hier alle Sounds stoppen
+            this.audioManager.stopAllSounds();
             if (!this.audioManager.isMuted) {
                 this.audioManager.play('win');
             }
@@ -400,8 +395,6 @@ class World {
         const rect = this.canvas.getBoundingClientRect();
         const clickX = event.clientX - rect.left;
         const clickY = event.clientY - rect.top;
-    
-        // Sound-Icon
         const soundBounds = this.soundIconBounds;
         if (
             soundBounds &&
@@ -413,8 +406,6 @@ class World {
             this.toggleSound();
             return;
         }
-    
-        // Fullscreen-Icon
         const fullscreenBounds = this.fullscreenIconBounds;
         if (
             fullscreenBounds &&
@@ -432,7 +423,7 @@ class World {
         this.level.enemies.forEach(enemy => {
             enemy.speed = 0;
         });
-        this.endboss.speed = 0;  // Falls der Endboss auch stoppen soll
+        this.endboss.speed = 0;
     }
 
     resizeCanvas() {

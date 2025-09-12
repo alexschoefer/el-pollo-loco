@@ -1,0 +1,44 @@
+/* Gesamter Button-Container */
+.mobile-btn-container {
+    position: absolute;
+    bottom: 20px;
+    width: 720px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none; /* verhindert versehentliche Interaktionen mit leerem Raum */
+    z-index: 1000;
+  }
+  
+  /* Linke Steuerung (Bewegung) */
+  .mobile-left-controls {
+    display: flex;
+    gap: 20px;
+    pointer-events: all;
+  }
+  
+  /* Rechte Steuerung (Aktion) */
+  .mobile-right-controls {
+    display: flex;
+    gap: 20px;
+    pointer-events: all;
+  }
+  
+  /* Allgemeine Button-Styles */
+  .mobile-btn-container button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(203, 175, 17, 0.8); /* halbtransparentes Gelb */
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .mobile-btn-container button img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    pointer-events: none; /* Bild klickt nicht, Button bleibt klickbar */
+  }
