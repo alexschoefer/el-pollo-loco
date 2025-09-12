@@ -1,30 +1,40 @@
 @media only screen and (max-width: 720px) {
-    canvas {
-        width: 100%;
-    }
+  canvas {
+    width: 100%;
+  }
 }
 
 @media only screen and (max-height: 480px) {
-    canvas {
-        height: 100vh;
-    }
+  canvas {
+    height: 100vh;
+  }
 }
 
 @media (orientation: landscape) {
-    .game-content-wrapper {
-      display: flex;
-    }
-    #rotate-message {
-      display: none;
-    }
+  .game-content-wrapper {
+    display: flex;
+  }
+  #rotate-message {
+    display: none;
+  }
+}
+
+@media (orientation: portrait) {
+  .game-content-wrapper {
+    display: none;
+  }
+  #rotate-message {
+    display: flex;
   }
 
-  /* Hochformat: Spiel verstecken, Hinweis anzeigen */
-  @media (orientation: portrait) {
-    .game-content-wrapper {
-      display: none;
-    }
-    #rotate-message {
-      display: flex;
-    }
+  #canvas {
+    display: none !important;
   }
+}
+
+@media (max-width: 1040px) {
+  .mobile-btn-container {
+    display: flex;
+    pointer-events: auto;
+  }
+}

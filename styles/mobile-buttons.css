@@ -1,13 +1,16 @@
 /* Gesamter Button-Container */
 .mobile-btn-container {
-    position: absolute;
+    position: fixed; 
     bottom: 20px;
-    width: 720px;
+    width: 100%;
+    max-width: 720px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: space-between;
     padding: 0 20px;
-    pointer-events: none; /* verhindert versehentliche Interaktionen mit leerem Raum */
-    z-index: 1000;
+    pointer-events: none; 
+    z-index: 999;
   }
   
   /* Linke Steuerung (Bewegung) */

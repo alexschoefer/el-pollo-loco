@@ -214,3 +214,17 @@ function generateEnemies(Type, count, startX, spacing) {
     return enemies;
 }
 
+function resizeCanvas() {
+    const canvas = document.getElementById('canvas');
+    const ratio = 720 / 480; // Original-Seitenverhältnis
+  
+    const width = Math.min(window.innerWidth, 720);
+    const height = width / ratio;
+  
+    canvas.width = width;
+    canvas.height = height;
+  }
+  
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('load', resizeCanvas);
+  
