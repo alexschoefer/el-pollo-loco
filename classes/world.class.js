@@ -212,8 +212,8 @@ class World {
 
     /**
      * Removes an item (bottle or coin) from map
-     * @param {*} arrayName 
-     * @param {*} item 
+     * @param {*} arrayName - coin or bottle
+     * @param {*} item - coin or bottle
      */
     removeFromMap(arrayName, item) {
         this.level[arrayName] = this.level[arrayName].filter(e => e !== item);
@@ -221,7 +221,7 @@ class World {
 
     /**
      * Removes a dead enemy from map
-     * @param {*} enemy 
+     * @param {*} enemy - Smallchicken or chicken
      */
     removeDeadChickenFromMap(enemy) {
         setTimeout(() => {
