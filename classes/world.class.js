@@ -338,6 +338,7 @@ class World {
             this.stopEnemies();
             this.showEndscreenButtons();
             this.audioManager.stopAllSounds();
+            document.getElementById('mobile-buttons')?.classList.add('d_none');
             if (!this.audioManager.isMuted) {
                 this.audioManager.play('gameover');
             }
@@ -348,6 +349,7 @@ class World {
             this.stopEnemies();
             this.showEndscreenButtons();
             this.audioManager.stopAllSounds();
+            document.getElementById('mobile-buttons')?.classList.add('d_none');
             if (!this.audioManager.isMuted) {
                 this.audioManager.play('win');
             }

@@ -23,25 +23,29 @@ function startGameLevelBeginner() {
     const canvasRef = document.getElementById('canvas');
     canvasRef.classList.remove('d_none');
     canvas = canvasRef;
-    // Stoppe Menümusik
+
     audioManager.sounds.menu.pause();
-    // Level starten
+
     let levelInstance = createLevelBeginner();
     world = new World(canvas, keyboard, levelInstance);
+
+    showMobileButtonsIfNeeded(); // 👈 HIER EINBLENDEN
 }
 
 function startGameLevelExpert() {
     currentLevel = 'expert';
     saveSelectedLevelToLocalStorage(currentLevel);
-    let gameLevelOverviewRef = document.getElementById('game-level-overlay');
-    gameLevelOverviewRef.classList.add('d_none');
-    let canvasRef = document.getElementById('canvas');
+    document.getElementById('game-level-overlay').classList.add('d_none');
+    const canvasRef = document.getElementById('canvas');
     canvasRef.classList.remove('d_none');
     canvas = canvasRef;
-    // Stoppe Menümusik
+
     audioManager.sounds.menu.pause();
+
     let levelInstance = createLevelExpert();
     world = new World(canvas, keyboard, levelInstance);
+
+    showMobileButtonsIfNeeded(); // 👈 HIER EINBLENDEN
 }
 
 window.addEventListener('keydown', (event) => {
@@ -174,8 +178,10 @@ function restartGame() {
     let selectedLevel = localStorage.getItem('selectedLevel');
     if (selectedLevel === 'beginner') {
         world = new World(canvasRef, keyboard, createLevelBeginner());
+        showMobileButtonsIfNeeded();
     } else {
         world = new World(canvasRef, keyboard, createLevelExpert());
+        showMobileButtonsIfNeeded();
     }
 }
 
@@ -228,3 +234,11 @@ function resizeCanvas() {
   window.addEventListener('resize', resizeCanvas);
   window.addEventListener('load', resizeCanvas);
   
+
+  function showMobileButtonsIfNeeded() {
+    const isMobile = window.innerWidth <= 1180;
+    const mobileButtons = document.getElementById('mobile-buttons');
+    if (isMobile && mobileButtons.classList.contains('d_none')) {
+        mobileButtons.classList.remove('d_none');
+    }
+}
