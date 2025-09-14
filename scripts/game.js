@@ -6,6 +6,11 @@ let gameIsOver = false;
 let currentLevel = null;
 let audioManager;
 
+function initMenu() {
+    initMenuSound();
+    initTouchButtons();
+}
+
 function initMenuSound() {
     audioManager = new AudioManager();
     audioManager.play('menu');
@@ -18,25 +23,29 @@ function startGameLevelBeginner() {
     const canvasRef = document.getElementById('canvas');
     canvasRef.classList.remove('d_none');
     canvas = canvasRef;
-    // Stoppe Menümusik
+
     audioManager.sounds.menu.pause();
-    // Level starten
+
     let levelInstance = createLevelBeginner();
     world = new World(canvas, keyboard, levelInstance);
+
+    showMobileButtonsIfNeeded(); // 👈 HIER EINBLENDEN
 }
 
 function startGameLevelExpert() {
     currentLevel = 'expert';
     saveSelectedLevelToLocalStorage(currentLevel);
-    let gameLevelOverviewRef = document.getElementById('game-level-overlay');
-    gameLevelOverviewRef.classList.add('d_none');
-    let canvasRef = document.getElementById('canvas');
+    document.getElementById('game-level-overlay').classList.add('d_none');
+    const canvasRef = document.getElementById('canvas');
     canvasRef.classList.remove('d_none');
     canvas = canvasRef;
-    // Stoppe Menümusik
+
     audioManager.sounds.menu.pause();
+
     let levelInstance = createLevelExpert();
     world = new World(canvas, keyboard, levelInstance);
+
+    showMobileButtonsIfNeeded(); // 👈 HIER EINBLENDEN
 }
 
 window.addEventListener('keydown', (event) => {
@@ -54,6 +63,54 @@ window.addEventListener('keyup', (event) => {
     if (event.code === 'Space') keyboard.SPACE = false;
     if (event.code === 'KeyD') keyboard.D = false;
 });
+
+function initTouchButtons() {
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+    const btnJump = document.getElementById('btn-jump');
+    const btnThrow = document.getElementById('btn-throw');
+
+    if (!btnLeft || !btnRight || !btnJump || !btnThrow) return;
+
+    // Bewegung
+    btnLeft.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = true;
+    });
+    btnLeft.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = false;
+    });
+
+    btnRight.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = true;
+    });
+    btnRight.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = false;
+    });
+
+    // Springen
+    btnJump.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = true;
+    });
+    btnJump.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = false;
+    });
+
+    // Werfen
+    btnThrow.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.D = true;
+    });
+    btnThrow.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.D = false;
+    });
+}
 
 
 function showControlOverview() {
@@ -121,8 +178,10 @@ function restartGame() {
     let selectedLevel = localStorage.getItem('selectedLevel');
     if (selectedLevel === 'beginner') {
         world = new World(canvasRef, keyboard, createLevelBeginner());
+        showMobileButtonsIfNeeded();
     } else {
         world = new World(canvasRef, keyboard, createLevelExpert());
+        showMobileButtonsIfNeeded();
     }
 }
 
@@ -159,4 +218,27 @@ function generateEnemies(Type, count, startX, spacing) {
     }
 
     return enemies;
+}
+
+function resizeCanvas() {
+    const canvas = document.getElementById('canvas');
+    const ratio = 720 / 480; // Original-Seitenverhältnis
+  
+    const width = Math.min(window.innerWidth, 720);
+    const height = width / ratio;
+  
+    canvas.width = width;
+    canvas.height = height;
+  }
+  
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('load', resizeCanvas);
+  
+
+  function showMobileButtonsIfNeeded() {
+    const isMobile = window.innerWidth <= 1180;
+    const mobileButtons = document.getElementById('mobile-buttons');
+    if (isMobile && mobileButtons.classList.contains('d_none')) {
+        mobileButtons.classList.remove('d_none');
+    }
 }

@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
   font-family: 'rye', Arial, Helvetica, sans-serif;
 }
 
@@ -11,37 +11,47 @@ h1 {
   font-size: 48px;
 }
 
-main {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    z-index: 2;
-}
-
-canvas {
+.game-canvas {
+  width: 90vw;         /* Max. 90% der Bildschirmbreite */
+  height: auto;
+  max-width: 720px;
+  max-height: 90vh;    /* Max. 90% der Bildschirmhöhe */
   background-color: black;
   border: 3px solid;
   border-radius: 20px;
-  opacity: 1;
-  max-width: 100%;
-  height: auto;
+  display: block;
+  margin: 20px auto;   /* Etwas Abstand vom Rand */
 }
 
 .game-content-wrapper {
-  width: 780px;
-  height: 480px;
-  border-radius: 20px;
+  width: 100%;
+  max-width: 780px;
+  aspect-ratio: 780 / 480;  /* Erhält Seitenverhältnis */
   background-image: url('assets/img/9_intro_outro_screens/start/startscreen_1.png');
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
   padding-right: 30px;
   padding-top: 10px;
-  background-position: center; 
   display: flex;
   justify-content: center;
   align-items: flex-start;
   background-color: black;
   border: 3px solid;
+  border-radius: 20px;
+  padding-bottom: 140px;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+  width: 90vw;
+  max-width: 720px;
+  height: auto;
+  max-height: 90vh;
+  background-color: black;
+  border: 3px solid;
+  border-radius: 20px;
 }
 
 .startscreen {
@@ -55,13 +65,16 @@ canvas {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
   min-height: 100vh;
   background-image: url('assets/img-main-background/cactus-9085905_1920.jpg');
   background-position: center;
+  padding: 20px; /* <-- HINZUGEFÜGT */
+  box-sizing: border-box; /* <-- Sorgt dafür, dass Padding nicht zusätzlich die Breite erhöht */
 }
 
 
-.game-wrapper {
+/* .game-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -69,7 +82,7 @@ canvas {
   height: 100%;
   background-color: rgba(0,0,0,0.3);
   z-index: 1;
-}
+} */
 
 .d_none {
   display: none !important;
@@ -145,22 +158,10 @@ canvas {
   z-index: 10; 
 }
 
-.controlscreen {
-  width: 780px;
-  height: 480px;
-  border-radius: 20px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-direction: column;
-  background-color: rgba(66, 66, 64, 0.932);
-  border: 3px solid;
-  padding-right: 30px;
-}
-
-.legal-notice-screen {
-  width: 780px;
-  height: 480px;
+/* .legal-notice-screen {
+  width: 100%;
+  max-width: 780px;
+  aspect-ratio: 780 / 480;
   border-radius: 20px;
   display: flex;
   gap: 10px;
@@ -169,98 +170,12 @@ canvas {
   background-color: white;
   border: 3px solid;
   padding-right: 30px;
-}
-
-.control-button {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-top: 20px;
-  width: 300px;
-  height: 60px;
-  border-radius: 20px;
-  font-family: 'rye', Arial, Helvetica, sans-serif;
-  color: white;
-  border: 2px solid;
-  background-color: rgb(203, 175, 17);
-  font-size: 20px;
-  padding: 0 20px;
-  box-sizing: border-box;
-}
-
-.control-container-wrapper {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 50px;
-}
-
-.key-description {
-  width: 150px;
-  text-align: left;
-}
-
-p, h2 {
-  color: white;
-}
-
-.key {
-  width: 100px; 
-  height: 40px;
-  padding: 0 10px;
-  border-radius: 20px;
-  font-size: 20px;
-  border: 2px solid white;
-  background-color: rgb(156, 134, 12);
-  font-family: monospace;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-sizing: border-box;
-}
-
-.btn-close-control-overview {
-  width: 280px;
-  height: 60px;
-  font-size: 20px;
-  background-color: darkred;
-  border-radius: 20px;
-  font-family: 'rye', Arial, Helvetica, sans-serif;
-  color: white;
-  cursor: pointer;
-  border: unset;
-  border: 2px solid;
-  margin-top: 30px;
-}
-
-.key-description {
-  font-size: 20px;
-}
-
-.control-slogan {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  text-align: center;
-}
-
-.control-slogan p {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
-
-.controlscreen h2 {
-  color: rgb(203, 175, 17);
-}
+} */
 
 .game-introduction-container {
-  width: 780px;
-  height: 480px;
+  width: 100%;
+  max-width: 780px;
+  aspect-ratio: 780 / 480;
   border-radius: 20px;
   display: flex;
   gap: 5px;
@@ -423,4 +338,67 @@ p, h2 {
 
 .btn-fullscreen:hover img {
   transform: scale(1.1);
+}
+
+#rotate-message {
+  display: none; 
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100vw; 
+  height: 100vh;    
+  background-color: rgba(0, 0, 0, 0.95);
+  color: white;
+  font-family: 'rye', Arial, Helvetica, sans-serif;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 9999;
+}
+
+.mobile-btn-container {
+  display: none;
+}
+
+.controlscreen {
+  width: 90vw;
+  max-width: 720px;
+  aspect-ratio: 3 / 2;
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 20px auto;
+  border-radius: 20px;
+  border: 3px solid black;
+  background-color: rgba(66, 66, 64, 0.932);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* ← Änderung hier */
+  align-items: center;
+  gap: 20px; /* Optional: Einheitlicher Abstand zwischen Kindern */
+}
+
+.overlay-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+}
+
+.overlay-wrapper {
+  width: 95vw;
+  height: 100svh;       /* statt 100vh */
+  max-height: 100svh;
+  overflow-y: auto;     /* falls Inhalte bei bestimmten Dialogen mehr Platz brauchen */
+  padding: 10px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }

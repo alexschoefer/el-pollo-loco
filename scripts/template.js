@@ -67,7 +67,7 @@ function showControlTemplate() {
                         <span class="key-description">Move right</span>
                     </div>
                 </div>
-                <div>
+                <div class="control-container">
                     <div class="control-button">
                         <span class="key">SPACE</span>
                         <span class="key-description">Jump</span>
@@ -119,10 +119,6 @@ function showGameLevelTemplate() {
                 Startscreen</button>
             </div>
           </div>
-        </div>
-        <div id="btn-endscreen-container" class="btn-endscreen-container d_none">
-          <button class="btn-restart-game" onclick="restartGame()">Restart game</button>
-          <button class="btn-back-to-menu" onclick="goBackToMainMenu()">Back to menu</button>
         </div>
     `
 }

@@ -4,12 +4,6 @@ class World {
     canvas;
     keyboard;
     camera_x = 0;
-    statusbarHealth = new StatusbarHealth();
-    statusbarCoins = new StatusbarCoins();
-    statusbarBottles = new StatusbarBottles();
-    statusbarEndboss = new StatusbarEndboss();
-    chicken = new Chicken();
-    smallchicken = new SmallChicken();
     throwableObjects = [];
     bottleCollection = [];
     coinsCollection = [];
@@ -22,41 +16,33 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.level = level;
-    
         this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
-    
         this.maxCoins = this.level.coins.length;
         this.maxBottles = this.level.bottles.length;
-    
         this.audioManager = new AudioManager();
         this.character = new Character(this.audioManager);
         this.endboss = this.level.endboss;
-    
         this.statusbarHealth = new StatusbarHealth();
         this.statusbarCoins = new StatusbarCoins();
         this.statusbarBottles = new StatusbarBottles();
         this.statusbarEndboss = new StatusbarEndboss();
-    
         this.throwableObjects = [];
         this.bottleCollection = [];
         this.coinsCollection = [];
         this.endScreen = null;
         this.gameIsOver = false;
-    
         this.camera_x = 0;
         this.animationFrameId = null;
-    
         this.setWorld();
         this.draw();
         this.run();
-    
-        // ⬇️ Hintergrundmusik starten
+
         if (!this.audioManager.isMuted) {
             this.audioManager.sounds.game.play().catch((e) => {
                 console.warn('Autoplay blockiert den Gamesound:', e);
             });
         }
-    
+
         // ⬇️ SOUND ICON vorbereiten
         this.soundIcon = new Image();
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
@@ -67,8 +53,7 @@ class World {
         this.soundIcon.onload = () => {
             this.soundIconLoaded = true;
         };
-    
-        // ⬇️ FULLSCREEN ICON vorbereiten
+
         this.fullscreenIcon = new Image();
         this.isFullscreen = JSON.parse(localStorage.getItem('isFullscreen')) || false;
         this.fullscreenIcon.src = this.isFullscreen
@@ -78,25 +63,21 @@ class World {
         this.fullscreenIcon.onload = () => {
             this.fullscreenIconLoaded = true;
         };
-    
-        // ⬇️ WINDOW RESIZE EVENT (nur im Vollbild)
+
         window.addEventListener('resize', () => {
             if (document.fullscreenElement) {
                 this.resizeCanvas();
             }
         });
-    
-        // ⬇️ FULLSCREEN CHANGE EVENT (automatisch skalieren & Icon ändern)
+
         document.addEventListener('fullscreenchange', () => {
             const isFullscreen = !!document.fullscreenElement;
-    
             if (isFullscreen) {
-                this.resizeCanvas(); // automatisch anpassen
+                this.resizeCanvas();
             } else {
                 this.canvas.width = 720;
                 this.canvas.height = 480;
             }
-    
             this.isFullscreen = isFullscreen;
             this.fullscreenIcon.src = this.isFullscreen
                 ? "assets/img-main-background/fullscreen-minimize.png"
@@ -105,13 +86,22 @@ class World {
         });
     }
 
+    /**
+    * Connects the character and endboss to the current game world.
+    */
     setWorld() {
         this.character.world = this;
         this.endboss = this.level.endboss;
     }
 
+    /**
+    * Starts the main game logic loop with a fixed interval.
+    */
     run() {
-        setInterval(() => {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+        this.intervalId = setInterval(() => {
             if (this.gameIsOver) return;
             this.checkCollisionsChickens();
             this.checkThrowObjects();
@@ -125,44 +115,43 @@ class World {
         }, 200);
     }
 
-    //prüft eine Collision mit einem anderen Objekt Chicken und reduziert die Energie des Characters
+    /**
+    * Checks collisions between the character and chickens (enemies).
+    */
     checkCollisionsChickens() {
-        this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy) && !enemy.isDead) {
-                // Nur wenn Charakter nach unten fällt (also vom Gegner runter springt)
-                if (this.character.speedY > 0 && (this.character.y + this.character.height) < (enemy.y + enemy.height * 0.75)) {
-
-
-                    console.log("Treffer von oben!");
-                    if (enemy instanceof Chicken || enemy instanceof SmallChicken) {
-                        enemy.isDead = true;
-                        enemy.speed = 0;
-                        this.audioManager.play('chickenHurt');
-                        this.removeDeadChickenFromMap(enemy);
-
-                        // Charakter bekommt einen kleinen Bounce-Up Effekt
-                        this.character.speedY = -15; // Beispielwert zum Hochspringen nach Treffer
-                    }
-                } else {
-                    this.character.hit();
-                    this.statusbarHealth.setPercentage(this.character.energy);
-                    this.audioManager.play('hurt');
-                }
+        this.level.enemies.forEach(enemy => {
+            const feet = this.character.y + this.character.height;
+            if (this.character.isCharacterFallingOnEnemy(enemy) && !enemy.isDead) {
+                enemy.energy = 0;
+                enemy.isDead = true;
+                enemy.speed = 0;
+                this.audioManager.play('chickenHurt');
+                this.removeDeadChickenFromMap(enemy);
+            } else if (this.character.isColliding(enemy) && !enemy.isDead) {
+                this.character.hit();
+                this.statusbarHealth.setPercentage(this.character.energy);
+                this.audioManager.play('hurt');
             }
         });
     }
 
+    /**
+    * Checks if the character picks up bottles from the level
+    */
     checkCollisionsBottleCharacter() {
         this.level.bottles.forEach((bottle) => {
             if (this.character.isColliding(bottle)) {
                 this.bottleCollection.push(bottle);
                 this.updateBottleStatusbar();
                 this.audioManager.play('bottle');
-                this.removeBottleFromMap(bottle);
+                this.removeFromMap('bottles', bottle);
             }
         })
     }
 
+    /**
+    * Checks collisions between thrown bottles and enemies.
+    */
     checkCollisionBottleEnemies() {
         this.throwableObjects.forEach((bottle) => {
             this.level.enemies.forEach((enemy) => {
@@ -177,6 +166,9 @@ class World {
         });
     }
 
+    /**
+    * Checks collisions between character and endboss.
+    */
     checkCollisionEndbossCharacter() {
         if (this.endboss.isColliding(this.character)) {
             this.character.hit();
@@ -190,17 +182,23 @@ class World {
         }
     }
 
+    /**
+    * Checks if the character picks up coins from the level
+    */
     checkCollisionCoins() {
         this.level.coins.forEach((coin) => {
             if (this.character.isColliding(coin)) {
                 this.coinsCollection.push(coin);
                 this.statusbarCoins.setPercentage(Math.min(this.coinsCollection.length / this.level.maxCoins * 100, 100));
                 this.audioManager.play('coin');
-                this.removeCoinsFromMap(coin);
+                this.removeFromMap('coins', coin);
             }
         })
     }
 
+    /**
+    * Checks if the endboss is hitting by bottles from the level
+    */
     checkCollisionEndboss() {
         this.throwableObjects.forEach((bottle) => {
             if (this.endboss.isColliding(bottle)) {
@@ -212,21 +210,28 @@ class World {
         });
     }
 
-    removeBottleFromMap(bottle) {
-        this.level.bottles = this.level.bottles.filter(b => b !== bottle);
+    /**
+     * Removes an item (bottle or coin) from map
+     * @param {*} arrayName - coin or bottle
+     * @param {*} item - coin or bottle
+     */
+    removeFromMap(arrayName, item) {
+        this.level[arrayName] = this.level[arrayName].filter(e => e !== item);
     }
 
-
-    removeCoinsFromMap(coin) {
-        this.level.coins = this.level.coins.filter(b => b !== coin);
-    }
-
+    /**
+     * Removes a dead enemy from map
+     * @param {*} enemy - Smallchicken or chicken
+     */
     removeDeadChickenFromMap(enemy) {
         setTimeout(() => {
             this.level.enemies = this.level.enemies.filter(e => e !== enemy);
         }, 2500);
     }
 
+    /**
+     * Checks if there are collected bottles for throwing from the character
+     */
     checkThrowObjects() {
         if (this.keyboard.D && this.bottleCollection.length > 0) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 150, this.audioManager)
@@ -237,9 +242,7 @@ class World {
     }
 
     draw() {
-        //clearRect löscht das aktuelle img in der Canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        //verschiebt die Kamera nach links
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
         this.ctx.translate(-this.camera_x, 0);
@@ -248,7 +251,6 @@ class World {
         this.addObjectsToMap([this.statusbarBottles]);
         this.addObjectsToMap([this.statusbarEndboss]);
         this.ctx.translate(this.camera_x, 0);
-        //fügt die Elemente der Welt hinzu
         this.addToMap(this.character, this.height);
         this.addToMap(this.endboss, this.height);
         this.addObjectsToMap(this.level.enemies);
@@ -256,7 +258,6 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.bottles);
         this.addObjectsToMap(this.level.coins);
-        //verschiebt die Kamera nach rechts
         this.ctx.translate(-this.camera_x, 0);
         if (this.endScreen && this.endScreen.visible) {
             this.endScreen.draw(this.ctx);
@@ -336,7 +337,8 @@ class World {
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            this.audioManager.stopAllSounds(); // hier alle Sounds stoppen
+            this.audioManager.stopAllSounds();
+            document.getElementById('mobile-buttons')?.classList.add('d_none');
             if (!this.audioManager.isMuted) {
                 this.audioManager.play('gameover');
             }
@@ -346,7 +348,8 @@ class World {
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            this.audioManager.stopAllSounds(); // hier alle Sounds stoppen
+            this.audioManager.stopAllSounds();
+            document.getElementById('mobile-buttons')?.classList.add('d_none');
             if (!this.audioManager.isMuted) {
                 this.audioManager.play('win');
             }
@@ -372,6 +375,7 @@ class World {
         }
         if (this.intervalId) {
             clearInterval(this.intervalId);
+            this.intervalId = null;
         }
         this.endScreen = null;
         this.gameIsOver = false;
@@ -388,9 +392,7 @@ class World {
         this.audioManager.muteAll(this.isMuted);
         localStorage.setItem("isMuted", JSON.stringify(this.isMuted));
         if (!this.isMuted) {
-            this.audioManager.sounds.game.play().catch((e) => {
-                console.warn('Konnte Gamesound nicht abspielen:', e);
-            });
+            this.audioManager.sounds.game.play().catch(e => console.warn('Konnte Gamesound nicht abspielen:', e));
         }
     }
 
@@ -414,33 +416,20 @@ class World {
         }
     }
 
+    isWithinBounds(x, y, bounds) {
+        return bounds && x >= bounds.x && x <= bounds.x + bounds.width &&
+            y >= bounds.y && y <= bounds.y + bounds.height;
+    }
+
     handleCanvasClick(event) {
         const rect = this.canvas.getBoundingClientRect();
         const clickX = event.clientX - rect.left;
         const clickY = event.clientY - rect.top;
-    
-        // Sound-Icon
-        const soundBounds = this.soundIconBounds;
-        if (
-            soundBounds &&
-            clickX >= soundBounds.x &&
-            clickX <= soundBounds.x + soundBounds.width &&
-            clickY >= soundBounds.y &&
-            clickY <= soundBounds.y + soundBounds.height
-        ) {
+        if (this.isWithinBounds(clickX, clickY, this.soundIconBounds)) {
             this.toggleSound();
             return;
         }
-    
-        // Fullscreen-Icon
-        const fullscreenBounds = this.fullscreenIconBounds;
-        if (
-            fullscreenBounds &&
-            clickX >= fullscreenBounds.x &&
-            clickX <= fullscreenBounds.x + fullscreenBounds.width &&
-            clickY >= fullscreenBounds.y &&
-            clickY <= fullscreenBounds.y + fullscreenBounds.height
-        ) {
+        if (this.isWithinBounds(clickX, clickY, this.fullscreenIconBounds)) {
             this.toggleFullScreen();
             return;
         }
@@ -450,7 +439,7 @@ class World {
         this.level.enemies.forEach(enemy => {
             enemy.speed = 0;
         });
-        this.endboss.speed = 0;  // Falls der Endboss auch stoppen soll
+        this.endboss.speed = 0;
     }
 
     resizeCanvas() {
