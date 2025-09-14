@@ -67,7 +67,7 @@ function showControlTemplate() {
                         <span class="key-description">Move right</span>
                     </div>
                 </div>
-                <div>
+                <div class="control-container">
                     <div class="control-button">
                         <span class="key">SPACE</span>
                         <span class="key-description">Jump</span>

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="./styles/fonts.css">
   <link rel="stylesheet" href="./styles/legal-notice.css">
   <link rel="stylesheet" href="./styles/media-queries.css">
+  <link rel="stylesheet" href="./styles/control-screen.css">
   <link rel="stylesheet" href="./styles/mobile-buttons.css">
   <link rel="shortcut icon" href="./assets/favicon/sombrero-26735_1280.png" type="image/x-icon">
   <!-- Scripts -->
@@ -37,14 +38,25 @@
   <script src="./levels/level2.js"></script>
   <script src="./scripts/game.js"></script>
   <script src="./scripts/template.js"></script>
+  <script src="./script.js"></script>
 </head>
 
 <body onload="initMenu()">
 
   <!-- Game Wrapper -->
   <div class="main-background">
+    <!-- Desktop-Version -->
     <div class="legal-notice-btn-container">
       <button class="btn-legal-notice" onclick="openLegalNotice()">Legal notice</button>
+    </div>
+
+    <!-- Mobile / Tablet-Version -->
+    <div class="burger-menu-container">
+      <button class="burger-icon" onclick="toggleBurgerMenu()">☰</button>
+      <div class="burger-dropdown d_none" id="burgerDropdown">
+        <button onclick="openLegalNotice()">Legal Notice</button>
+        <!-- Optional: weitere Menüoptionen -->
+      </div>
     </div>
     <h1>El pollo loco</h1>
 
@@ -65,7 +77,7 @@
     <div id="legal-notice" class="legal-notice-wrapper d_none"></div>
 
     <!-- Control Screen -->
-    <div id="control-overlay" class="control-content-wrapper d_none"></div>
+    <div id="control-overlay" class="control-content-wrapper overlay-wrapper d_none"></div>
 
     <!-- Game Level Intro -->
     <div id="game-level-overlay" class="gamelevel-content-wrapper d_none"></div>
