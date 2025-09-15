@@ -1,3 +1,7 @@
+/**
+ * Creates the template for legal notice
+ * @returns - template for legal notice
+ */
 function showLegalNoticeTemplate() {
     return `
             <div class="legal-notice-screen">
@@ -49,6 +53,10 @@ function showLegalNoticeTemplate() {
     `
 }
 
+/**
+ * Creates a template for the control overlay
+ * @returns - template for control
+ */
 function showControlTemplate() {
     return `
         <div class="controlscreen">
@@ -85,6 +93,10 @@ function showControlTemplate() {
     `;
 }
 
+/**
+ * Creates the template for choosing the level and an introduction of the game
+ * @returns - template for overview of the given levels
+ */
 function showGameLevelTemplate() {
     return `
          <div class="game-introduction-container">
