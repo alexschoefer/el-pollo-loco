@@ -198,6 +198,8 @@ function openLegalNotice() {
     canvasRef.classList.add('d_none');
     legalNoticeRef.innerHTML = "";
     legalNoticeRef.innerHTML += showLegalNoticeTemplate();
+    const dropdown = document.getElementById('burgerDropdown');
+    dropdown.classList.add('d_none');
 }
 
 function closeLegalNotice() {
