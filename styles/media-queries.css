@@ -1,3 +1,9 @@
+@media (min-width: 1030px) {
+  .burger-menu-container {
+    display: none;
+  }
+}
+
 /* ---------- BASE MEDIA QUERY: TABLETS & SMALL DESKTOPS ---------- */
 @media only screen and (max-width: 1024px) {
   h1 {
@@ -41,7 +47,7 @@
 
   .btn-level-container {
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
   }
 
   .btn-level {
@@ -61,13 +67,16 @@
     font-size: 18px;
   }
 
-  .game-content-wrapper,.gamelevel-content-wrapper
+  .game-content-wrapper,
+  .gamelevel-content-wrapper,
   .legal-notice-screen,
-  .controlscreen, .game-introduction-container {
+  .legal-notice-wrapper,
+  .game-introduction-container,
+  .controlscreen {
     width: 95vw;
     height: 300px;
     max-height: 100vh;
-    padding: 20px;
+    padding: 10px;
     box-sizing: border-box;
     overflow: hidden;
     margin: 0px auto;
@@ -78,25 +87,33 @@
   }
 
   .legal-notice-content {
-    max-width: 450px;
+    max-width: 650px;
+    height: 100%;
     overflow-y: auto;
-    padding: 10px;
+    padding: 0px;
+  }
+
+  .legal-notice-wrapper {
+    padding: 0;
   }
 
   .gamelevel-content-wrapper .game-introduction-container {
     max-width: 600px;
     overflow-y: auto;
-    padding: 10px;
-  }
-
-  .gamelevel-content-wrapper {
-    max-width: 600px;
-    max-height: 100vh;
-    margin: 0px;
+    height: auto;
+    box-sizing: border-box;
   }
 
   .legal-notice-headline-container {
     justify-content: flex-end;
+  }
+
+  .game-introduction-container {
+    max-height: 100%;
+    overflow-y: auto;
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
   }
 
   .startscreen {
@@ -113,7 +130,8 @@
     max-width: 600px;
   }
 
-  canvas, .game-canvas {
+  canvas,
+  .game-canvas {
     display: block;
     width: 95vw;
     height: auto;
@@ -159,7 +177,6 @@
   }
 
   .control-button {
-  
     height: 50px !important;
     gap: 5px;
     font-size: 14px;
@@ -198,7 +215,10 @@
     font-size: 14px;
   }
 
-  .control-container-wrapper .control-container .control-button .key-description {
+  .control-container-wrapper
+    .control-container
+    .control-button
+    .key-description {
     width: 120px;
     font-size: 14px;
   }
@@ -238,11 +258,6 @@
     max-width: 450px;
     margin: 2px;
   }
-
-  /* .mobile-left-controls {
-    width: 140px;
-    height: 140px;
-  } */
 }
 
 /* ---------- VERY SHORT VIEWPORT HEIGHTS ---------- */

@@ -1,6 +1,6 @@
 .legal-notice-screen {
     width: 700px;
-    height: 560px;
+    /* height: 560px; */
     border-radius: 20px;
     display: flex;
     gap: 10px;

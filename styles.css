@@ -39,7 +39,6 @@ h1 {
   background-color: black;
   border: 3px solid;
   border-radius: 20px;
-  padding-bottom: 140px;
 }
 
 canvas {
@@ -391,7 +390,6 @@ canvas {
 
 .overlay-wrapper {
   width: 95vw;
-  height: 100svh;       /* statt 100vh */
   max-height: 100svh;
   overflow-y: auto;     /* falls Inhalte bei bestimmten Dialogen mehr Platz brauchen */
   padding: 10px;
