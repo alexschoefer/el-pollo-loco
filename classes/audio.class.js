@@ -1,5 +1,12 @@
+/**
+ * Manages all game-related audio, including sound effects and background music.
+ */
 class AudioManager {
     constructor() {
+        /**
+         * A collection of all audio elements used in the game.
+         * @type {Object<string, HTMLAudioElement>}
+         */
         this.sounds = {
             coin: new Audio('assets/audio/collision-character-coin.wav'),
             bottle: new Audio('assets/audio/collision-character-bottle.wav'),
@@ -15,14 +22,20 @@ class AudioManager {
             endbossAttack: new Audio('assets/audio/chicken-attack.wav'),
             snore: new Audio('assets/audio/character-snore.wav')
         };
+
         this.sounds.game.loop = true;
         this.sounds.snore.loop = true;
-        // this.sounds.menu.loop = true;
-        this.sounds.game.volume = 0.2; 
+        this.sounds.menu.loop = true;
+        /** @type {boolean} Indicates whether all sounds are muted. */
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
+        this.sounds.game.volume = 0.2;
         this.muteAll(this.isMuted);
     }
 
+    /**
+     * Plays a sound by name if not muted.
+     * @param {string} name - The key of the sound in the `sounds` object.
+     */
     play(name) {
         const sound = this.sounds[name];
         if (sound && !this.isMuted) {
@@ -31,17 +44,25 @@ class AudioManager {
         }
     }
 
+    /**
+     * Mutes or unmutes all sounds.
+     * Also resets each sound's playback position.
+     * @param {boolean} mute - Whether to mute all sounds.
+     */
     muteAll(mute) {
         this.isMuted = mute;
-    
+
         if (mute) {
             for (const sound of Object.values(this.sounds)) {
                 sound.pause();
-                sound.currentTime = 0; // zurückspulen
+                sound.currentTime = 0;
             }
         }
     }
-    
+
+    /**
+     * Stops and resets all currently loaded sounds.
+     */
     stopAllSounds() {
         for (const sound of Object.values(this.sounds)) {
             sound.pause();

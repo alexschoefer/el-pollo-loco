@@ -442,8 +442,8 @@ class World {
         this.endboss.speed = 0;
     }
 
-    resizeCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-    }
+    // resizeCanvas() {
+    //     this.canvas.width = window.innerWidth;
+    //     this.canvas.height = window.innerHeight;
+    // }
 }

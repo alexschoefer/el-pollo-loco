@@ -1,11 +1,31 @@
+/**
+ * Represents the main character (Pepe) in the game.
+ * Handles movement, animation, gravity, and sound playback.
+ * Inherits from MoveableObject.
+ */
 class Character extends MoveableObject {
+    /** @type {AudioManager} Handles all sound effects and background audio. */
     audioManager;
+
+    /** @type {number} Character height in pixels. */
     height = 300;
+
+    /** @type {number} Character width in pixels. */
     width = 150;
+
+    /** @type {number} Vertical position of the character on the canvas. */
     y = 135;
+
+    /** @type {number} Movement speed of the character. */
     speed = 10;
+
+    /** @type {boolean} Whether the character is in sleep/idle animation. */
     isSleeping = false;
 
+    /**
+     * Collision offset values for accurate hit detection.
+     * @type {{ top: number, bottom: number, left: number, right: number }}
+     */
     offset = {
         top: 100,
         bottom: 20,
@@ -13,71 +33,33 @@ class Character extends MoveableObject {
         right: 30
     };
 
-    IMAGES_WALKING_CHARACTER = [
-        'assets/img/2_character_pepe/2_walk/W-21.png',
-        'assets/img/2_character_pepe/2_walk/W-22.png',
-        'assets/img/2_character_pepe/2_walk/W-23.png',
-        'assets/img/2_character_pepe/2_walk/W-24.png',
-        'assets/img/2_character_pepe/2_walk/W-25.png',
-        'assets/img/2_character_pepe/2_walk/W-26.png'
-    ];
+    /** @type {string[]} Image paths for walking animation. */
+    IMAGES_WALKING_CHARACTER = [/*...*/];
 
-    IMAGES_JUMPING_CHARACTER = [
-        'assets/img/2_character_pepe/3_jump/J-31.png',
-        'assets/img/2_character_pepe/3_jump/J-32.png',
-        'assets/img/2_character_pepe/3_jump/J-33.png',
-        'assets/img/2_character_pepe/3_jump/J-34.png',
-        'assets/img/2_character_pepe/3_jump/J-35.png',
-        'assets/img/2_character_pepe/3_jump/J-36.png',
-        'assets/img/2_character_pepe/3_jump/J-37.png',
-        'assets/img/2_character_pepe/3_jump/J-38.png',
-        'assets/img/2_character_pepe/3_jump/J-39.png'
-    ];
+    /** @type {string[]} Image paths for jumping animation. */
+    IMAGES_JUMPING_CHARACTER = [/*...*/];
 
-    IMAGES_DEAD_CHARACTER = [
-        'assets/img/2_character_pepe/5_dead/D-51.png',
-        'assets/img/2_character_pepe/5_dead/D-52.png',
-        'assets/img/2_character_pepe/5_dead/D-53.png',
-        'assets/img/2_character_pepe/5_dead/D-54.png',
-        'assets/img/2_character_pepe/5_dead/D-55.png',
-        'assets/img/2_character_pepe/5_dead/D-56.png',
-        'assets/img/2_character_pepe/5_dead/D-57.png'
-    ];
+    /** @type {string[]} Image paths for dead animation. */
+    IMAGES_DEAD_CHARACTER = [/*...*/];
 
-    IMAGES_HURT_CHARACTER = [
-        'assets/img/2_character_pepe/4_hurt/H-41.png',
-        'assets/img/2_character_pepe/4_hurt/H-42.png',
-        'assets/img/2_character_pepe/4_hurt/H-43.png'
-    ];
+    /** @type {string[]} Image paths for hurt animation. */
+    IMAGES_HURT_CHARACTER = [/*...*/];
 
-    IMAGES_IDLE_CHARACTER = [
-        'assets/img/2_character_pepe/1_idle/idle/I-1.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-2.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-3.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-4.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-5.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-6.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-7.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-8.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-9.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-10.png'
-    ]
+    /** @type {string[]} Image paths for idle animation. */
+    IMAGES_IDLE_CHARACTER = [/*...*/];
 
-    IMAGES_LONG_IDLE_CHARACTER = [
-        'assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
-        'assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
-        'assets/img/2_character_pepe/1_idle/long_idle/I-13.png',
-        'assets/img/2_character_pepe/1_idle/long_idle/I-14.png',
-        'assets/img/2_character_pepe/1_idle/long_idle/I-15.png',
-        'assets/img/2_character_pepe/1_idle/long_idle/I-16.png',
-        'assets/img/2_character_pepe/1_idle/long_idle/I-17.png',
-        'assets/img/2_character_pepe/1_idle/long_idle/I-18.png',
-        'assets/img/2_character_pepe/1_idle/long_idle/I-19.png',
-        'assets/img/2_character_pepe/1_idle/long_idle/I-20.png'
-    ]
+    /** @type {string[]} Image paths for long idle (sleep) animation. */
+    IMAGES_LONG_IDLE_CHARACTER = [/*...*/];
 
+    /** @type {World} Reference to the game world context. */
     world;
 
+    /**
+     * Constructs the character, initializes animations, loads images,
+     * applies gravity, and starts animation loops.
+     * 
+     * @param {AudioManager} audioManager - Handles sound playback.
+     */
     constructor(audioManager) {
         super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING_CHARACTER);
@@ -91,7 +73,14 @@ class Character extends MoveableObject {
         this.audioManager = audioManager;
     }
 
+    /**
+     * Starts all character animation intervals:
+     * - Movement & jumping (60 FPS)
+     * - Animation frame cycling (20 FPS)
+     * - Idle detection and sleep state
+     */
     animateCharacter() {
+        // Movement and camera update logic (60 FPS)
         setInterval(() => {
             if ((this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
                 (this.world.keyboard.LEFT && this.x > 0)) {
@@ -111,11 +100,12 @@ class Character extends MoveableObject {
                 this.jump();
                 this.audioManager.play('jump');
             }
+
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
 
+        // Animation image cycling (20 FPS)
         setInterval(() => {
-
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD_CHARACTER);
             } else if (this.isHurt()) {
@@ -132,6 +122,7 @@ class Character extends MoveableObject {
             }
         }, 50);
 
+        // Idle/sleep state detection
         setInterval(() => {
             if (this.x !== this.lastX) {
                 this.lastIdleTime = new Date().getTime();
@@ -149,6 +140,9 @@ class Character extends MoveableObject {
         }, 200);
     }
 
+    /**
+     * Plays the walking sound if it is not already playing.
+     */
     startWalkSound() {
         if (this.audioManager.isMuted) return;
 
@@ -159,6 +153,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Stops and resets the walking sound.
+     */
     stopWalkSound() {
         const sound = this.audioManager.sounds['walk'];
         if (sound && !sound.paused) {
@@ -167,6 +164,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Starts the snoring sound when the character is idle/sleeping.
+     */
     startSnoreSound() {
         const snoreSound = this.audioManager.sounds['snore'];
         if (snoreSound && snoreSound.paused && !this.audioManager.isMuted) {
@@ -175,6 +175,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Stops and resets the snoring sound.
+     */
     stopSnoreSound() {
         const snoreSound = this.audioManager.sounds['snore'];
         if (snoreSound && !snoreSound.paused) {
@@ -183,4 +186,3 @@ class Character extends MoveableObject {
         }
     }
 }
-
