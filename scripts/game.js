@@ -280,3 +280,23 @@ function showMobileButtonsIfNeeded() {
         mobileButtons.classList.remove('d_none');
     }
 }
+
+/**
+ * Toggles the visibility of the burger menu dropdown.
+ */
+function toggleBurgerMenu() {
+    const dropdown = document.getElementById('burgerDropdown');
+    dropdown.classList.toggle('d_none');
+}
+
+/**
+ * Closes the burger menu if a click is detected outside the menu or the burger icon.
+ */
+document.addEventListener('click', function (event) {
+    const dropdown = document.getElementById('burgerDropdown');
+    const burgerBtn = document.querySelector('.burger-icon');
+
+    if (!dropdown.contains(event.target) && !burgerBtn.contains(event.target)) {
+        dropdown.classList.add('d_none');
+    }
+});
