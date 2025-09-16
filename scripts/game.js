@@ -300,3 +300,4 @@ document.addEventListener('click', function (event) {
         dropdown.classList.add('d_none');
     }
 });
+

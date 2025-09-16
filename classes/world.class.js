@@ -33,17 +33,15 @@ class World {
         this.gameIsOver = false;
         this.camera_x = 0;
         this.animationFrameId = null;
+        this.collisionHandler = new Collision(this);
         this.setWorld();
         this.draw();
         this.run();
-
         if (!this.audioManager.isMuted) {
             this.audioManager.sounds.game.play().catch((e) => {
                 console.warn('Autoplay blockiert den Gamesound:', e);
             });
         }
-
-        // ⬇️ SOUND ICON vorbereiten
         this.soundIcon = new Image();
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
         this.soundIcon.src = this.isMuted
@@ -53,7 +51,6 @@ class World {
         this.soundIcon.onload = () => {
             this.soundIconLoaded = true;
         };
-
         this.fullscreenIcon = new Image();
         this.isFullscreen = JSON.parse(localStorage.getItem('isFullscreen')) || false;
         this.fullscreenIcon.src = this.isFullscreen
@@ -63,7 +60,6 @@ class World {
         this.fullscreenIcon.onload = () => {
             this.fullscreenIconLoaded = true;
         };
-
         window.addEventListener('resize', () => {
             if (document.fullscreenElement) {
                 this.resizeCanvas();
@@ -103,111 +99,10 @@ class World {
         }
         this.intervalId = setInterval(() => {
             if (this.gameIsOver) return;
-            this.checkCollisionsChickens();
+            this.collisionHandler.checkAll();
             this.checkThrowObjects();
-            this.checkCollisionsBottleCharacter();
-            this.checkCollisionCoins();
-            this.checkCollisionEndboss();
-            this.checkCollisionEndbossCharacter();
-            this.checkEndbossDistanceToCharacter();
-            this.checkCollisionBottleEnemies();
             this.checkGameOver();
         }, 200);
-    }
-
-    /**
-    * Checks collisions between the character and chickens (enemies).
-    */
-    checkCollisionsChickens() {
-        this.level.enemies.forEach(enemy => {
-            const feet = this.character.y + this.character.height;
-            if (this.character.isCharacterFallingOnEnemy(enemy) && !enemy.isDead) {
-                enemy.energy = 0;
-                enemy.isDead = true;
-                enemy.speed = 0;
-                this.audioManager.play('chickenHurt');
-                this.removeDeadChickenFromMap(enemy);
-            } else if (this.character.isColliding(enemy) && !enemy.isDead) {
-                this.character.hit();
-                this.statusbarHealth.setPercentage(this.character.energy);
-                this.audioManager.play('hurt');
-            }
-        });
-    }
-
-    /**
-    * Checks if the character picks up bottles from the level
-    */
-    checkCollisionsBottleCharacter() {
-        this.level.bottles.forEach((bottle) => {
-            if (this.character.isColliding(bottle)) {
-                this.bottleCollection.push(bottle);
-                this.updateBottleStatusbar();
-                this.audioManager.play('bottle');
-                this.removeFromMap('bottles', bottle);
-            }
-        })
-    }
-
-    /**
-    * Checks collisions between thrown bottles and enemies.
-    */
-    checkCollisionBottleEnemies() {
-        this.throwableObjects.forEach((bottle) => {
-            this.level.enemies.forEach((enemy) => {
-                if (enemy.isColliding(bottle) && !enemy.isDead) {
-                    enemy.isDead = true;
-                    enemy.speed = 0;
-                    this.audioManager.play('chickenHurt');
-                    this.removeDeadChickenFromMap(enemy);
-                    bottle.hasSplashed = true;
-                }
-            });
-        });
-    }
-
-    /**
-    * Checks collisions between character and endboss.
-    */
-    checkCollisionEndbossCharacter() {
-        if (this.endboss.isColliding(this.character)) {
-            this.character.hit();
-            this.audioManager.play('hurt');
-            this.audioManager.play('endbossAttack');
-            this.statusbarHealth.setPercentage(this.character.energy);
-            this.endboss.attackEndboss();
-            this.endboss.moveLeftEndboss();
-        } else {
-            this.endboss.stopAttackEndboss();
-        }
-    }
-
-    /**
-    * Checks if the character picks up coins from the level
-    */
-    checkCollisionCoins() {
-        this.level.coins.forEach((coin) => {
-            if (this.character.isColliding(coin)) {
-                this.coinsCollection.push(coin);
-                this.statusbarCoins.setPercentage(Math.min(this.coinsCollection.length / this.level.maxCoins * 100, 100));
-                this.audioManager.play('coin');
-                this.removeFromMap('coins', coin);
-            }
-        })
-    }
-
-    /**
-    * Checks if the endboss is hitting by bottles from the level
-    */
-    checkCollisionEndboss() {
-        this.throwableObjects.forEach((bottle) => {
-            if (this.endboss.isColliding(bottle)) {
-                this.endboss.hit();
-                this.audioManager.play('chickenHurt');
-                bottle.hasSplashed = true;
-                this.statusbarEndboss.setPercentage(this.endboss.energy);
-            }
-        });
     }
 
     /**
@@ -241,6 +136,9 @@ class World {
         }
     }
 
+    /**
+     * Renders the entire game world on the canvas.
+     */
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
@@ -267,6 +165,9 @@ class World {
         this.drawFullscreenIcon();
     }
 
+    /**
+     * Draws the sound icon in the top-right corner of the canvas.
+     * */
     drawSoundIcon() {
         if (!this.soundIconLoaded) return;
         const iconSize = 40;
@@ -277,6 +178,9 @@ class World {
         this.ctx.drawImage(this.soundIcon, x, y, iconSize, iconSize);
     }
 
+    /**
+     * Draws the fullscreen toggle icon in the bottom-right corner of the canvas.
+     */
     drawFullscreenIcon() {
         if (!this.fullscreenIconLoaded) return;
         const iconSize = 30;
@@ -287,12 +191,20 @@ class World {
         this.ctx.drawImage(this.fullscreenIcon, x, y, iconSize, iconSize);
     }
 
+    /**
+     * Adds an array of drawable objects to the canvas.
+     * @param {*} objects - An array of drawable game objects
+     */
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o);
         });
     }
 
+    /**
+     * Adds a single drawable object to the canvas, applying image flipping if needed.
+     * @param {*} mo - A drawable game object.
+     */
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);
@@ -304,6 +216,10 @@ class World {
         }
     }
 
+    /**
+     * Flips a drawable object's image horizontally for rendering.
+     * @param {Object} mo - The game object to flip.
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -311,25 +227,18 @@ class World {
         mo.x = mo.x * -1;
     }
 
+    /**
+     * Restores the original orientation of a flipped game object.
+     * @param {Object} mo - The game object to flip back.
+     */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
 
-    checkEndbossDistanceToCharacter() {
-        let distance = this.character.x - this.endboss.x;
-        if (Math.abs(distance) < 300) {
-            this.endboss.isMoving = true;
-            if (distance > 0) {
-                this.endboss.moveRightEndboss();
-            } else {
-                this.endboss.moveLeftEndboss();
-            }
-        } else {
-            this.endboss.stopMovement();
-        }
-    }
-
+    /**
+     * Checks if the game has ended due to character or endboss death.
+     */
     checkGameOver() {
         if (this.character.isDead()) {
             this.endScreen = new Endscreen(Endscreen.IMAGE_GAMEOVER);
@@ -356,11 +265,9 @@ class World {
         }
     }
 
-    showEndscreenButtons() {
-        const btnContainer = document.getElementById('btn-endscreen-container');
-        btnContainer.classList.remove('d_none');
-    }
-
+    /**
+     * Updates the bottle status bar based on how many bottles have been collected.
+     */
     updateBottleStatusbar() {
         const percentage = Math.min(
             (this.bottleCollection.length / this.level.maxBottles) * 100,
@@ -369,6 +276,9 @@ class World {
         this.statusbarBottles.setPercentage(percentage);
     }
 
+    /**
+     * Resets the game world and UI to its initial state.
+     */
     resetWorld() {
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
@@ -384,6 +294,9 @@ class World {
         this.run();
     }
 
+    /**
+     * Toggles sound on or off. Updates icon and saves setting to localStorage.
+     */
     toggleSound() {
         this.isMuted = !this.isMuted;
         this.soundIcon.src = this.isMuted
@@ -396,6 +309,9 @@ class World {
         }
     }
 
+    /**
+     * Toggles fullscreen mode for the canvas. Updates icon and saves state to localStorage.
+     */
     toggleFullScreen() {
         if (!document.fullscreenElement) {
             this.canvas.requestFullscreen().then(() => {
@@ -416,11 +332,23 @@ class World {
         }
     }
 
+    /**
+     * Checks if given (x, y) coordinates are within the bounds of a UI element.
+     * @param {number} x - The x-coordinate to check.
+     * @param {number} y - The y-coordinate to check.
+     * @param {{x: number, y: number, width: number, height: number}} bounds - The bounds of the element.
+     * @returns {boolean} True if within bounds, false otherwise.
+     */
     isWithinBounds(x, y, bounds) {
         return bounds && x >= bounds.x && x <= bounds.x + bounds.width &&
             y >= bounds.y && y <= bounds.y + bounds.height;
     }
 
+    /**
+     * Handles click events on the canvas.
+     * @param {MouseEvent} event - The mouse click event.
+     * @returns {void}
+     */
     handleCanvasClick(event) {
         const rect = this.canvas.getBoundingClientRect();
         const clickX = event.clientX - rect.left;
@@ -435,6 +363,9 @@ class World {
         }
     }
 
+    /**
+     * Stops all enemies and the endboss by setting their speed to 0.
+     */
     stopEnemies() {
         this.level.enemies.forEach(enemy => {
             enemy.speed = 0;
@@ -442,8 +373,11 @@ class World {
         this.endboss.speed = 0;
     }
 
-    // resizeCanvas() {
-    //     this.canvas.width = window.innerWidth;
-    //     this.canvas.height = window.innerHeight;
-    // }
+    /**
+     * Displays the endscreen buttons
+     */
+    showEndscreenButtons() {
+        const btnContainer = document.getElementById('btn-endscreen-container');
+        btnContainer.classList.remove('d_none');
+    }
 }
