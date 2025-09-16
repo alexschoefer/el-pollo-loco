@@ -69,8 +69,10 @@ class World {
         document.addEventListener('fullscreenchange', () => {
             const isFullscreen = !!document.fullscreenElement;
             if (isFullscreen) {
+                this.canvas.classList.add('fullscreen');
                 this.resizeCanvas();
             } else {
+                this.canvas.classList.remove('fullscreen');
                 this.canvas.width = 720;
                 this.canvas.height = 480;
             }
@@ -379,5 +381,10 @@ class World {
     showEndscreenButtons() {
         const btnContainer = document.getElementById('btn-endscreen-container');
         btnContainer.classList.remove('d_none');
+    }
+
+    resizeCanvas() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
     }
 }

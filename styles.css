@@ -12,21 +12,21 @@ h1 {
 }
 
 .game-canvas {
-  width: 90vw;         /* Max. 90% der Bildschirmbreite */
+  width: 90vw;
   height: auto;
   max-width: 720px;
-  max-height: 90vh;    /* Max. 90% der Bildschirmhöhe */
+  max-height: 90vh;
   background-color: black;
   border: 3px solid;
   border-radius: 20px;
   display: block;
-  margin: 20px auto;   /* Etwas Abstand vom Rand */
+  margin: 20px auto; 
 }
 
 .game-content-wrapper {
   width: 100%;
   max-width: 780px;
-  aspect-ratio: 780 / 480;  /* Erhält Seitenverhältnis */
+  aspect-ratio: 780 / 480; 
   background-image: url('assets/img/9_intro_outro_screens/start/startscreen_1.png');
   background-repeat: no-repeat;
   background-size: cover;
