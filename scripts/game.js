@@ -19,7 +19,6 @@ function initMenu() {
  */
 function initMenuSound() {
     audioManager = new AudioManager();
-    audioManager.play('menu');
 }
 
 /**
