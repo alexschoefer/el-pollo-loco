@@ -169,6 +169,12 @@ class Character extends MoveableObject {
      * Check if the character has change his x position. If not he is sleeping
      */
     checkIfCharacterSleeping() {
+        if (this.world.gameIsOver) {
+            this.isSleeping = false;
+            this.stopSnoreSound();
+            return;
+        }
+    
         if (this.x !== this.lastX) {
             this.lastIdleTime = new Date().getTime();
             this.isSleeping = false;
@@ -177,12 +183,13 @@ class Character extends MoveableObject {
         } else {
             let now = new Date().getTime();
             let sleepingTime = now - this.lastIdleTime;
-
+    
             if (sleepingTime > 10000) {
                 this.isSleeping = true;
             }
         }
     }
+    
 
     /**
      * Starts the walking sound if it's not already playing.
