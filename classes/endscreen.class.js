@@ -1,7 +1,5 @@
 /**
  * Represents the end screen displayed after the game finishes.
- * Depending on the outcome, it can show a "You Win" or "Game Over" image.
- * Inherits from {@link DrawableObject}.
  */
 class Endscreen extends DrawableObject {
     /**
@@ -18,7 +16,7 @@ class Endscreen extends DrawableObject {
 
     /**
      * Creates an instance of the Endscreen.
-     * @param {string} imagePath - The path to the image to display (win or game over).
+     * @param {string} imagePath - The path to the image to display
      */
     constructor(imagePath) {
         super();

@@ -101,66 +101,87 @@ class Character extends MoveableObject {
      */
     animateCharacter() {
         setInterval(() => {
-            if (this.world.gameIsOver) {
-                this.stopWalkSound();
-                return;  // keine Bewegungen mehr erlauben
-            }
-            
-            if ((this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
-                (this.world.keyboard.LEFT && this.x > 0)) {
-                if (this.world.keyboard.RIGHT) {
-                    this.moveRight();
-                    this.otherDirection = false;
-                } else {
-                    this.moveLeft();
-                    this.otherDirection = true;
-                }
-                this.startWalkSound();
-            } else {
-                this.stopWalkSound();
-            }
-        
-            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-                this.jump();
-                this.audioManager.play('jump');
-            }
-        
-            this.world.camera_x = -this.x + 100;
+            this.moveCharacter();
         }, 1000 / 60);
-        
 
         setInterval(() => {
-            if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD_CHARACTER);
-            } else if (this.isHurt()) {
-                this.playAnimation(this.IMAGES_HURT_CHARACTER);
-            } else if (this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_JUMPING_CHARACTER);
-            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.playAnimation(this.IMAGES_WALKING_CHARACTER);
-            } else if (this.isSleeping) {
-                this.playAnimation(this.IMAGES_LONG_IDLE_CHARACTER);
-                this.startSnoreSound();
-            } else {
-                this.playAnimation(this.IMAGES_IDLE_CHARACTER);
-            }
+            this.showImagesOfMovementCharacter();
         }, 50);
 
         setInterval(() => {
-            if (this.x !== this.lastX) {
-                this.lastIdleTime = new Date().getTime();
-                this.isSleeping = false;
-                this.lastX = this.x;
-                this.stopSnoreSound();
-            } else {
-                let now = new Date().getTime();
-                let sleepingTime = now - this.lastIdleTime;
-
-                if (sleepingTime > 10000) {
-                    this.isSleeping = true;
-                }
-            }
+            this.checkIfCharacterSleeping();
         }, 200);
+    }
+
+    /**
+     * Move the character: left, right, jump
+     * @returns M
+     */
+    moveCharacter() {
+        if (this.world.gameIsOver) {
+            this.stopWalkSound();
+            return;
+        }
+
+        if ((this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
+            (this.world.keyboard.LEFT && this.x > 0)) {
+            if (this.world.keyboard.RIGHT) {
+                this.moveRight();
+                this.otherDirection = false;
+            } else {
+                this.moveLeft();
+                this.otherDirection = true;
+            }
+            this.startWalkSound();
+        } else {
+            this.stopWalkSound();
+        }
+
+        if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+            this.jump();
+            this.audioManager.play('jump');
+        }
+
+        this.world.camera_x = -this.x + 100;
+    }
+
+    /**
+     * Shows the images of the movement of the character
+     */
+    showImagesOfMovementCharacter() {
+        if (this.isDead()) {
+            this.playAnimation(this.IMAGES_DEAD_CHARACTER);
+        } else if (this.isHurt()) {
+            this.playAnimation(this.IMAGES_HURT_CHARACTER);
+        } else if (this.isAboveGround()) {
+            this.playAnimation(this.IMAGES_JUMPING_CHARACTER);
+        } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            this.playAnimation(this.IMAGES_WALKING_CHARACTER);
+        } else if (this.isSleeping) {
+            this.playAnimation(this.IMAGES_LONG_IDLE_CHARACTER);
+            this.startSnoreSound();
+        } else {
+            this.playAnimation(this.IMAGES_IDLE_CHARACTER);
+        }
+    }
+
+    /**
+     * Check if the character has change his x position. If not he is sleeping
+     */
+    checkIfCharacterSleeping() {
+        if (this.x !== this.lastX) {
+            this.lastIdleTime = new Date().getTime();
+            this.isSleeping = false;
+            this.lastX = this.x;
+            this.stopSnoreSound();
+        } else {
+            let now = new Date().getTime();
+            let sleepingTime = now - this.lastIdleTime;
+
+            if (sleepingTime > 10000) {
+                this.isSleeping = true;
+            }
+        }
     }
 
     /**
