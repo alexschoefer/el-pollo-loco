@@ -101,6 +101,11 @@ class Character extends MoveableObject {
      */
     animateCharacter() {
         setInterval(() => {
+            if (this.world.gameIsOver) {
+                this.stopWalkSound();
+                return;  // keine Bewegungen mehr erlauben
+            }
+            
             if ((this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
                 (this.world.keyboard.LEFT && this.x > 0)) {
                 if (this.world.keyboard.RIGHT) {
@@ -114,14 +119,15 @@ class Character extends MoveableObject {
             } else {
                 this.stopWalkSound();
             }
-
+        
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
                 this.audioManager.play('jump');
             }
-
+        
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
+        
 
         setInterval(() => {
             if (this.isDead()) {

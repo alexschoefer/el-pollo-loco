@@ -144,6 +144,9 @@ function chooseGameLevel() {
     const gameLevelOverlay = document.getElementById('game-level-overlay');
     gameLevelOverlay.classList.remove('d_none');
     gameLevelOverlay.innerHTML = showGameLevelTemplate();
+    if (!audioManager.isMuted) {
+        audioManager.play('menu');
+    }
 }
 
 /**
