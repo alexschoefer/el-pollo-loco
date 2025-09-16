@@ -1,3 +1,20 @@
+.controlscreen {
+  width: 90vw;
+  max-width: 720px;
+  aspect-ratio: 3 / 2;
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 20px auto;
+  border-radius: 20px;
+  border: 3px solid black;
+  background-color: rgba(66, 66, 64, 0.932);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+  align-items: center;
+  gap: 20px;
+}
+
 .control-button {
     display: flex;
     justify-content: space-between;
