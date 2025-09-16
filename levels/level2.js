@@ -1,12 +1,13 @@
+/**
+ * Creates and returns a expert level instance with randomized enemies, coins, bottles, clouds, and background.
+ * @returns {Level} The configured expert level.
+ */
 function createLevelExpert() {
     const coins = generateRandomCoins(5, 8);
     const bottles = generateRandomBottles(6, 8);
     const maxCoins = coins.length;
     const maxBottles = bottles.length;
-    // 🐔 Chicken: ab X=600, alle 400px
     const chickens = generateEnemies(Chicken, 4, 400, 400);
-
-    // 🐣 SmallChicken: ab X=3000, alle 300px
     const smallChickens = generateEnemies(SmallChicken, 5, 500, 300);
 
     const enemies = [...chickens, ...smallChickens];
@@ -24,22 +25,27 @@ function createLevelExpert() {
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', -720),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', -720),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', -720),
+
         new BackgroundObject('assets/img/5_background/layers/air.png', 0),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 0),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 0),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 0),
+
         new BackgroundObject('assets/img/5_background/layers/air.png', 720),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720),
+
         new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 2),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 720 * 2),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 720 * 2),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 720 * 2),
+
         new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720 * 3),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720 * 3),
+
         new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 4),
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 720 * 4),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 720 * 4),
@@ -58,9 +64,16 @@ function createLevelExpert() {
     );
 }
 
+/**
+ * Generates a random number of bottle objects between the given min and max values.
+ *
+ * @param {number} min - Minimum number of bottles to generate.
+ * @param {number} max - Maximum number of bottles to generate.
+ * @returns {Bottles[]} An array of randomly generated bottle objects.
+ */
 function generateRandomBottles(min, max) {
-    let bottles = [];
-    let count = Math.floor(Math.random() * (max - min + 1)) + min;
+    const bottles = [];
+    const count = Math.floor(Math.random() * (max - min + 1)) + min;
 
     for (let i = 0; i < count; i++) {
         bottles.push(new Bottles());
@@ -68,10 +81,16 @@ function generateRandomBottles(min, max) {
     return bottles;
 }
 
-
+/**
+ * Generates a random number of coin objects between the given min and max values.
+ *
+ * @param {number} min - Minimum number of coins to generate.
+ * @param {number} max - Maximum number of coins to generate.
+ * @returns {Coins[]} An array of randomly generated coin objects.
+ */
 function generateRandomCoins(min, max) {
-    let coins = [];
-    let count = Math.floor(Math.random() * (max - min + 1)) + min;
+    const coins = [];
+    const count = Math.floor(Math.random() * (max - min + 1)) + min;
 
     for (let i = 0; i < count; i++) {
         coins.push(new Coins());

@@ -1,0 +1,103 @@
+.game-introduction-container {
+    width: 100%;
+    max-width: 780px;
+    aspect-ratio: 780 / 480;
+    border-radius: 20px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-direction: column;
+    background-color: rgba(66, 66, 64, 0.932);
+    border: 3px solid;
+    color: black;
+  }
+  
+  .btn-level {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+    width: 180px;
+    height: 40px;
+    border-radius: 20px;
+    font-family: 'rye', Arial, Helvetica, sans-serif;
+    color: white;
+    cursor: pointer;
+    border: unset;
+    border: 2px solid;
+    background-color: rgb(203, 175, 17);
+    font-size: 20px;
+    border: 2px solid white;
+  }
+  
+  .btn-level-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+  }
+  
+  .game-description-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .game-description-container p {
+    font-size: 16px;
+    text-align: center;
+    color: white;
+    line-height: 180%;
+  }
+  
+  .game-introduction-container h2 {
+    color: rgb(203, 175, 17);
+  }
+  
+  .btn-level-beginner-container, .btn-level-expert-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .btn-close-gamelevel-overview {
+    width: 260px;
+    height: 40px;
+    font-size: 20px;
+    background-color: darkred;
+    border-radius: 20px;
+    font-family: 'rye', Arial, Helvetica, sans-serif;
+    color: white;
+    cursor: pointer;
+    border: unset;
+    border: 2px solid;
+  }
+  
+  .btn-level-beginner-container p, .btn-level-expert-container p {
+    text-align: center;
+    font-size: 14px;
+    font-weight: none;
+    color: rgb(203, 175, 17);
+  }
+  
+  .highlight-words {
+    color: red;
+  }
+  
+  .highlight-words-endboss {
+    color: rgb(203, 175, 17);
+    font-size: 28px;
+  }
+  
+  .btn-level:hover {
+    background-color: rgb(229, 204, 64);
+    color: black;
+    border: 2px solid;
+  }
+  
+  .btn-close-gamelevel-overview:hover {
+    background-color: rgb(170, 70, 70);
+    color: black;
+  }

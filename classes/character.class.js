@@ -78,6 +78,10 @@ class Character extends MoveableObject {
 
     world;
 
+    /**
+     * Creates a new Character instance and initializes animations and sounds.
+     * @param {AudioManager} audioManager - Manages character sound effects.
+     */
     constructor(audioManager) {
         super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING_CHARACTER);
@@ -91,8 +95,17 @@ class Character extends MoveableObject {
         this.audioManager = audioManager;
     }
 
+    /**
+     * Handles character animation and behavior based on input and state.
+     * Starts movement and animation intervals including walking, jumping, idle, and sleeping logic.
+     */
     animateCharacter() {
         setInterval(() => {
+            if (this.world.gameIsOver) {
+                this.stopWalkSound();
+                return;  // keine Bewegungen mehr erlauben
+            }
+            
             if ((this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
                 (this.world.keyboard.LEFT && this.x > 0)) {
                 if (this.world.keyboard.RIGHT) {
@@ -106,16 +119,17 @@ class Character extends MoveableObject {
             } else {
                 this.stopWalkSound();
             }
-
+        
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
                 this.audioManager.play('jump');
             }
+        
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
+        
 
         setInterval(() => {
-
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD_CHARACTER);
             } else if (this.isHurt()) {
@@ -149,6 +163,9 @@ class Character extends MoveableObject {
         }, 200);
     }
 
+    /**
+     * Starts the walking sound if it's not already playing.
+     */
     startWalkSound() {
         if (this.audioManager.isMuted) return;
 
@@ -159,6 +176,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Stops the walking sound if it is currently playing.
+     */
     stopWalkSound() {
         const sound = this.audioManager.sounds['walk'];
         if (sound && !sound.paused) {
@@ -167,6 +187,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Plays the snoring sound while the character is sleeping (long idle).
+     */
     startSnoreSound() {
         const snoreSound = this.audioManager.sounds['snore'];
         if (snoreSound && snoreSound.paused && !this.audioManager.isMuted) {
@@ -175,6 +198,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Stops the snoring sound if it is currently playing.
+     */
     stopSnoreSound() {
         const snoreSound = this.audioManager.sounds['snore'];
         if (snoreSound && !snoreSound.paused) {
