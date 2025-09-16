@@ -18,8 +18,6 @@ class Endscreen extends DrawableObject {
 
     /**
      * Creates an instance of the Endscreen.
-     * Automatically sets image, size, and position based on the image type.
-     * 
      * @param {string} imagePath - The path to the image to display (win or game over).
      */
     constructor(imagePath) {
@@ -35,7 +33,6 @@ class Endscreen extends DrawableObject {
             this.height = 150;
         }
 
-        // Center the endscreen on the canvas
         this.x = (720 - this.width) / 2;
         this.y = (480 - this.height) / 2;
     }
@@ -49,7 +46,6 @@ class Endscreen extends DrawableObject {
 
     /**
      * Draws the endscreen image on the canvas, if visible.
-     * 
      * @param {CanvasRenderingContext2D} ctx - The rendering context to draw on.
      */
     draw(ctx) {
