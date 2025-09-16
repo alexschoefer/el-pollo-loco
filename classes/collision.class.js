@@ -14,6 +14,9 @@ class Collision {
         this.coinsCollection = world.coinsCollection;
     }
 
+    /**
+     * Checks different collisions of the objects in each separated function
+     */
     checkAll() {
         this.checkCollisionsChickens();
         this.checkCollisionsBottleCharacter();
@@ -25,8 +28,8 @@ class Collision {
     }
 
     /**
-* Checks collisions between the character and chickens (enemies).
-*/
+    * Checks collisions between the character and chickens (enemies).
+    */
     checkCollisionsChickens() {
         this.level.enemies.forEach(enemy => {
             const feet = this.character.y + this.character.height;
