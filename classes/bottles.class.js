@@ -13,7 +13,7 @@ class Bottles extends DrawableObject {
     height = 80;
 
     /** @type {number} Width of the bottle image. */
-    width = 80;
+    width = 60;
 
     /** @type {boolean} Indicates whether the bottle has been thrown. */
     bottleThrown = false;
@@ -23,10 +23,10 @@ class Bottles extends DrawableObject {
      * @type {{ top: number, bottom: number, left: number, right: number }}
      */
     offset = {
-        top: 10,
+        top: 8,
         bottom: 5,
-        left: 10,
-        right: 10
+        left: 8,
+        right: 8
     };
 
     /** @type {string[]} Array of available bottle image paths. */
