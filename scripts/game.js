@@ -274,7 +274,6 @@ function resizeCanvas() {
     const height = width / ratio;
     canvas.width = width;
     canvas.height = height;
-    showMobileButtonsIfNeeded();
 }
 
 window.addEventListener('resize', resizeCanvas);
