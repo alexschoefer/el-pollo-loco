@@ -8,10 +8,12 @@ function createLevelBeginner() {
     const bottles = generateRandomBottles(6, 10);
     const maxCoins = coins.length;
     const maxBottles = bottles.length;
+    // Dynamisch zufälliger Startpunkt für beide Typen
+    const chickenStartX = 450 + Math.floor(Math.random() * 200); // z. B. 500–699
+    const smallChickenStartX = 550 + Math.floor(Math.random() * 300); // z. B. 1500–1799
 
-    // Generate enemies
-    const chickens = generateEnemies(Chicken, 3, 500, 400);
-    const smallChickens = generateEnemies(SmallChicken, 3, 550, 300);
+    const chickens = generateEnemies(Chicken, 3, chickenStartX, 350, 500);
+    const smallChickens = generateEnemies(SmallChicken, 3, smallChickenStartX, 300, 450);
     const enemies = [...chickens, ...smallChickens];
 
     // Create clouds

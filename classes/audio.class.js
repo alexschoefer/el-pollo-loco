@@ -33,14 +33,18 @@ class AudioManager {
     }
 
     /**
-     * Plays a sound by name if not muted.
+     * Plays a sound by name if not muted and not already playing.
      * @param {string} name - The key of the sound in the `sounds` object.
      */
     play(name) {
         const sound = this.sounds[name];
         if (sound && !this.isMuted) {
-            sound.currentTime = 0;
-            sound.play();
+            if (sound.paused) {
+                sound.currentTime = 0;
+            }
+            sound.play().catch((error) => {
+                console.warn(`AudioManager: Failed to play sound '${name}':`, error);
+            });
         }
     }
 

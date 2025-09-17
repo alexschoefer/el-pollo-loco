@@ -131,7 +131,14 @@ class World {
      */
     checkThrowObjects() {
         if (this.keyboard.D && this.bottleCollection.length > 0) {
-            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 150, this.audioManager)
+            const isThrowLeft = this.character.otherDirection === true;
+            const offsetX = isThrowLeft ? -20 : 100;
+            const bottle = new ThrowableObject(
+                this.character.x + offsetX,
+                this.character.y + 150,
+                this.audioManager,
+                isThrowLeft
+            );
             this.throwableObjects.push(bottle);
             this.bottleCollection.pop();
             this.updateBottleStatusbar();
@@ -142,23 +149,23 @@ class World {
      * Renders the entire game world on the canvas.
      */
     draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
+        this.ctx.translate(-this.camera_x, 0);
+        this.ctx.translate(this.camera_x, 0);
+        this.addObjectsToMap(this.level.clouds);
+        this.addToMap(this.character, this.height);
+        this.addToMap(this.endboss, this.height);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.throwableObjects);
+
+        this.addObjectsToMap(this.level.bottles);
+        this.addObjectsToMap(this.level.coins);
         this.ctx.translate(-this.camera_x, 0);
         this.addObjectsToMap([this.statusbarHealth]);
         this.addObjectsToMap([this.statusbarCoins]);
         this.addObjectsToMap([this.statusbarBottles]);
         this.addObjectsToMap([this.statusbarEndboss]);
-        this.ctx.translate(this.camera_x, 0);
-        this.addToMap(this.character, this.height);
-        this.addToMap(this.endboss, this.height);
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.throwableObjects);
-        this.addObjectsToMap(this.level.clouds);
-        this.addObjectsToMap(this.level.bottles);
-        this.addObjectsToMap(this.level.coins);
-        this.ctx.translate(-this.camera_x, 0);
         if (this.endScreen && this.endScreen.visible) {
             this.endScreen.draw(this.ctx);
         }
@@ -383,6 +390,9 @@ class World {
         btnContainer.classList.remove('d_none');
     }
 
+    /**
+     * Resizes the canvas on the window height and width
+     */
     resizeCanvas() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;

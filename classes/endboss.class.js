@@ -20,15 +20,21 @@ class EndBoss extends MoveableObject {
     /** @type {number} Movement speed of the boss. */
     speed = 10;
 
+    /** @type {number} Wie viele Treffer hat der Boss schon bekommen? */
+    hitsTaken = 0;
+
+    /** @type {boolean} Ist der Boss im aggressiven Modus? */
+    isAggressive = false;
+
     /** 
      * @type {{ top: number, bottom: number, left: number, right: number }} 
      * Collision offset values for the boss.
      */
     offset = {
-        top: 80,
-        bottom: 60,
-        left: 20,
-        right: 20
+        top: 90,
+        bottom: 70,
+        left: 30,
+        right: 30
     };
 
     /** @type {string[]} Walking animation images. */
@@ -162,10 +168,23 @@ class EndBoss extends MoveableObject {
      * Applies damage to the EndBoss and updates its energy.
      */
     hit() {
-        this.energy -= 8;
-        if (this.energy < 0) {
-            this.energy = 0;
+        this.energy -= 5;
+        if (this.energy < 0) this.energy = 0;
+    
+        this.hitsTaken++;
+    
+        if (this.hitsTaken >= 2) {
+            this.becomeAggressive();
         }
+    
         this.lastHit = new Date().getTime();
+    }
+
+    becomeAggressive() {
+        if (!this.isAggressive) {
+            this.isAggressive = true;
+            this.speed = 15; 
+            this.isMoving = true;
+        }
     }
 }

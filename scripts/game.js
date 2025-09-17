@@ -239,23 +239,30 @@ function closeLegalNotice() {
 }
 
 /**
- * Creates and returns an array of enemy instances.
+ * Creates and returns an array of enemy instances with randomized spacing and no overlap.
  * @param {Function} Type - Enemy class constructor.
  * @param {number} count - Number of enemies to generate.
  * @param {number} startX - Starting X position for the first enemy.
- * @param {number} spacing - Horizontal spacing between enemies.
+ * @param {number} minSpacing - Minimum spacing between enemies.
+ * @param {number} maxSpacing - Maximum spacing between enemies.
  * @returns {Array} List of generated enemies.
  */
-function generateEnemies(Type, count, startX, spacing) {
+function generateEnemies(Type, count, startX, minSpacing, maxSpacing) {
     const enemies = [];
+    let currentX = startX;
+
     for (let i = 0; i < count; i++) {
         const enemy = new Type();
-        enemy.x = startX + i * spacing;
+        enemy.x = currentX;
+        const spacing = Math.floor(Math.random() * (maxSpacing - minSpacing + 1)) + minSpacing;
+        currentX += spacing;
+
         enemies.push(enemy);
     }
 
     return enemies;
 }
+
 
 /**
  * Resizes the canvas element to maintain aspect ratio on window resize.
@@ -276,10 +283,15 @@ window.addEventListener('load', resizeCanvas);
  * Shows mobile control buttons if the screen width is below the mobile threshold.
  */
 function showMobileButtonsIfNeeded() {
-    const isMobile = window.innerWidth <= 1180;
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isSmallScreen = window.innerWidth <= 1180;
+    const shouldShowMobileButtons = isTouchDevice && isSmallScreen;
+
     const mobileButtons = document.getElementById('mobile-buttons');
-    if (isMobile && mobileButtons.classList.contains('d_none')) {
+    if (shouldShowMobileButtons && mobileButtons.classList.contains('d_none')) {
         mobileButtons.classList.remove('d_none');
+    } else if (!shouldShowMobileButtons && !mobileButtons.classList.contains('d_none')) {
+        mobileButtons.classList.add('d_none');
     }
 }
 

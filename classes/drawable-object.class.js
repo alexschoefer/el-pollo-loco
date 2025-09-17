@@ -57,19 +57,18 @@ class DrawableObject {
      * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context.
      */
     drawFrame(ctx) {
-        // Uncomment below for debugging hitboxes
-
-        // Draw hitbox based on offset
-        // ctx.beginPath();
-        // ctx.lineWidth = "2";
-        // ctx.strokeStyle = "blue";
-        // ctx.strokeRect(
-        //     this.x + this.offset.left,
-        //     this.y + this.offset.top,
-        //     this.width - this.offset.left - this.offset.right,
-        //     this.height - this.offset.top - this.offset.bottom
-        // );
-        // ctx.stroke();
+    //   if (this instanceof Character || this instanceof Bottles)  {
+    //         ctx.beginPath();
+    //         ctx.lineWidth = "6";
+    //         ctx.strokeStyle = "blue";
+    //         ctx.strokeRect(
+    //             this.x + this.offset.left,
+    //             this.y + this.offset.top,
+    //             this.width - this.offset.left - this.offset.right,
+    //             this.height - this.offset.top - this.offset.bottom
+    //         );
+    //         ctx.stroke();
+    //     }
 
         // Draw object boundary
         // ctx.beginPath();

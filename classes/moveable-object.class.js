@@ -95,7 +95,7 @@ class MoveableObject extends DrawableObject {
      * @returns {boolean} True if the object is dead, false otherwise.
      */
     isDead() {
-        return this.energy == 0;
+        return this.energy <= 0;
     }
 
     /**
