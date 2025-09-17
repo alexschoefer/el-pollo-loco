@@ -15,7 +15,7 @@ class Collision {
     }
 
     /**
-     * Checks different collisions of the objects in each separated function
+     * Checks different collisions of the objects in each separated
      */
     checkAll() {
         this.checkCollisionsChickens();
@@ -32,13 +32,14 @@ class Collision {
     */
     checkCollisionsChickens() {
         this.level.enemies.forEach(enemy => {
-            const feet = this.character.y + this.character.height;
             if (this.character.isCharacterFallingOnEnemy(enemy) && !enemy.isDead) {
                 enemy.energy = 0;
                 enemy.isDead = true;
                 enemy.speed = 0;
                 this.audioManager.play('chickenHurt');
                 this.world.removeDeadChickenFromMap(enemy);
+                // Optional: Rückstoß erzeugen
+                this.character.speedY = -10;
             } else if (this.character.isColliding(enemy) && !enemy.isDead) {
                 this.character.hit();
                 this.statusbarHealth.setPercentage(this.character.energy);
@@ -46,6 +47,7 @@ class Collision {
             }
         });
     }
+    
 
     /**
     * Checks if the character picks up bottles from the level
@@ -99,8 +101,10 @@ class Collision {
     */
     checkEndbossDistanceToCharacter() {
         let distance = this.character.x - this.endboss.x;
-        if (Math.abs(distance) < 300) {
+    
+        if (this.endboss.isAggressive || Math.abs(distance) < 300) {
             this.endboss.isMoving = true;
+    
             if (distance > 0) {
                 this.endboss.moveRightEndboss();
             } else {

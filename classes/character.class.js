@@ -144,6 +144,7 @@ class Character extends MoveableObject {
         } else if (this.isHurt()) {
             this.playAnimation(this.IMAGES_HURT_CHARACTER);
         } else if (this.isJumping) {
+            this.playAnimation(this.IMAGES_JUMPING_CHARACTER);
         } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.playAnimation(this.IMAGES_WALKING_CHARACTER);
         } else if (this.isSleeping) {
@@ -152,9 +153,11 @@ class Character extends MoveableObject {
         } else {
             this.playAnimation(this.IMAGES_IDLE_CHARACTER);
         }
-
-        if (!this.isAboveGround() && this.jumpAnimationFrame >= this.IMAGES_JUMPING_CHARACTER.length) {
+    
+        // Automatisch zurücksetzen, wenn gelandet
+        if (!this.isAboveGround()) {
             this.isJumping = false;
+            this.isSleeping = false;
         }
     }
 
@@ -185,20 +188,21 @@ class Character extends MoveableObject {
             return;
         }
 
-        if (this.x !== this.lastX) {
+        if (this.x !== this.lastX || this.isJumping) {
             this.lastIdleTime = new Date().getTime();
             this.isSleeping = false;
             this.lastX = this.x;
             this.stopSnoreSound();
         } else {
-            let now = new Date().getTime();
-            let sleepingTime = now - this.lastIdleTime;
-
+            const now = new Date().getTime();
+            const sleepingTime = now - this.lastIdleTime;
+    
             if (sleepingTime > 10000) {
                 this.isSleeping = true;
             }
         }
     }
+    
 
     startWalkSound() {
         if (this.audioManager.isMuted) return;
@@ -233,4 +237,26 @@ class Character extends MoveableObject {
             snoreSound.currentTime = 0;
         }
     }
+
+    isCharacterFallingOnEnemy(mo) {
+        if (mo.isDead) return false;
+    
+        const isFalling = this.speedY < 0; // <- Genau richtig für deinen Code!
+        if (!isFalling) return false;
+    
+        const hitboxPadding = 10;
+        const feet = this.y + this.height;
+    
+        const verticalOverlap =
+            feet > mo.y &&
+            feet < mo.y + mo.height + hitboxPadding;
+    
+        const horizontalOverlap =
+            this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+            this.x + this.offset.left < mo.x + mo.width - mo.offset.right;
+    
+        return verticalOverlap && horizontalOverlap;
+    }
+    
+    
 }

@@ -390,6 +390,9 @@ class World {
         btnContainer.classList.remove('d_none');
     }
 
+    /**
+     * Resizes the canvas on the window height and width
+     */
     resizeCanvas() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
