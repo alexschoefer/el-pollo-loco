@@ -146,11 +146,12 @@ class World {
         this.addObjectsToMap(this.level.backgroundObjects);
         this.ctx.translate(-this.camera_x, 0);
         this.ctx.translate(this.camera_x, 0);
+        this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.character, this.height);
         this.addToMap(this.endboss, this.height);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
-        this.addObjectsToMap(this.level.clouds);
+
         this.addObjectsToMap(this.level.bottles);
         this.addObjectsToMap(this.level.coins);
         this.ctx.translate(-this.camera_x, 0);

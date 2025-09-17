@@ -5,6 +5,9 @@ class Character extends MoveableObject {
     y = 135;
     speed = 10;
     isSleeping = false;
+    isJumping = false;
+    jumpAnimationFrame = 0;
+    jumpInterval = null;
 
     offset = {
         top: 100,
@@ -61,7 +64,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/1_idle/idle/I-8.png',
         'assets/img/2_character_pepe/1_idle/idle/I-9.png',
         'assets/img/2_character_pepe/1_idle/idle/I-10.png'
-    ]
+    ];
 
     IMAGES_LONG_IDLE_CHARACTER = [
         'assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
@@ -74,14 +77,10 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/1_idle/long_idle/I-18.png',
         'assets/img/2_character_pepe/1_idle/long_idle/I-19.png',
         'assets/img/2_character_pepe/1_idle/long_idle/I-20.png'
-    ]
+    ];
 
     world;
 
-    /**
-     * Creates a new Character instance and initializes animations and sounds.
-     * @param {AudioManager} audioManager - Manages character sound effects.
-     */
     constructor(audioManager) {
         super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING_CHARACTER);
@@ -95,10 +94,6 @@ class Character extends MoveableObject {
         this.audioManager = audioManager;
     }
 
-    /**
-     * Handles character animation and behavior based on input and state.
-     * Starts movement and animation intervals including walking, jumping, idle, and sleeping logic.
-     */
     animateCharacter() {
         setInterval(() => {
             this.moveCharacter();
@@ -106,17 +101,13 @@ class Character extends MoveableObject {
 
         setInterval(() => {
             this.showImagesOfMovementCharacter();
-        }, 50);
+        }, 200);
 
         setInterval(() => {
             this.checkIfCharacterSleeping();
         }, 200);
     }
 
-    /**
-     * Move the character: left, right, jump
-     * @returns M
-     */
     moveCharacter() {
         if (this.world.gameIsOver) {
             this.stopWalkSound();
@@ -137,24 +128,22 @@ class Character extends MoveableObject {
             this.stopWalkSound();
         }
 
-        if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+        if (this.world.keyboard.SPACE && !this.isAboveGround() && !this.isJumping) {
             this.jump();
             this.audioManager.play('jump');
+            this.isJumping = true;
+            this.jumpAnimationFrame = 0;
+            this.startJumpAnimation();
         }
-
         this.world.camera_x = -this.x + 100;
     }
 
-    /**
-     * Shows the images of the movement of the character
-     */
     showImagesOfMovementCharacter() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD_CHARACTER);
         } else if (this.isHurt()) {
             this.playAnimation(this.IMAGES_HURT_CHARACTER);
-        } else if (this.isAboveGround()) {
-            this.playAnimation(this.IMAGES_JUMPING_CHARACTER);
+        } else if (this.isJumping) {
         } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.playAnimation(this.IMAGES_WALKING_CHARACTER);
         } else if (this.isSleeping) {
@@ -163,18 +152,39 @@ class Character extends MoveableObject {
         } else {
             this.playAnimation(this.IMAGES_IDLE_CHARACTER);
         }
+
+        if (!this.isAboveGround() && this.jumpAnimationFrame >= this.IMAGES_JUMPING_CHARACTER.length) {
+            this.isJumping = false;
+        }
     }
 
-    /**
-     * Check if the character has change his x position. If not he is sleeping
-     */
+    startJumpAnimation() {
+        if (this.jumpInterval) {
+            clearInterval(this.jumpInterval);
+        }
+    
+        this.jumpInterval = setInterval(() => {
+            if (this.isAboveGround()) {
+                const path = this.IMAGES_JUMPING_CHARACTER[this.jumpAnimationFrame % this.IMAGES_JUMPING_CHARACTER.length];
+                this.img = this.imageCache[path];
+                this.jumpAnimationFrame++;
+            } else {
+                clearInterval(this.jumpInterval);
+                this.jumpInterval = null;
+                this.jumpAnimationFrame = 0;
+                this.isJumping = false;
+            }
+        }, 100);
+    }
+    
+
     checkIfCharacterSleeping() {
         if (this.world.gameIsOver) {
             this.isSleeping = false;
             this.stopSnoreSound();
             return;
         }
-    
+
         if (this.x !== this.lastX) {
             this.lastIdleTime = new Date().getTime();
             this.isSleeping = false;
@@ -183,17 +193,13 @@ class Character extends MoveableObject {
         } else {
             let now = new Date().getTime();
             let sleepingTime = now - this.lastIdleTime;
-    
+
             if (sleepingTime > 10000) {
                 this.isSleeping = true;
             }
         }
     }
-    
 
-    /**
-     * Starts the walking sound if it's not already playing.
-     */
     startWalkSound() {
         if (this.audioManager.isMuted) return;
 
@@ -204,9 +210,6 @@ class Character extends MoveableObject {
         }
     }
 
-    /**
-     * Stops the walking sound if it is currently playing.
-     */
     stopWalkSound() {
         const sound = this.audioManager.sounds['walk'];
         if (sound && !sound.paused) {
@@ -215,9 +218,6 @@ class Character extends MoveableObject {
         }
     }
 
-    /**
-     * Plays the snoring sound while the character is sleeping (long idle).
-     */
     startSnoreSound() {
         const snoreSound = this.audioManager.sounds['snore'];
         if (snoreSound && snoreSound.paused && !this.audioManager.isMuted) {
@@ -226,9 +226,6 @@ class Character extends MoveableObject {
         }
     }
 
-    /**
-     * Stops the snoring sound if it is currently playing.
-     */
     stopSnoreSound() {
         const snoreSound = this.audioManager.sounds['snore'];
         if (snoreSound && !snoreSound.paused) {
@@ -237,4 +234,3 @@ class Character extends MoveableObject {
         }
     }
 }
-
