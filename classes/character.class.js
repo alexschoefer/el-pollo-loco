@@ -10,10 +10,10 @@ class Character extends MoveableObject {
     jumpInterval = null;
 
     offset = {
-        top: 100,
+        top: 120,
         bottom: 20,
-        left: 30,
-        right: 30
+        left: 40,
+        right: 40
     };
 
     IMAGES_WALKING_CHARACTER = [
@@ -92,8 +92,13 @@ class Character extends MoveableObject {
         this.applyGravity();
         this.animateCharacter();
         this.audioManager = audioManager;
+        this.energy = 100;
     }
 
+    /**
+     * Initializes and starts the character's animation logic.
+     * Sets up intervals to handle movement, animation frames, and sleep detection.
+     */
     animateCharacter() {
         setInterval(() => {
             this.moveCharacter();
@@ -108,6 +113,10 @@ class Character extends MoveableObject {
         }, 200);
     }
 
+    /**
+     * Handles character movement based on keyboard input.
+     * Moves character left or right, starts/stops walking sound, triggers jump logic,
+     */
     moveCharacter() {
         if (this.world.gameIsOver) {
             this.stopWalkSound();
@@ -138,6 +147,11 @@ class Character extends MoveableObject {
         this.world.camera_x = -this.x + 100;
     }
 
+    /**
+     * Displays the appropriate animation images based on the character's current state.
+     * Handles dead, hurt, jumping, walking, idle, and sleeping animations.
+     * Resets jump and sleep state if character lands on the ground.
+     */
     showImagesOfMovementCharacter() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD_CHARACTER);
@@ -153,19 +167,22 @@ class Character extends MoveableObject {
         } else {
             this.playAnimation(this.IMAGES_IDLE_CHARACTER);
         }
-    
-        // Automatisch zurücksetzen, wenn gelandet
+
         if (!this.isAboveGround()) {
             this.isJumping = false;
             this.isSleeping = false;
         }
     }
 
+    /**
+     * Starts the jump animation by updating the character's image every 100ms.
+     * Stops the animation when the character lands.
+     */
     startJumpAnimation() {
         if (this.jumpInterval) {
             clearInterval(this.jumpInterval);
         }
-    
+
         this.jumpInterval = setInterval(() => {
             if (this.isAboveGround()) {
                 const path = this.IMAGES_JUMPING_CHARACTER[this.jumpAnimationFrame % this.IMAGES_JUMPING_CHARACTER.length];
@@ -179,8 +196,12 @@ class Character extends MoveableObject {
             }
         }, 100);
     }
-    
 
+    /**
+     * Checks if the character has been idle for more than 10 seconds.
+     * If so, sets the sleeping state to true.
+     * Resets the sleep timer if the character has moved or jumped.
+     */
     checkIfCharacterSleeping() {
         if (this.world.gameIsOver) {
             this.isSleeping = false;
@@ -196,14 +217,16 @@ class Character extends MoveableObject {
         } else {
             const now = new Date().getTime();
             const sleepingTime = now - this.lastIdleTime;
-    
+
             if (sleepingTime > 10000) {
                 this.isSleeping = true;
             }
         }
     }
-    
 
+    /**
+     * Starts the walking sound if it's not already playing and audio is not muted.
+     */
     startWalkSound() {
         if (this.audioManager.isMuted) return;
 
@@ -214,6 +237,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Stops the walking sound if it's currently playing.
+     */
     stopWalkSound() {
         const sound = this.audioManager.sounds['walk'];
         if (sound && !sound.paused) {
@@ -222,6 +248,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Plays the snore sound if the character is sleeping and audio is not muted.
+     */
     startSnoreSound() {
         const snoreSound = this.audioManager.sounds['snore'];
         if (snoreSound && snoreSound.paused && !this.audioManager.isMuted) {
@@ -230,6 +259,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Stops the snore sound if it's currently playing.
+     */
     stopSnoreSound() {
         const snoreSound = this.audioManager.sounds['snore'];
         if (snoreSound && !snoreSound.paused) {
@@ -238,25 +270,50 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Determines whether the character is falling onto a given enemy.
+     * @param {MoveableObject} mo - The enemy object to check collision against.
+     * @returns {boolean} True if the character is falling onto the enemy, false otherwise.
+     */
     isCharacterFallingOnEnemy(mo) {
         if (mo.isDead) return false;
-    
-        const isFalling = this.speedY < 0; // <- Genau richtig für deinen Code!
+        const isFalling = this.speedY < 0;
         if (!isFalling) return false;
-    
         const hitboxPadding = 10;
         const feet = this.y + this.height;
-    
         const verticalOverlap =
             feet > mo.y &&
             feet < mo.y + mo.height + hitboxPadding;
-    
         const horizontalOverlap =
             this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
             this.x + this.offset.left < mo.x + mo.width - mo.offset.right;
-    
+
         return verticalOverlap && horizontalOverlap;
     }
-    
-    
+
+    /**
+     * Reduces the character's energy by 10 and handles game over logic if energy reaches zero.
+     * Updates the health status bar.
+     */
+    hit() {
+        this.energy -= 5;
+        if (this.energy <= 0) {
+            this.energy = 0;
+            this.world.statusbarHealth.setPercentage(0);
+            this.world.endScreen = new Endscreen(Endscreen.IMAGE_GAMEOVER);
+            this.world.endScreen.show();
+            this.world.gameIsOver = true;
+            this.world.stopEnemies();
+            this.world.showEndscreenButtons();
+            this.world.audioManager.stopAllSounds();
+            document.getElementById('mobile-buttons')?.classList.add('d_none');
+            if (!this.world.audioManager.isMuted) {
+                this.world.audioManager.play('gameover');
+            }
+        } else {
+            this.world.statusbarHealth.setPercentage(this.energy);
+        }
+    }
+
+
 }

@@ -31,10 +31,10 @@ class EndBoss extends MoveableObject {
      * Collision offset values for the boss.
      */
     offset = {
-        top: 80,
-        bottom: 60,
-        left: 20,
-        right: 20
+        top: 90,
+        bottom: 70,
+        left: 30,
+        right: 30
     };
 
     /** @type {string[]} Walking animation images. */
@@ -183,7 +183,7 @@ class EndBoss extends MoveableObject {
     becomeAggressive() {
         if (!this.isAggressive) {
             this.isAggressive = true;
-            this.speed = 10; // z.B. schneller als normal
+            this.speed = 15; 
             this.isMoving = true;
         }
     }

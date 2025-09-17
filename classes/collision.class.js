@@ -38,8 +38,7 @@ class Collision {
                 enemy.speed = 0;
                 this.audioManager.play('chickenHurt');
                 this.world.removeDeadChickenFromMap(enemy);
-                // Optional: Rückstoß erzeugen
-                this.character.speedY = -10;
+                // this.character.speedY = -10;
             } else if (this.character.isColliding(enemy) && !enemy.isDead) {
                 this.character.hit();
                 this.statusbarHealth.setPercentage(this.character.energy);
@@ -102,7 +101,7 @@ class Collision {
     checkEndbossDistanceToCharacter() {
         let distance = this.character.x - this.endboss.x;
     
-        if (this.endboss.isAggressive || Math.abs(distance) < 300) {
+        if (this.endboss.isAggressive || Math.abs(distance) < 400) {
             this.endboss.isMoving = true;
     
             if (distance > 0) {

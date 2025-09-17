@@ -23,10 +23,10 @@ class Bottles extends DrawableObject {
      * @type {{ top: number, bottom: number, left: number, right: number }}
      */
     offset = {
-        top: 8,
+        top: 15,
         bottom: 5,
-        left: 8,
-        right: 8
+        left: 20,
+        right: 2
     };
 
     /** @type {string[]} Array of available bottle image paths. */
