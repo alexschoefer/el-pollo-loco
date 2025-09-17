@@ -142,14 +142,9 @@ class World {
      * Renders the entire game world on the canvas.
      */
     draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
         this.ctx.translate(-this.camera_x, 0);
-        this.addObjectsToMap([this.statusbarHealth]);
-        this.addObjectsToMap([this.statusbarCoins]);
-        this.addObjectsToMap([this.statusbarBottles]);
-        this.addObjectsToMap([this.statusbarEndboss]);
         this.ctx.translate(this.camera_x, 0);
         this.addToMap(this.character, this.height);
         this.addToMap(this.endboss, this.height);
@@ -159,6 +154,10 @@ class World {
         this.addObjectsToMap(this.level.bottles);
         this.addObjectsToMap(this.level.coins);
         this.ctx.translate(-this.camera_x, 0);
+        this.addObjectsToMap([this.statusbarHealth]);
+        this.addObjectsToMap([this.statusbarCoins]);
+        this.addObjectsToMap([this.statusbarBottles]);
+        this.addObjectsToMap([this.statusbarEndboss]);
         if (this.endScreen && this.endScreen.visible) {
             this.endScreen.draw(this.ctx);
         }
