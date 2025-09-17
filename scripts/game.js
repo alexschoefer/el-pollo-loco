@@ -253,11 +253,7 @@ function generateEnemies(Type, count, startX, minSpacing, maxSpacing) {
 
     for (let i = 0; i < count; i++) {
         const enemy = new Type();
-
-        // Set current X position
         enemy.x = currentX;
-
-        // Increase X for next enemy by random spacing
         const spacing = Math.floor(Math.random() * (maxSpacing - minSpacing + 1)) + minSpacing;
         currentX += spacing;
 
@@ -287,10 +283,15 @@ window.addEventListener('load', resizeCanvas);
  * Shows mobile control buttons if the screen width is below the mobile threshold.
  */
 function showMobileButtonsIfNeeded() {
-    const isMobile = window.innerWidth <= 1180;
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isSmallScreen = window.innerWidth <= 1180;
+    const shouldShowMobileButtons = isTouchDevice && isSmallScreen;
+
     const mobileButtons = document.getElementById('mobile-buttons');
-    if (isMobile && mobileButtons.classList.contains('d_none')) {
+    if (shouldShowMobileButtons && mobileButtons.classList.contains('d_none')) {
         mobileButtons.classList.remove('d_none');
+    } else if (!shouldShowMobileButtons && !mobileButtons.classList.contains('d_none')) {
+        mobileButtons.classList.add('d_none');
     }
 }
 
