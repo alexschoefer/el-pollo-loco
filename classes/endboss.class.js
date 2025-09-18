@@ -179,7 +179,6 @@ class EndBoss extends MoveableObject {
             this.becomeAggressive(2); 
             this.phase2 = true;
         } else if (this.energy <= 30 && !this.phase3 && selectedLevel === 'expert') {
-            console.log(selectedLevel);
             this.becomeAggressive(3); 
             this.phase3 = true;
         }
