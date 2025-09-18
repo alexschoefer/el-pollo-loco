@@ -117,7 +117,6 @@ function initTouchButtons() {
  */
 function showControlOverview() {
     document.getElementById('startgame').classList.add('d_none');
-
     const controlOverlay = document.getElementById('control-overlay');
     controlOverlay.classList.remove('d_none');
     controlOverlay.innerHTML = showControlTemplate();
@@ -162,6 +161,9 @@ function closeGameLevelOverlay() {
  * Returns the player to the main menu, resets level state and restarts menu music.
  */
 function goBackToMainMenu() {
+    if (world) {
+        audioManager.stopAllSounds(); // Spielsounds beenden
+    }
     localStorage.removeItem("selectedLevel");
     let btnContainer = document.getElementById('btn-endscreen-container');
     let startgameRef = document.getElementById('startgame');
@@ -187,24 +189,45 @@ function saveSelectedLevelToLocalStorage(currentLevel) {
  */
 function restartGame() {
     if (world) {
-        if (world.animationFrameId) cancelAnimationFrame(world.animationFrameId);
-        if (world.intervalId) clearInterval(world.intervalId);
+        audioManager.stopAllSounds(); // Spielsounds beenden
     }
+    resetWorldIntervalle();
     const btnContainer = document.getElementById('btn-endscreen-container');
     btnContainer.classList.add('d_none');
     let canvasRef = document.getElementById('canvas');
     let ctx = canvasRef.getContext('2d');
     ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-    keyboard = new GameKeyBoard();
+    resetKeyboard();
 
     let selectedLevel = localStorage.getItem('selectedLevel');
     if (selectedLevel === 'beginner') {
         world = new World(canvasRef, keyboard, createLevelBeginner());
-        showMobileButtonsIfNeeded();
     } else {
         world = new World(canvasRef, keyboard, createLevelExpert());
-        showMobileButtonsIfNeeded();
     }
+    showMobileButtonsIfNeeded();
+}
+
+/**
+ * Reset the world intervalls and the world
+ */
+function resetWorldIntervalle() {
+    if (world) {
+        if (world.animationFrameId) cancelAnimationFrame(world.animationFrameId);
+        if (world.intervalId) clearInterval(world.intervalId);
+        if (world.collisionIntervalId) clearInterval(world.collisionIntervalId);
+        world = null;
+    }
+}
+
+/**
+ * Reset the Keyboard
+ */
+function resetKeyboard() {
+    keyboard.LEFT = false;
+    keyboard.RIGHT = false;
+    keyboard.SPACE = false;
+    keyboard.D = false;
 }
 
 /**
@@ -259,7 +282,6 @@ function generateEnemies(Type, count, startX, minSpacing, maxSpacing) {
 
         enemies.push(enemy);
     }
-
     return enemies;
 }
 

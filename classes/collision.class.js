@@ -46,7 +46,7 @@ class Collision {
             }
         });
     }
-    
+
 
     /**
     * Checks if the character picks up bottles from the level
@@ -100,10 +100,10 @@ class Collision {
     */
     checkEndbossDistanceToCharacter() {
         let distance = this.character.x - this.endboss.x;
-    
+
         if (this.endboss.isAggressive || Math.abs(distance) < 450) {
             this.endboss.isMoving = true;
-    
+
             if (distance > 0) {
                 this.endboss.moveRightEndboss();
             } else {
@@ -133,10 +133,11 @@ class Collision {
     */
     checkCollisionEndboss() {
         this.throwableObjects.forEach((bottle) => {
-            if (this.endboss.isColliding(bottle)) {
-                this.endboss.hit();
+            if (!bottle.hasHitEndboss && this.endboss.isColliding(bottle)) {
+                this.endboss.hit(); // ✔️ Nur 1x Schaden
                 this.audioManager.play('chickenHurt');
                 bottle.hasSplashed = true;
+                bottle.hasHitEndboss = true; // ✅ verhindert Mehrfachschaden
                 this.statusbarEndboss.setPercentage(this.endboss.energy);
             }
         });

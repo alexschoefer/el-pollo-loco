@@ -96,7 +96,6 @@ class World {
     * Starts the main game logic loop with a fixed interval.
     */
     run() {
-        // Hauptlogik-Intervall (z. B. für Game Mechanics)
         if (this.intervalId) {
             clearInterval(this.intervalId);
         }
@@ -106,14 +105,13 @@ class World {
             this.checkGameOver();
         }, 200);
     
-        // Separates Intervall für Kollisionen
         if (this.collisionIntervalId) {
             clearInterval(this.collisionIntervalId);
         }
         this.collisionIntervalId = setInterval(() => {
             if (this.gameIsOver) return;
             this.collisionHandler.checkAll();
-        }, 50); // oder z. B. 100–150 ms für flüssigere Kollisionschecks
+        }, 50);
     }
 
     /**
@@ -310,9 +308,22 @@ class World {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
+        if (this.collisionIntervalId) {
+            clearInterval(this.collisionIntervalId);
+            this.collisionIntervalId = null;
+        }
+
+        for (let key in this.keyboard) {
+            this.keyboard[key] = false;
+        }
+    
+        this.character = new Character(this.audioManager);
+        this.character.world = this;
+    
         this.endScreen = null;
         this.gameIsOver = false;
         this.camera_x = 0;
+        
         this.draw();
         this.run();
     }

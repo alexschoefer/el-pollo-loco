@@ -35,7 +35,7 @@ class ThrowableObject extends MoveableObject {
         this.img = this.imageCache[this.IMAGES_BOTTLES_THROWING[0]];
         this.audioManager = audioManager;
         this.direction = throwLeft ? -1 : 1;
-
+        this.hasHitEndboss = false;
         this.throwBottle();
         this.animateBottle();
     }

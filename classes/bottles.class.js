@@ -6,7 +6,7 @@ class Bottles extends DrawableObject {
     /** @type {number} Y-position of the bottle on the canvas. */
     y = 340;
 
-    /** @type {number} X-position of the bottle, set randomly in constructor. */
+    /** @type {number} X-position of the bottle */
     x = 100;
 
     /** @type {number} Height of the bottle image. */
