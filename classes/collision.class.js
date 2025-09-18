@@ -101,7 +101,7 @@ class Collision {
     checkEndbossDistanceToCharacter() {
         let distance = this.character.x - this.endboss.x;
     
-        if (this.endboss.isAggressive || Math.abs(distance) < 400) {
+        if (this.endboss.isAggressive || Math.abs(distance) < 450) {
             this.endboss.isMoving = true;
     
             if (distance > 0) {

@@ -95,7 +95,7 @@ class EndBoss extends MoveableObject {
         this.loadImages(this.IMAGES_WALK_ENDBOSS);
         this.x = 2000; // Initial position off-screen
         this.animateEndboss();
-        this.speed = 2;
+        this.speed = 8;
         this.isMoving = false;
     }
 
@@ -173,7 +173,7 @@ class EndBoss extends MoveableObject {
     
         this.hitsTaken++;
     
-        if (this.hitsTaken >= 2) {
+        if (this.hitsTaken = 1) {
             this.becomeAggressive();
         }
     
