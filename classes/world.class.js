@@ -142,12 +142,17 @@ class World {
         if (this.keyboard.D && this.bottleCollection.length > 0) {
             const isThrowLeft = this.character.otherDirection === true;
             const offsetX = isThrowLeft ? -20 : 100;
+            this.character.isSleeping = false;
+            this.character.stopSnoreSound();
+            this.character.lastIdleTime = new Date().getTime();
+    
             const bottle = new ThrowableObject(
                 this.character.x + offsetX,
                 this.character.y + 150,
                 this.audioManager,
                 isThrowLeft
             );
+    
             this.throwableObjects.push(bottle);
             this.bottleCollection.pop();
             this.updateBottleStatusbar();

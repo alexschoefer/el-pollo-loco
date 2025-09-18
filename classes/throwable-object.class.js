@@ -22,7 +22,7 @@ class ThrowableObject extends MoveableObject {
      * @param {number} x
      * @param {number} y
      * @param {AudioManager} audioManager
-     * @param {boolean} throwLeft - Optional: true, wenn nach links geworfen wird
+     * @param {boolean} throwLeft
      */
     constructor(x, y, audioManager, throwLeft = false) {
         super();
@@ -34,8 +34,6 @@ class ThrowableObject extends MoveableObject {
         this.width = 60;
         this.img = this.imageCache[this.IMAGES_BOTTLES_THROWING[0]];
         this.audioManager = audioManager;
-
-        // Richtungsabhängiger Wurf
         this.direction = throwLeft ? -1 : 1;
 
         this.throwBottle();
@@ -45,8 +43,6 @@ class ThrowableObject extends MoveableObject {
     throwBottle() {
         this.speedY = 25;
         this.applyGravity();
-
-        // Horizontale Bewegung durch direction beeinflusst
         this.moveInterval = setInterval(() => {
             this.x += 10 * this.direction;
         }, 50);
@@ -57,7 +53,7 @@ class ThrowableObject extends MoveableObject {
         let frameIndex = 0;
         let animationImages = this.IMAGES_BOTTLES_THROWING;
     
-        const frameDuration = 100; // Zeige jedes Frame 100ms lang (=> 10 FPS)
+        const frameDuration = 100; 
         let lastFrameTime = Date.now();
     
         const animate = () => {
@@ -72,14 +68,12 @@ class ThrowableObject extends MoveableObject {
                         this.img = this.imageCache[animationImages[frameIndex]];
                         frameIndex++;
                     } else {
-                        // Splash-Animation ist fertig
                         this.img = this.imageCache[animationImages[animationImages.length - 1]];
                         cancelAnimationFrame(this.animationId);
                         clearInterval(this.moveInterval);
                         return;
                     }
                 } else {
-                    // Wurfanimation
                     this.img = this.imageCache[animationImages[frameIndex]];
                     frameIndex = (frameIndex + 1) % animationImages.length;
     

@@ -122,7 +122,7 @@ class Character extends MoveableObject {
             this.stopWalkSound();
             return;
         }
-
+    
         if ((this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
             (this.world.keyboard.LEFT && this.x > 0)) {
             if (this.world.keyboard.RIGHT) {
@@ -136,16 +136,17 @@ class Character extends MoveableObject {
         } else {
             this.stopWalkSound();
         }
-
-        if (this.world.keyboard.SPACE && !this.isAboveGround() && !this.isJumping) {
+    
+        if (this.world.keyboard.SPACE && !this.isJumping && !this.isAboveGround()) {
             this.jump();
             this.audioManager.play('jump');
             this.isJumping = true;
-            this.jumpAnimationFrame = 0;
-            this.startJumpAnimation();
         }
+    
         this.world.camera_x = -this.x + 100;
     }
+    
+    
 
     /**
      * Displays the appropriate animation images based on the character's current state.
@@ -158,7 +159,7 @@ class Character extends MoveableObject {
         } else if (this.isHurt()) {
             this.playAnimation(this.IMAGES_HURT_CHARACTER);
         } else if (this.isJumping) {
-            this.playAnimation(this.IMAGES_JUMPING_CHARACTER);
+            this.showJumpImage(); 
         } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.playAnimation(this.IMAGES_WALKING_CHARACTER);
         } else if (this.isSleeping) {
@@ -167,34 +168,32 @@ class Character extends MoveableObject {
         } else {
             this.playAnimation(this.IMAGES_IDLE_CHARACTER);
         }
-
+    
         if (!this.isAboveGround()) {
             this.isJumping = false;
             this.isSleeping = false;
         }
     }
+    
 
     /**
-     * Starts the jump animation by updating the character's image every 100ms.
+     * Starts the jump animation by updating the character's image
      * Stops the animation when the character lands.
      */
-    startJumpAnimation() {
-        if (this.jumpInterval) {
-            clearInterval(this.jumpInterval);
-        }
+    showJumpImage() {
+        const speedY = this.speedY;
 
-        this.jumpInterval = setInterval(() => {
-            if (this.isAboveGround()) {
-                const path = this.IMAGES_JUMPING_CHARACTER[this.jumpAnimationFrame % this.IMAGES_JUMPING_CHARACTER.length];
-                this.img = this.imageCache[path];
-                this.jumpAnimationFrame++;
-            } else {
-                clearInterval(this.jumpInterval);
-                this.jumpInterval = null;
-                this.jumpAnimationFrame = 0;
-                this.isJumping = false;
-            }
-        }, 100);
+        if (speedY > 5) {
+            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-33.png'];
+        } else if (speedY > 2) {
+            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-34.png'];
+        } else if (speedY > -1 && speedY <= 2) {
+            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-35.png'];
+        } else if (speedY > -5) {
+            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-36.png'];
+        } else if (speedY <= -5) {
+            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-38.png'];
+        }
     }
 
     /**
