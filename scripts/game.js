@@ -143,7 +143,7 @@ function chooseGameLevel() {
     const gameLevelOverlay = document.getElementById('game-level-overlay');
     gameLevelOverlay.classList.remove('d_none');
     gameLevelOverlay.innerHTML = showGameLevelTemplate();
-    if (!audioManager.isMuted) {
+    if (!audioManager.isMuted && audioManager.sounds.menu.paused) {
         audioManager.play('menu');
     }
 }

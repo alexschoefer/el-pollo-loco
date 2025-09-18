@@ -96,15 +96,24 @@ class World {
     * Starts the main game logic loop with a fixed interval.
     */
     run() {
+        // Hauptlogik-Intervall (z. B. für Game Mechanics)
         if (this.intervalId) {
             clearInterval(this.intervalId);
         }
         this.intervalId = setInterval(() => {
             if (this.gameIsOver) return;
-            this.collisionHandler.checkAll();
             this.checkThrowObjects();
             this.checkGameOver();
         }, 200);
+    
+        // Separates Intervall für Kollisionen
+        if (this.collisionIntervalId) {
+            clearInterval(this.collisionIntervalId);
+        }
+        this.collisionIntervalId = setInterval(() => {
+            if (this.gameIsOver) return;
+            this.collisionHandler.checkAll();
+        }, 50); // oder z. B. 100–150 ms für flüssigere Kollisionschecks
     }
 
     /**
