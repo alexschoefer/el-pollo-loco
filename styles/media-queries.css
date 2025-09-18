@@ -1,3 +1,45 @@
+/* ---------- DEFAULT STATE ---------- */
+#rotate-message {
+  display: none;
+}
+
+/* ---------- TOUCH-GERÃTE: PORTRAIT ---------- */
+@media (pointer: coarse) and (orientation: portrait) {
+  .game-content-wrapper,
+  .game-canvas,
+  canvas {
+    display: none !important;
+  }
+
+  #rotate-message {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+  }
+}
+
+/* ---------- TOUCH-GERÃTE: LANDSCAPE ---------- */
+@media (pointer: coarse) and (orientation: landscape) {
+  .game-content-wrapper {
+    display: flex;
+  }
+
+  #rotate-message {
+    display: none !important;
+  }
+}
+
+/* ---------- SHOW MOBILE BUTTONS ON SMALLER WIDTHS ---------- */
+@media (max-width: 1040px) {
+  .mobile-btn-container {
+    display: flex;
+    pointer-events: auto;
+  }
+}
+
 @media (min-width: 1030px) {
   .burger-menu-container {
     display: none;
@@ -487,23 +529,4 @@
   }
 }
 
-/* ---------- ORIENTATION: PORTRAIT ---------- */
-@media (orientation: portrait) {
-  .game-content-wrapper,
-  .game-canvas,
-  canvas {
-    display: none !important;
-  }
 
-  #rotate-message {
-    display: flex;
-  }
-}
-
-/* ---------- SHOW MOBILE BUTTONS ON SMALLER WIDTHS ---------- */
-@media (max-width: 1040px) {
-  .mobile-btn-container {
-    display: flex;
-    pointer-events: auto;
-  }
-}

@@ -93,9 +93,9 @@ class EndBoss extends MoveableObject {
         this.loadImages(this.IMAGES_DEAD_ENDBOSS);
         this.loadImages(this.IMAGES_ATTACK_ENDBOSS);
         this.loadImages(this.IMAGES_WALK_ENDBOSS);
-        this.x = 2000; // Initial position off-screen
+        this.x = 2500; // Initial position off-screen
         this.animateEndboss();
-        this.speed = 2;
+        this.speed = 5;
         this.isMoving = false;
     }
 
@@ -168,23 +168,37 @@ class EndBoss extends MoveableObject {
      * Applies damage to the EndBoss and updates its energy.
      */
     hit() {
-        this.energy -= 5;
+        let selectedLevel = localStorage.getItem('selectedLevel');
+        this.energy -= 20;
         if (this.energy < 0) this.energy = 0;
-    
-        this.hitsTaken++;
-    
-        if (this.hitsTaken >= 2) {
-            this.becomeAggressive();
+        this.hitsTaken++;        
+        if (this.energy <= 90 && !this.phase1) {
+            this.becomeAggressive(1); 
+            this.phase1 = true;
+        } else if (this.energy <= 60 && !this.phase2) {
+            this.becomeAggressive(2); 
+            this.phase2 = true;
+        } else if (this.energy <= 30 && !this.phase3 && selectedLevel === 'expert') {
+            this.becomeAggressive(3); 
+            this.phase3 = true;
         }
     
         this.lastHit = new Date().getTime();
     }
 
-    becomeAggressive() {
-        if (!this.isAggressive) {
-            this.isAggressive = true;
-            this.speed = 15; 
-            this.isMoving = true;
+    becomeAggressive(phase) {
+        this.isAggressive = true;
+    
+        if (phase === 1) {
+            this.speed = 10;
+        } else if (phase === 2) {
+            this.speed = 14;
+        } else if (phase === 3) {
+            this.speed = 16;
+            this.attackEndboss(); 
         }
+    
+        this.isMoving = true;
     }
+    
 }

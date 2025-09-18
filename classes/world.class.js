@@ -101,10 +101,17 @@ class World {
         }
         this.intervalId = setInterval(() => {
             if (this.gameIsOver) return;
-            this.collisionHandler.checkAll();
             this.checkThrowObjects();
             this.checkGameOver();
         }, 200);
+    
+        if (this.collisionIntervalId) {
+            clearInterval(this.collisionIntervalId);
+        }
+        this.collisionIntervalId = setInterval(() => {
+            if (this.gameIsOver) return;
+            this.collisionHandler.checkAll();
+        }, 50);
     }
 
     /**
@@ -133,12 +140,17 @@ class World {
         if (this.keyboard.D && this.bottleCollection.length > 0) {
             const isThrowLeft = this.character.otherDirection === true;
             const offsetX = isThrowLeft ? -20 : 100;
+            this.character.isSleeping = false;
+            this.character.stopSnoreSound();
+            this.character.lastIdleTime = new Date().getTime();
+    
             const bottle = new ThrowableObject(
                 this.character.x + offsetX,
                 this.character.y + 150,
                 this.audioManager,
                 isThrowLeft
             );
+    
             this.throwableObjects.push(bottle);
             this.bottleCollection.pop();
             this.updateBottleStatusbar();
@@ -296,9 +308,22 @@ class World {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
+        if (this.collisionIntervalId) {
+            clearInterval(this.collisionIntervalId);
+            this.collisionIntervalId = null;
+        }
+
+        for (let key in this.keyboard) {
+            this.keyboard[key] = false;
+        }
+    
+        this.character = new Character(this.audioManager);
+        this.character.world = this;
+    
         this.endScreen = null;
         this.gameIsOver = false;
         this.camera_x = 0;
+        
         this.draw();
         this.run();
     }

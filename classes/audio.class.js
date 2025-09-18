@@ -39,9 +39,8 @@ class AudioManager {
     play(name) {
         const sound = this.sounds[name];
         if (sound && !this.isMuted) {
-            if (sound.paused) {
-                sound.currentTime = 0;
-            }
+            if (!sound.paused && !sound.ended) return;
+            sound.currentTime = 0;
             sound.play().catch((error) => {
                 console.warn(`AudioManager: Failed to play sound '${name}':`, error);
             });
