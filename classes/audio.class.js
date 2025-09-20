@@ -29,6 +29,7 @@ class AudioManager {
         /** @type {boolean} Indicates whether all sounds are muted. */
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
         this.sounds.game.volume = 0.2;
+        this.sounds.snore.volume = 0.2;
         this.muteAll(this.isMuted);
     }
 

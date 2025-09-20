@@ -304,6 +304,7 @@ class World {
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
         }
+        this.audioManager.stopAllSounds();
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
@@ -312,20 +313,19 @@ class World {
             clearInterval(this.collisionIntervalId);
             this.collisionIntervalId = null;
         }
-
         for (let key in this.keyboard) {
             this.keyboard[key] = false;
         }
-    
         this.character = new Character(this.audioManager);
         this.character.world = this;
-    
         this.endScreen = null;
         this.gameIsOver = false;
         this.camera_x = 0;
-        
         this.draw();
         this.run();
+        if (!this.audioManager.isMuted) {
+            this.audioManager.play('game'); // ganz am Ende
+        }
     }
 
     /**
