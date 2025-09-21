@@ -246,12 +246,11 @@ class World {
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            this.audioManager.stopAllSounds();
-            this.audioManager.checkActiveSounds(); 
-            document.getElementById('mobile-buttons')?.classList.add('d_none');
             audioManager.stopAllSounds();
+            audioManager.checkActiveSounds(); 
+            document.getElementById('mobile-buttons')?.classList.add('d_none');
             if (!audioManager.isMuted) {
-                audioManager.play('gameover'); // oder 'gameover'
+                audioManager.play('gameover'); 
             }
         } else if (this.endboss.isDead()) {
             this.endScreen = new Endscreen(Endscreen.IMAGE_WIN);
@@ -259,12 +258,11 @@ class World {
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            audioManager.stopAllSounds();
             audioManager.checkActiveSounds(); 
             document.getElementById('mobile-buttons')?.classList.add('d_none');
             audioManager.stopAllSounds();
             if (!audioManager.isMuted) {
-                audioManager.play('win'); // oder 'gameover'
+                audioManager.play('win');
             }
         }
     }
@@ -325,12 +323,10 @@ class World {
         localStorage.setItem("isMuted", JSON.stringify(this.isMuted));
     
         if (!this.isMuted) {
-            // Nur starten, wenn "game" nicht schon läuft
             if (!audioManager.isPlaying('game')) {
                 audioManager.safePlay('game');
             }
         } else {
-            // Beim Muten auch stoppen
             audioManager.stop('game');
         }
     }

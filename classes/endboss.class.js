@@ -287,8 +287,7 @@ class EndBoss extends MoveableObject {
         setTimeout(() => {
             this.canDash = true;
         }, this.dashCooldown);
-    }
-    
+    }  
 }
 
 

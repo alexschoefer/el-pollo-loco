@@ -31,28 +31,29 @@ class AudioManager {
     }
 
     /**
-     * Spielt einen Sound ab, verhindert schnelle Wiederholungen.
+     * Plays a sound by its name while preventing rapid replays.
+     * If the sound is in the list of looped sounds and is already playing, it won't be replayed.
+     *
+     * @param {string} name - The name/key of the sound to play.
      */
     play(name) {
         const sound = this.sounds[name];
         if (!sound || this.isMuted) return;
-    
-        // Loop-Sound? Nur einmal starten!
         if (this.loopedSounds.includes(name) && !sound.paused) return;
-    
+
         const now = Date.now();
         const last = this.lastPlayed[name] || 0;
         const minDelay = 100;
-    
+
         if (now - last < minDelay) return;
         this.lastPlayed[name] = now;
-    
+
         try {
             if (!this.loopedSounds.includes(name)) {
                 sound.pause();
                 sound.currentTime = 0;
             }
-    
+
             const playPromise = sound.play();
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
@@ -63,10 +64,13 @@ class AudioManager {
             console.warn(`AudioManager: Fehler beim Abspielen von '${name}':`, error);
         }
     }
-    
+
 
     /**
-     * Mutes or unmutes all sounds, and resets currentTime.
+     * Mutes or unmutes all sounds and resets their playback position.
+     * Looping sounds are paused and loop is temporarily disabled when muted.
+     *
+     * @param {boolean} mute - Whether to mute (true) or unmute (false) all sounds.
      */
     muteAll(mute) {
         this.isMuted = mute;
@@ -79,7 +83,7 @@ class AudioManager {
             if (mute) {
                 sound.volume = 0;
                 if (this.loopedSounds.includes(name)) {
-                    sound.loop = false; // Loop sofort deaktivieren
+                    sound.loop = false;
                 }
             } else {
                 sound.volume = this.defaultVolume;
@@ -87,7 +91,6 @@ class AudioManager {
         }
 
         if (!mute) {
-            // Loops reaktivieren mit kleinem Delay
             setTimeout(() => {
                 this.loopedSounds.forEach(name => {
                     if (this.sounds[name]) {
@@ -104,17 +107,15 @@ class AudioManager {
     stopAllSounds() {
         for (const [name, sound] of Object.entries(this.sounds)) {
             if (!sound) continue;
-    
+
             sound.pause();
             sound.currentTime = 0;
-    
+
             if (this.loopedSounds.includes(name)) {
-                // NICHT: sound.loop = false;
-                // einfach in Ruhe lassen
             }
         }
     }
-    
+
 
     /**
      * Returns true if the sound is actively playing.
@@ -135,18 +136,18 @@ class AudioManager {
         }
     }
 
+    /**
+     * Stops and resets a specific sound by name.
+     * @param {string} name - The name/key of the sound to stop.
+     */
     stop(name) {
         const sound = this.sounds[name];
         if (sound) {
             sound.pause();
             sound.currentTime = 0;
             sound.volume = this.defaultVolume;
-    
-            // Falls Loop-Sound, temporär Loop aus (optional):
             if (this.loopedSounds.includes(name)) {
                 sound.loop = false;
-    
-                // Nach kurzer Zeit wieder aktivieren
                 setTimeout(() => {
                     sound.loop = true;
                 }, 200);
@@ -155,12 +156,14 @@ class AudioManager {
     }
 
     /**
- * Spielt einen Sound mit etwas Verzögerung ab, um Browserprobleme (z. B. AbortError) zu vermeiden.
- */
+     * Safely plays a sound after a short delay to avoid browser playback errors
+     * @param {string} name - The name/key of the sound to play.
+     * @param {number} [delay=100] - Optional delay in milliseconds before playing the sound.
+     */
     safePlay(name, delay = 100) {
         const sound = this.sounds[name];
         if (!sound || this.isMuted) return;
-    
+
         setTimeout(() => {
             if (!this.isPlaying(name)) {
                 sound.play().catch(err => {
@@ -169,8 +172,4 @@ class AudioManager {
             }
         }, delay);
     }
-    
-    
-   
-
 }

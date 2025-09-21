@@ -82,14 +82,13 @@ class MoveableObject extends DrawableObject {
     /**
      * Reduces the object's energy by 5 and records the time it was hit.
      */
-    hit() {
-        this.energy -= 5;
+    hit(damage = 10) {
+        this.energy -= damage;
         if (this.energy < 0) {
             this.energy = 0;
         }
         this.lastHit = new Date().getTime();
-    
-        if (this.isDead() && this.world && !this.world.gameIsOver) {
+        if (this.energy === 0 && this.world && !this.world.gameIsOver) {
             this.world.checkGameOver();
         }
     }

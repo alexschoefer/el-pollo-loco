@@ -428,37 +428,5 @@ class Character extends MoveableObject {
         } else {
             this.world.statusbarHealth.setPercentage(this.energy);
         }
-    }
-
-    safePlay(name) {
-        const sound = this.sounds[name];
-        if (!sound || this.isMuted) return;
-    
-        const now = Date.now();
-        const last = this.lastPlayed[name] || 0;
-        const minDelay = 100;
-    
-        if (now - last < minDelay) return;
-        this.lastPlayed[name] = now;
-    
-        // Nur abspielen, wenn nicht schon aktiv
-        if (!sound.paused && !sound.ended && sound.currentTime > 0) return;
-    
-        try {
-            const playPromise = sound.play();
-    
-            if (playPromise !== undefined) {
-                playPromise
-                    .then(() => {
-                        // optional: console.log(`[AUDIO] '${name}' playing.`);
-                    })
-                    .catch(error => {
-                        console.warn(`AudioManager: Fehler beim Abspielen von '${name}':`, error);
-                    });
-            }
-        } catch (error) {
-            console.warn(`AudioManager: Fehler beim Abspielen von '${name}':`, error);
-        }
-    }
-    
+    }    
 }

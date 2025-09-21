@@ -45,11 +45,11 @@
 }
 
 #mobile-buttons {
-  pointer-events: none; /* <- Blockiert alle Pointer-Events auf dem Wrapper */
+  pointer-events: none;
 }
 
 #mobile-buttons button {
-  pointer-events: auto; /* <- Aktiviert Pointer-Events nur auf den Buttons selbst */
+  pointer-events: auto;
 }
 
 .burger-menu-container {

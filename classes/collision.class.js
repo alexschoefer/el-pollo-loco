@@ -134,7 +134,7 @@ class Collision {
     checkCollisionEndboss() {
         this.throwableObjects.forEach((bottle) => {
             if (!bottle.hasHitEndboss && this.endboss.isColliding(bottle)) {
-                this.endboss.hit(); // ✔️ Nur 1x Schaden
+                this.endboss.hit(); 
                 audioManager.play('chickenHurt');
                 bottle.hasSplashed = true;
                 bottle.hasHitEndboss = true;
