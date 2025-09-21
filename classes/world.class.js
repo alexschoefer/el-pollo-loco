@@ -161,31 +161,27 @@ class World {
      * Renders the entire game world on the canvas.
      */
     draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
-        this.ctx.translate(-this.camera_x, 0);
-        this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.clouds);
-        this.addToMap(this.character, this.height);
-        this.addToMap(this.endboss, this.height);
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.throwableObjects);
-
-        this.addObjectsToMap(this.level.bottles);
-        this.addObjectsToMap(this.level.coins);
-        this.ctx.translate(-this.camera_x, 0);
-        this.addObjectsToMap([this.statusbarHealth]);
-        this.addObjectsToMap([this.statusbarCoins]);
-        this.addObjectsToMap([this.statusbarBottles]);
-        this.addObjectsToMap([this.statusbarEndboss]);
-        if (this.endScreen && this.endScreen.visible) {
-            this.endScreen.draw(this.ctx);
+        if (!this.gameIsOver) {
+            this.addToMap(this.character, this.height);
+            this.addToMap(this.endboss, this.height);
+            this.addObjectsToMap(this.level.enemies);
+            this.addObjectsToMap(this.throwableObjects);
+            this.addObjectsToMap(this.level.bottles);
+            this.addObjectsToMap(this.level.coins);
+            this.ctx.translate(-this.camera_x, 0);
+            this.addObjectsToMap([this.statusbarHealth, this.statusbarCoins, this.statusbarBottles, this.statusbarEndboss]);
+        } else {
+            this.ctx.translate(-this.camera_x, 0);
+            this.endScreen?.visible && this.endScreen.draw(this.ctx);
         }
-        this.animationFrameId = requestAnimationFrame(() => this.draw());
-        this.drawSoundIcon();
-        this.drawFullscreenIcon();
+        requestAnimationFrame(() => this.draw());
+        if (!this.gameIsOver) this.drawSoundIcon(), this.drawFullscreenIcon();
     }
-
+    
     /**
      * Draws the sound icon in the top-right corner of the canvas.
      * */

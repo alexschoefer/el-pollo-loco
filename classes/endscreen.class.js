@@ -24,8 +24,8 @@ class Endscreen extends DrawableObject {
         this.visible = false;
 
         if (imagePath === Endscreen.IMAGE_GAMEOVER) {
-            this.width = 320;
-            this.height = 300;
+            this.width = 300;
+            this.height = 250;
         } else if (imagePath === Endscreen.IMAGE_WIN) {
             this.width = 300;
             this.height = 150;
