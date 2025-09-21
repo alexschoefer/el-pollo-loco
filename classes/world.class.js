@@ -394,8 +394,10 @@ class World {
      */
     handleCanvasClick(event) {
         const rect = this.canvas.getBoundingClientRect();
-        const clickX = event.clientX - rect.left;
-        const clickY = event.clientY - rect.top;
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        const clickX = (event.clientX - rect.left) * scaleX;
+        const clickY = (event.clientY - rect.top) * scaleY;
         if (this.isWithinBounds(clickX, clickY, this.soundIconBounds)) {
             this.toggleSound();
             return;

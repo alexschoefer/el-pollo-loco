@@ -11,14 +11,14 @@
     display: none !important;
   }
 
-  #rotate-message {
+  /* #rotate-message {
     display: flex !important;
     justify-content: center;
     align-items: center;
     text-align: center;
     padding: 20px;
     font-size: 18px;
-  }
+  } */
 }
 
 /* ---------- TOUCH-GERÃTE: LANDSCAPE ---------- */
@@ -27,9 +27,9 @@
     display: flex;
   }
 
-  #rotate-message {
+  /* #rotate-message {
     display: none !important;
-  }
+  } */
 }
 
 /* ---------- SHOW MOBILE BUTTONS ON SMALLER WIDTHS ---------- */
@@ -44,10 +44,24 @@
   .burger-menu-container {
     display: none;
   }
+
+  .mobile-left-controls,
+  .mobile-right-controls {
+    flex-direction: row;
+  }
+
+  .mobile-btn-wrapper {
+    bottom: -80px;
+  }
+
+  .mobile-btn-container button {
+    width: 70px;
+    height: 70px;
+  }
 }
 
 /* MEDIA QUERY: TABLETS & SMALL DESKTOPS ---------- */
-@media only screen and (max-width: 1024px) and (orientation: landscape){
+@media only screen and (max-width: 1024px) and (orientation: landscape) {
   h1 {
     font-size: 32px;
     text-align: center;
@@ -233,7 +247,7 @@
 
   .controlscreen {
     max-height: 100vh;
-    overflow: hidden; 
+    overflow: hidden;
     padding: 10px;
     box-sizing: border-box;
   }
@@ -248,7 +262,7 @@
   }
 
   .control-container-wrapper {
-    gap: 4px !important; 
+    gap: 4px !important;
   }
 
   .control-container-wrapper .control-container .control-button .key {
@@ -287,7 +301,7 @@
   }
 
   .controlscreen {
-    justify-content: flex-start; 
+    justify-content: flex-start;
   }
 
   .gamelevel-content-wrapper .game-introduction-container h2 {
@@ -304,9 +318,9 @@
 
 @media screen and (orientation: landscape) and (max-width: 850px) {
   .overlay-wrapper {
-    width: 90vw;           
-    max-width: unset;        
-    margin: 0 auto;           
+    width: 90vw;
+    max-width: unset;
+    margin: 0 auto;
     padding: 10px;
     box-sizing: border-box;
     align-items: center;
@@ -381,7 +395,7 @@
 
   .controlscreen {
     gap: 0;
-    max-width: 600px;
+    max-width: 550px;
   }
 
   canvas,
@@ -452,6 +466,9 @@
     overflow: hidden;
     padding: 10px;
     box-sizing: border-box;
+    margin: 0 auto;
+    max-height: 100vh;
+    overflow: hidden;
   }
 
   .btn-close-control-overview {
@@ -479,13 +496,6 @@
     .key-description {
     width: 120px;
     font-size: 14px;
-  }
-
-  .controlscreen {
-    padding: 5px;
-    margin: 0 auto;
-    max-height: 100vh;
-    overflow: hidden;
   }
 
   .controlscreen h2 {
@@ -539,10 +549,8 @@
   .game-content-wrapper {
     display: flex;
   }
-
+/* 
   #rotate-message {
     display: none;
-  }
+  } */
 }
-
-

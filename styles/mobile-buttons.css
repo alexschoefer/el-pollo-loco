@@ -16,7 +16,7 @@
   max-width: 720px;
   pointer-events: auto;
   padding: 0 10px;
-  gap: 400px;
+  gap: 560px;
 }
 
 .mobile-left-controls,
@@ -42,6 +42,14 @@
   height: 70%;
   object-fit: contain;
   pointer-events: none;
+}
+
+#mobile-buttons {
+  pointer-events: none; /* <- Blockiert alle Pointer-Events auf dem Wrapper */
+}
+
+#mobile-buttons button {
+  pointer-events: auto; /* <- Aktiviert Pointer-Events nur auf den Buttons selbst */
 }
 
 .burger-menu-container {

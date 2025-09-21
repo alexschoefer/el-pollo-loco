@@ -21,6 +21,10 @@ h1.fixed-headline {
   pointer-events: none;
 }
 
+canvas {
+  pointer-events: auto;
+  z-index: 1;
+}
 
 .content-wrapper {
   width: 100%;
