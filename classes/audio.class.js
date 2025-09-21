@@ -3,10 +3,6 @@
  */
 class AudioManager {
     constructor() {
-        /**
-         * A collection of all audio elements used in the game.
-         * @type {Object<string, HTMLAudioElement>}
-         */
         this.sounds = {
             coin: new Audio('assets/audio/collision-character-coin.wav'),
             bottle: new Audio('assets/audio/collision-character-bottle.wav'),
@@ -26,10 +22,10 @@ class AudioManager {
         this.sounds.game.loop = true;
         this.sounds.snore.loop = true;
         this.sounds.menu.loop = true;
-        /** @type {boolean} Indicates whether all sounds are muted. */
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
         this.sounds.game.volume = 0.2;
         this.sounds.snore.volume = 0.2;
+        this.sounds.menu.volume = 0.2;
         this.muteAll(this.isMuted);
     }
 

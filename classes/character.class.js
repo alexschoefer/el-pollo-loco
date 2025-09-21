@@ -9,7 +9,7 @@ class Character extends MoveableObject {
     playedFallStart = false;
     fallFrameIndex = 0;
     fallFrameDelayCounter = 0;
-    lastFallFrameTime = 0;  // Zeitpunkt des letzten Bildwechsels beim Fallen
+    lastFallFrameTime = 0; 
     fallFrameDelay = 150;
     landingShown = false;
     landedAt = 0;

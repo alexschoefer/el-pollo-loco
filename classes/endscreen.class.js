@@ -2,22 +2,11 @@
  * Represents the end screen displayed after the game finishes.
  */
 class Endscreen extends DrawableObject {
-    /**
-     * Path to the "Game Over" image.
-     * @type {string}
-     */
+
     static IMAGE_GAMEOVER = 'assets/img/You won, you lost/Game Over.png';
 
-    /**
-     * Path to the "You Win" image.
-     * @type {string}
-     */
     static IMAGE_WIN = 'assets/img/You won, you lost/You win B.png';
-
-    /**
-     * Creates an instance of the Endscreen.
-     * @param {string} imagePath - The path to the image to display
-     */
+    
     constructor(imagePath) {
         super();
         this.loadImage(imagePath);

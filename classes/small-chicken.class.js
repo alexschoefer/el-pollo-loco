@@ -3,22 +3,12 @@
  * Extends {@link MoveableObject}.
  */
 class SmallChicken extends MoveableObject {
-    /** Vertical position on the canvas */
+    
     y = 350;
-
-    /** Width of the chicken */
     width = 70;
-
-    /** Height of the chicken */
     height = 70;
-
-    /** Current energy level of the chicken (1 means alive) */
     energy = 1;
-
-    /** Flag indicating whether the chicken is dead */
     isDead = false;
-
-    /** Offset for collision detection or drawing adjustments */
     offset = {
         top: 5,
         bottom: 5,

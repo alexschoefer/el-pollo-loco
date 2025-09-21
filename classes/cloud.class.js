@@ -3,16 +3,10 @@
  * Inherits from MoveableObject and handles randomized positioning and continuous movement.
  */
 class Cloud extends MoveableObject {
-    /** @type {number} Vertical position of the cloud on the canvas. */
     y = 20;
-
-    /** @type {number} Width of the cloud image. */
     width = 500;
-
-    /** @type {number} Height of the cloud image. */
     height = 250;
 
-    /** @type {string[]} Available cloud image paths. */
     IMAGES_CLOUD = [
         'assets/img/5_background/layers/4_clouds/1.png',
         'assets/img/5_background/layers/4_clouds/2.png'
