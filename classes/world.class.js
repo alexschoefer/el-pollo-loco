@@ -200,6 +200,10 @@ class World {
      */
     drawFullscreenIcon() {
         if (!this.fullscreenIconLoaded) return;
+    
+        if (window.innerWidth > window.innerHeight && window.innerWidth < 700) {
+            return; 
+        }
         const iconSize = 30;
         const padding = 50;
         const x = this.canvas.width - iconSize - padding;
@@ -207,6 +211,7 @@ class World {
         this.fullscreenIconBounds = { x, y, width: iconSize, height: iconSize };
         this.ctx.drawImage(this.fullscreenIcon, x, y, iconSize, iconSize);
     }
+    
 
     /**
      * Adds an array of drawable objects to the canvas.
@@ -424,13 +429,5 @@ class World {
     showEndscreenButtons() {
         const btnContainer = document.getElementById('btn-endscreen-container');
         btnContainer.classList.remove('d_none');
-    }
-
-    /**
-     * Resizes the canvas on the window height and width
-     */
-    resizeCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
     }
 }
