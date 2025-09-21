@@ -12,6 +12,10 @@ class World {
     animationFrameId = null;
 
     constructor(canvas, keyboard, level) {
+        audioManager.stop('game');
+        if (!audioManager.isMuted) {
+            audioManager.play('game');
+        }
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -19,7 +23,6 @@ class World {
         this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
         this.maxCoins = this.level.coins.length;
         this.maxBottles = this.level.bottles.length;
-        this.audioManager = new AudioManager();
         this.character = new Character(this.audioManager);
         this.endboss = this.level.endboss;
         this.statusbarHealth = new StatusbarHealth();
@@ -37,10 +40,8 @@ class World {
         this.setWorld();
         this.draw();
         this.run();
-        if (!this.audioManager.isMuted) {
-            this.audioManager.sounds.game.play().catch((e) => {
-                console.warn('Autoplay blockiert den Gamesound:', e);
-            });
+        if (!audioManager.isMuted && !audioManager.isPlaying('game')) {
+            audioManager.play('game');
         }
         this.soundIcon = new Image();
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
@@ -60,28 +61,6 @@ class World {
         this.fullscreenIcon.onload = () => {
             this.fullscreenIconLoaded = true;
         };
-        window.addEventListener('resize', () => {
-            if (document.fullscreenElement) {
-                this.resizeCanvas();
-            }
-        });
-
-        document.addEventListener('fullscreenchange', () => {
-            const isFullscreen = !!document.fullscreenElement;
-            if (isFullscreen) {
-                this.canvas.classList.add('fullscreen');
-                this.resizeCanvas();
-            } else {
-                this.canvas.classList.remove('fullscreen');
-                this.canvas.width = 720;
-                this.canvas.height = 480;
-            }
-            this.isFullscreen = isFullscreen;
-            this.fullscreenIcon.src = this.isFullscreen
-                ? "assets/img-main-background/fullscreen-minimize.png"
-                : "assets/img-main-background/fullscreen-expand.png";
-            localStorage.setItem("isFullscreen", JSON.stringify(this.isFullscreen));
-        });
     }
 
     /**
@@ -104,7 +83,7 @@ class World {
             this.checkThrowObjects();
             this.checkGameOver();
         }, 200);
-    
+
         if (this.collisionIntervalId) {
             clearInterval(this.collisionIntervalId);
         }
@@ -143,14 +122,13 @@ class World {
             this.character.isSleeping = false;
             this.character.stopSnoreSound();
             this.character.lastIdleTime = new Date().getTime();
-    
             const bottle = new ThrowableObject(
                 this.character.x + offsetX,
                 this.character.y + 150,
                 this.audioManager,
                 isThrowLeft
             );
-    
+
             this.throwableObjects.push(bottle);
             this.bottleCollection.pop();
             this.updateBottleStatusbar();
@@ -161,29 +139,25 @@ class World {
      * Renders the entire game world on the canvas.
      */
     draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.backgroundObjects);
-        this.ctx.translate(-this.camera_x, 0);
-        this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(this.level.clouds);
-        this.addToMap(this.character, this.height);
-        this.addToMap(this.endboss, this.height);
-        this.addObjectsToMap(this.level.enemies);
-        this.addObjectsToMap(this.throwableObjects);
-
-        this.addObjectsToMap(this.level.bottles);
-        this.addObjectsToMap(this.level.coins);
-        this.ctx.translate(-this.camera_x, 0);
-        this.addObjectsToMap([this.statusbarHealth]);
-        this.addObjectsToMap([this.statusbarCoins]);
-        this.addObjectsToMap([this.statusbarBottles]);
-        this.addObjectsToMap([this.statusbarEndboss]);
-        if (this.endScreen && this.endScreen.visible) {
-            this.endScreen.draw(this.ctx);
+        if (!this.gameIsOver) {
+            this.addToMap(this.character, this.height);
+            this.addToMap(this.endboss, this.height);
+            this.addObjectsToMap(this.level.enemies);
+            this.addObjectsToMap(this.throwableObjects);
+            this.addObjectsToMap(this.level.bottles);
+            this.addObjectsToMap(this.level.coins);
+            this.ctx.translate(-this.camera_x, 0);
+            this.addObjectsToMap([this.statusbarHealth, this.statusbarCoins, this.statusbarBottles, this.statusbarEndboss]);
+        } else {
+            this.ctx.translate(-this.camera_x, 0);
+            this.endScreen?.visible && this.endScreen.draw(this.ctx);
         }
-        this.animationFrameId = requestAnimationFrame(() => this.draw());
-        this.drawSoundIcon();
-        this.drawFullscreenIcon();
+        requestAnimationFrame(() => this.draw());
+        if (!this.gameIsOver) this.drawSoundIcon(), this.drawFullscreenIcon();
     }
 
     /**
@@ -204,6 +178,10 @@ class World {
      */
     drawFullscreenIcon() {
         if (!this.fullscreenIconLoaded) return;
+    
+        if (window.innerWidth > window.innerHeight && window.innerWidth < 700) {
+            return; 
+        }
         const iconSize = 30;
         const padding = 50;
         const x = this.canvas.width - iconSize - padding;
@@ -211,6 +189,7 @@ class World {
         this.fullscreenIconBounds = { x, y, width: iconSize, height: iconSize };
         this.ctx.drawImage(this.fullscreenIcon, x, y, iconSize, iconSize);
     }
+    
 
     /**
      * Adds an array of drawable objects to the canvas.
@@ -267,10 +246,11 @@ class World {
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            this.audioManager.stopAllSounds();
+            audioManager.stopAllSounds();
+            audioManager.checkActiveSounds(); 
             document.getElementById('mobile-buttons')?.classList.add('d_none');
-            if (!this.audioManager.isMuted) {
-                this.audioManager.play('gameover');
+            if (!audioManager.isMuted) {
+                audioManager.play('gameover'); 
             }
         } else if (this.endboss.isDead()) {
             this.endScreen = new Endscreen(Endscreen.IMAGE_WIN);
@@ -278,10 +258,11 @@ class World {
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            this.audioManager.stopAllSounds();
+            audioManager.checkActiveSounds(); 
             document.getElementById('mobile-buttons')?.classList.add('d_none');
-            if (!this.audioManager.isMuted) {
-                this.audioManager.play('win');
+            audioManager.stopAllSounds();
+            if (!audioManager.isMuted) {
+                audioManager.play('win');
             }
         }
     }
@@ -312,20 +293,20 @@ class World {
             clearInterval(this.collisionIntervalId);
             this.collisionIntervalId = null;
         }
-
         for (let key in this.keyboard) {
             this.keyboard[key] = false;
         }
-    
         this.character = new Character(this.audioManager);
         this.character.world = this;
-    
         this.endScreen = null;
         this.gameIsOver = false;
         this.camera_x = 0;
-        
         this.draw();
         this.run();
+        audioManager.stopAllSounds();
+        if (!audioManager.isMuted && !audioManager.isPlaying('game')) {
+            audioManager.play('game');
+        }
     }
 
     /**
@@ -333,16 +314,23 @@ class World {
      */
     toggleSound() {
         this.isMuted = !this.isMuted;
+    
         this.soundIcon.src = this.isMuted
             ? "assets/img-main-background/muted-icon.png"
             : "assets/img-main-background/unmuted-icon.png";
-        this.audioManager.muteAll(this.isMuted);
+    
+        audioManager.muteAll(this.isMuted);
         localStorage.setItem("isMuted", JSON.stringify(this.isMuted));
+    
         if (!this.isMuted) {
-            this.audioManager.sounds.game.play().catch(e => console.warn('Konnte Gamesound nicht abspielen:', e));
+            if (!audioManager.isPlaying('game')) {
+                audioManager.safePlay('game');
+            }
+        } else {
+            audioManager.stop('game');
         }
     }
-
+    
     /**
      * Toggles fullscreen mode for the canvas. Updates icon and saves state to localStorage.
      */
@@ -385,8 +373,10 @@ class World {
      */
     handleCanvasClick(event) {
         const rect = this.canvas.getBoundingClientRect();
-        const clickX = event.clientX - rect.left;
-        const clickY = event.clientY - rect.top;
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        const clickX = (event.clientX - rect.left) * scaleX;
+        const clickY = (event.clientY - rect.top) * scaleY;
         if (this.isWithinBounds(clickX, clickY, this.soundIconBounds)) {
             this.toggleSound();
             return;
@@ -413,13 +403,5 @@ class World {
     showEndscreenButtons() {
         const btnContainer = document.getElementById('btn-endscreen-container');
         btnContainer.classList.remove('d_none');
-    }
-
-    /**
-     * Resizes the canvas on the window height and width
-     */
-    resizeCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
     }
 }

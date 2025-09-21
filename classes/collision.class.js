@@ -36,13 +36,13 @@ class Collision {
                 enemy.energy = 0;
                 enemy.isDead = true;
                 enemy.speed = 0;
-                this.audioManager.play('chickenHurt');
+                audioManager.play('chickenHurt');
                 this.world.removeDeadChickenFromMap(enemy);
                 // this.character.speedY = -10;
             } else if (this.character.isColliding(enemy) && !enemy.isDead) {
                 this.character.hit();
                 this.statusbarHealth.setPercentage(this.character.energy);
-                this.audioManager.play('hurt');
+                audioManager.play('hurt');
             }
         });
     }
@@ -56,7 +56,7 @@ class Collision {
             if (this.character.isColliding(bottle)) {
                 this.bottleCollection.push(bottle);
                 this.world.updateBottleStatusbar();
-                this.audioManager.play('bottle');
+                audioManager.play('bottle');
                 this.world.removeFromMap('bottles', bottle);
             }
         })
@@ -71,7 +71,7 @@ class Collision {
                 if (enemy.isColliding(bottle) && !enemy.isDead) {
                     enemy.isDead = true;
                     enemy.speed = 0;
-                    this.audioManager.play('chickenHurt');
+                    audioManager.play('chickenHurt');
                     this.world.removeDeadChickenFromMap(enemy);
                     bottle.hasSplashed = true;
                 }
@@ -85,8 +85,8 @@ class Collision {
     checkCollisionEndbossCharacter() {
         if (this.endboss.isColliding(this.character)) {
             this.character.hit();
-            this.audioManager.play('hurt');
-            this.audioManager.play('endbossAttack');
+            audioManager.play('hurt');
+            audioManager.play('endbossAttack');
             this.statusbarHealth.setPercentage(this.character.energy);
             this.endboss.attackEndboss();
             this.endboss.moveLeftEndboss();
@@ -122,7 +122,7 @@ class Collision {
             if (this.character.isColliding(coin)) {
                 this.coinsCollection.push(coin);
                 this.statusbarCoins.setPercentage(Math.min(this.coinsCollection.length / this.level.maxCoins * 100, 100));
-                this.audioManager.play('coin');
+                audioManager.play('coin');
                 this.world.removeFromMap('coins', coin);
             }
         })
@@ -134,10 +134,10 @@ class Collision {
     checkCollisionEndboss() {
         this.throwableObjects.forEach((bottle) => {
             if (!bottle.hasHitEndboss && this.endboss.isColliding(bottle)) {
-                this.endboss.hit(); // ✔️ Nur 1x Schaden
-                this.audioManager.play('chickenHurt');
+                this.endboss.hit(); 
+                audioManager.play('chickenHurt');
                 bottle.hasSplashed = true;
-                bottle.hasHitEndboss = true; // ✅ verhindert Mehrfachschaden
+                bottle.hasHitEndboss = true;
                 this.statusbarEndboss.setPercentage(this.endboss.energy);
             }
         });

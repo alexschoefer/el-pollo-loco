@@ -4,7 +4,7 @@
  */
 function createLevelExpert() {
     const coins = generateRandomCoins(5, 8);
-    const bottles = generateRandomBottles(6, 8);
+    const bottles = generateRandomBottles(10, 12);
     const maxCoins = coins.length;
     const maxBottles = bottles.length;
     const chickenStartX = 450 + Math.floor(Math.random() * 200);
@@ -53,6 +53,11 @@ function createLevelExpert() {
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 720 * 4),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 720 * 4),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 720 * 4),
+
+        new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 5),
+        new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720 * 5),
+        new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720 * 5),
+        new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720 * 5),
     ];
     const endboss = new EndBoss(); 
     return new Level(

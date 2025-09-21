@@ -17,10 +17,6 @@ class StatusbarHealth extends DrawableObject {
         'assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
     ];
 
-    /**
-     * Current health percentage (0 to 100).
-     * @type {number}
-     */
     percentage = 100;
 
     /**

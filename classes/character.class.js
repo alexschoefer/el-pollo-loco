@@ -1,19 +1,23 @@
 class Character extends MoveableObject {
-    audioManager;
     height = 300;
     width = 150;
     y = 135;
     speed = 10;
     isSleeping = false;
     isJumping = false;
-    jumpAnimationFrame = 0;
-    jumpInterval = null;
+    playedFallStart = false;
+    fallFrameIndex = 0;
+    fallFrameDelayCounter = 0;
+    lastFallFrameTime = 0; 
+    fallFrameDelay = 150;
+    landingShown = false;
+    landedAt = 0;
 
     offset = {
-        top: 120,
+        top: 160,
         bottom: 20,
-        left: 40,
-        right: 40
+        left: 55,
+        right: 55
     };
 
     IMAGES_WALKING_CHARACTER = [
@@ -26,16 +30,17 @@ class Character extends MoveableObject {
     ];
 
     IMAGES_JUMPING_CHARACTER = [
-        'assets/img/2_character_pepe/3_jump/J-31.png',
-        'assets/img/2_character_pepe/3_jump/J-32.png',
         'assets/img/2_character_pepe/3_jump/J-33.png',
         'assets/img/2_character_pepe/3_jump/J-34.png',
         'assets/img/2_character_pepe/3_jump/J-35.png',
-        'assets/img/2_character_pepe/3_jump/J-36.png',
-        'assets/img/2_character_pepe/3_jump/J-37.png',
-        'assets/img/2_character_pepe/3_jump/J-38.png',
-        'assets/img/2_character_pepe/3_jump/J-39.png'
     ];
+
+    IMAGES_FALLING_CHARACTER = [
+        "assets/img/2_character_pepe/3_jump/J-36.png",
+        "assets/img/2_character_pepe/3_jump/J-37.png",
+        "assets/img/2_character_pepe/3_jump/J-38.png",
+        "assets/img/2_character_pepe/3_jump/J-39.png"
+    ]
 
     IMAGES_DEAD_CHARACTER = [
         'assets/img/2_character_pepe/5_dead/D-51.png',
@@ -85,13 +90,15 @@ class Character extends MoveableObject {
         super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING_CHARACTER);
         this.loadImages(this.IMAGES_JUMPING_CHARACTER);
+        this.loadImages(this.IMAGES_FALLING_CHARACTER);
         this.loadImages(this.IMAGES_DEAD_CHARACTER);
         this.loadImages(this.IMAGES_HURT_CHARACTER);
         this.loadImages(this.IMAGES_IDLE_CHARACTER);
         this.loadImages(this.IMAGES_LONG_IDLE_CHARACTER);
         this.applyGravity();
         this.animateCharacter();
-        this.audioManager = audioManager;
+        this.walkSoundStarted = false;
+        this.snoreStarted = false;
         this.energy = 100;
     }
 
@@ -106,7 +113,7 @@ class Character extends MoveableObject {
 
         setInterval(() => {
             this.showImagesOfMovementCharacter();
-        }, 200);
+        }, 100);
 
         setInterval(() => {
             this.checkIfCharacterSleeping();
@@ -118,11 +125,12 @@ class Character extends MoveableObject {
      * Moves character left or right, starts/stops walking sound, triggers jump logic,
      */
     moveCharacter() {
+        this.isHoldingJump = this.world.keyboard.SPACE;
         if (this.world.gameIsOver) {
             this.stopWalkSound();
             return;
         }
-    
+
         if ((this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) ||
             (this.world.keyboard.LEFT && this.x > 0)) {
             if (this.world.keyboard.RIGHT) {
@@ -136,17 +144,16 @@ class Character extends MoveableObject {
         } else {
             this.stopWalkSound();
         }
-    
-        if (this.world.keyboard.SPACE && !this.isJumping && !this.isAboveGround()) {
+
+        if (this.world.keyboard.SPACE && !this.isJumping && this.isOnGround()) {
             this.jump();
-            this.audioManager.play('jump');
+            // this.audioManager.play('jump');
+            audioManager.play('jump');
             this.isJumping = true;
+            this.jumpAnimationFrame = 0;
         }
-    
         this.world.camera_x = -this.x + 100;
     }
-    
-    
 
     /**
      * Displays the appropriate animation images based on the character's current state.
@@ -158,8 +165,8 @@ class Character extends MoveableObject {
             this.playAnimation(this.IMAGES_DEAD_CHARACTER);
         } else if (this.isHurt()) {
             this.playAnimation(this.IMAGES_HURT_CHARACTER);
-        } else if (this.isJumping) {
-            this.showJumpImage(); 
+        } else if (this.isJumping || this.isAboveGround()) {
+            this.updateJumpAnimation();
         } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.playAnimation(this.IMAGES_WALKING_CHARACTER);
         } else if (this.isSleeping) {
@@ -168,32 +175,144 @@ class Character extends MoveableObject {
         } else {
             this.playAnimation(this.IMAGES_IDLE_CHARACTER);
         }
-    
-        if (!this.isAboveGround()) {
-            this.isJumping = false;
-            this.isSleeping = false;
-        }
     }
-    
+
+    isOnGround() {
+        return !this.isAboveGround();
+    }
 
     /**
-     * Starts the jump animation by updating the character's image
-     * Stops the animation when the character lands.
+     * Updates the jump animation based on the character's current vertical speed and state.
+     * This method delegates to the various handle* methods for different jump phases.
      */
-    showJumpImage() {
-        const speedY = this.speedY;
+    updateJumpAnimation() {
+        const now = Date.now();
+        if (this.handleJumpStart()) return;
+        if (this.handleJumpAscent()) return;
+        if (this.handleFallStart(now)) return;
+        if (this.handleFalling(now)) return;
+        if (this.handleLandingAnimation(now)) return;
+    }
 
-        if (speedY > 5) {
-            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-33.png'];
-        } else if (speedY > 2) {
-            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-34.png'];
-        } else if (speedY > -1 && speedY <= 2) {
-            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-35.png'];
-        } else if (speedY > -5) {
-            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-36.png'];
-        } else if (speedY <= -5) {
-            this.img = this.imageCache['assets/img/2_character_pepe/3_jump/J-38.png'];
+    /**
+     * Handles the start of a jump animation.
+     * @returns {boolean} True if this frame was handled.
+     */
+    handleJumpStart() {
+        if (this.justJumped) {
+            this.playAnimation(["assets/img/2_character_pepe/3_jump/J-33.png"]);
+            this.justJumped = false;
+            return true;
         }
+        return false;
+    }
+
+    /**
+     * Handles the animation during the ascent phase of a jump.
+     * @returns {boolean} True if this frame was handled.
+     */
+    handleJumpAscent() {
+        const stillHoldingJump = this.isHoldingJump && this.isAboveGround();
+        const rising = this.speedY > 0;
+
+        if (rising || stillHoldingJump) {
+            this.playAnimation(["assets/img/2_character_pepe/3_jump/J-34.png"]);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Handles the transition frame when the character starts to fall.
+     * @param {number} now - The current timestamp.
+     * @returns {boolean} True if this frame was handled.
+     */
+    handleFallStart(now) {
+        if (this.speedY <= 0 && !this.playedFallStart) {
+            this.playAnimation(["assets/img/2_character_pepe/3_jump/J-35.png"]);
+            this.playedFallStart = true;
+            this.fallFrameIndex = 0;
+            this.lastFallFrameTime = now;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Handles the animation during the fall.
+     * @param {number} now - The current timestamp.
+     * @returns {boolean} True if this frame was handled.
+     */
+    handleFalling(now) {
+        if (this.playedFallStart && this.isAboveGround()) {
+            const fallImgs = [
+                "assets/img/2_character_pepe/3_jump/J-36.png",
+                "assets/img/2_character_pepe/3_jump/J-37.png"
+            ];
+            if (now - this.lastFallFrameTime > this.fallFrameDelay) {
+                this.lastFallFrameTime = now;
+                this.fallFrameIndex = (this.fallFrameIndex + 1) % fallImgs.length;
+                this.img = this.imageCache[fallImgs[this.fallFrameIndex]];
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Handles the animation for landing after a jump or fall.
+     * @param {number} now - The current timestamp.
+     * @returns {boolean} True if this frame was handled.
+     */
+    handleLandingAnimation(now) {
+        const j38 = "assets/img/2_character_pepe/3_jump/J-38.png";
+        const j39 = "assets/img/2_character_pepe/3_jump/J-39.png";
+
+        if (!this.isAboveGround() && this.playedFallStart && !this.landingShown) {
+            this.landingShown = true;
+            this.landedAt = now;
+            this.playAnimation([j38]);
+            return true;
+        }
+
+        if (this.landingShown && now - this.landedAt < 200) {
+            this.playAnimation([j38]);
+            return true;
+        }
+
+        if (this.landingShown && now - this.landedAt >= 200) {
+            this.img = this.imageCache[j39];
+            this.resetJumpState();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Resets all internal jump-related states and animation flags.
+     * Called when the character has completed the landing animation.
+     */
+    resetJumpState() {
+        this.isJumping = false;
+        this.justJumped = false;
+        this.playedFallStart = false;
+        this.fallFrameIndex = 0;
+        this.lastFallFrameTime = 0;
+        this.landingShown = false;
+        this.landedAt = 0;
+        this.speedY = 0;
+    }
+
+    /**
+    * Initiates the jump by applying vertical speed and setting appropriate flags.
+    * Prevents jumping if already in a jump.
+    */
+    jump() {
+        if (this.isJumping) return;
+        super.jump();
+        this.justJumped = true;
+        this.isJumping = true;
+        this.playedFallStart = false;
     }
 
     /**
@@ -207,7 +326,6 @@ class Character extends MoveableObject {
             this.stopSnoreSound();
             return;
         }
-
         if (this.x !== this.lastX || this.isJumping) {
             this.lastIdleTime = new Date().getTime();
             this.isSleeping = false;
@@ -227,12 +345,15 @@ class Character extends MoveableObject {
      * Starts the walking sound if it's not already playing and audio is not muted.
      */
     startWalkSound() {
-        if (this.audioManager.isMuted) return;
-
-        const sound = this.audioManager.sounds['walk'];
-        if (sound && sound.paused) {
-            sound.loop = true;
-            sound.play();
+        if (audioManager.isMuted) return;
+    
+        if (!this.walkSoundStarted) {
+            this.walkSoundStarted = true;
+            const sound = audioManager.sounds['walk'];
+            if (sound) {
+                sound.loop = true;
+                audioManager.safePlay('walk');
+            }
         }
     }
 
@@ -240,32 +361,32 @@ class Character extends MoveableObject {
      * Stops the walking sound if it's currently playing.
      */
     stopWalkSound() {
-        const sound = this.audioManager.sounds['walk'];
+        const sound = audioManager.sounds['walk'];
         if (sound && !sound.paused) {
             sound.pause();
             sound.currentTime = 0;
         }
+        this.walkSoundStarted = false;
     }
 
     /**
      * Plays the snore sound if the character is sleeping and audio is not muted.
      */
     startSnoreSound() {
-        const snoreSound = this.audioManager.sounds['snore'];
-        if (snoreSound && snoreSound.paused && !this.audioManager.isMuted) {
-            snoreSound.currentTime = 0;
-            snoreSound.play();
+        if (!this.snoreStarted) {
+            this.snoreStarted = true;
+            audioManager.play('snore');
         }
     }
+    
 
     /**
      * Stops the snore sound if it's currently playing.
      */
     stopSnoreSound() {
-        const snoreSound = this.audioManager.sounds['snore'];
-        if (snoreSound && !snoreSound.paused) {
-            snoreSound.pause();
-            snoreSound.currentTime = 0;
+        if (this.snoreStarted) {
+            this.snoreStarted = false;
+            audioManager.stop('snore');
         }
     }
 
@@ -275,19 +396,14 @@ class Character extends MoveableObject {
      * @returns {boolean} True if the character is falling onto the enemy, false otherwise.
      */
     isCharacterFallingOnEnemy(mo) {
-        if (mo.isDead) return false;
-        const isFalling = this.speedY < 0;
-        if (!isFalling) return false;
-        const hitboxPadding = 10;
+        if (mo.isDead || this.speedY >= 0) return false;
         const feet = this.y + this.height;
-        const verticalOverlap =
-            feet > mo.y &&
-            feet < mo.y + mo.height + hitboxPadding;
-        const horizontalOverlap =
+        const vertical = feet > mo.y && feet < mo.y + mo.height + 10;
+        const horizontal = (
             this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
-            this.x + this.offset.left < mo.x + mo.width - mo.offset.right;
-
-        return verticalOverlap && horizontalOverlap;
+            this.x + this.offset.left < mo.x + mo.width - mo.offset.right
+        );
+        return vertical && horizontal;
     }
 
     /**
@@ -304,15 +420,13 @@ class Character extends MoveableObject {
             this.world.gameIsOver = true;
             this.world.stopEnemies();
             this.world.showEndscreenButtons();
-            this.world.audioManager.stopAllSounds();
+            audioManager.stopAllSounds();
             document.getElementById('mobile-buttons')?.classList.add('d_none');
-            if (!this.world.audioManager.isMuted) {
-                this.world.audioManager.play('gameover');
+            if (!audioManager.isMuted) {
+                audioManager.play('gameover');
             }
         } else {
             this.world.statusbarHealth.setPercentage(this.energy);
         }
-    }
-
-
+    }    
 }

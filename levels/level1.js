@@ -3,14 +3,12 @@
  * @returns {Level} The configured beginner level.
  */
 function createLevelBeginner() {
-    // Generate fresh coin and bottle pickups
     const coins = generateRandomCoins(5, 10);
-    const bottles = generateRandomBottles(6, 10);
+    const bottles = generateRandomBottles(10, 12);
     const maxCoins = coins.length;
     const maxBottles = bottles.length;
-    // Dynamisch zufälliger Startpunkt für beide Typen
-    const chickenStartX = 450 + Math.floor(Math.random() * 200); // z. B. 500–699
-    const smallChickenStartX = 550 + Math.floor(Math.random() * 300); // z. B. 1500–1799
+    const chickenStartX = 450 + Math.floor(Math.random() * 200); 
+    const smallChickenStartX = 550 + Math.floor(Math.random() * 300); 
 
     const chickens = generateEnemies(Chicken, 3, chickenStartX, 350, 500);
     const smallChickens = generateEnemies(SmallChicken, 3, smallChickenStartX, 300, 450);
@@ -56,12 +54,15 @@ function createLevelBeginner() {
         new BackgroundObject('assets/img/5_background/layers/3_third_layer/1.png', 720 * 4),
         new BackgroundObject('assets/img/5_background/layers/2_second_layer/1.png', 720 * 4),
         new BackgroundObject('assets/img/5_background/layers/1_first_layer/1.png', 720 * 4),
+
+        new BackgroundObject('assets/img/5_background/layers/air.png', 720 * 5),
+        new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', 720 * 5),
+        new BackgroundObject('assets/img/5_background/layers/2_second_layer/2.png', 720 * 5),
+        new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720 * 5),
     ];
 
-    // Create the endboss
     const endboss = new EndBoss();
 
-    // Return the assembled level
     return new Level(
         enemies,
         clouds,
@@ -76,7 +77,6 @@ function createLevelBeginner() {
 
 /**
  * Generates a random number of bottle objects between the given min and max values.
- *
  * @param {number} min - Minimum number of bottles to generate.
  * @param {number} max - Maximum number of bottles to generate.
  * @returns {Bottles[]} An array of randomly generated bottle objects.
@@ -93,7 +93,6 @@ function generateRandomBottles(min, max) {
 
 /**
  * Generates a random number of coin objects between the given min and max values.
- *
  * @param {number} min - Minimum number of coins to generate.
  * @param {number} max - Maximum number of coins to generate.
  * @returns {Coins[]} An array of randomly generated coin objects.

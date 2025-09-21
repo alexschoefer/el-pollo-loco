@@ -3,25 +3,13 @@
  * Bottles can be picked up or thrown by the player.
  */
 class Bottles extends DrawableObject {
-    /** @type {number} Y-position of the bottle on the canvas. */
+
     y = 340;
-
-    /** @type {number} X-position of the bottle */
     x = 100;
-
-    /** @type {number} Height of the bottle image. */
     height = 80;
-
-    /** @type {number} Width of the bottle image. */
     width = 60;
-
-    /** @type {boolean} Indicates whether the bottle has been thrown. */
     bottleThrown = false;
 
-    /**
-     * Collision offset values for more precise hit detection.
-     * @type {{ top: number, bottom: number, left: number, right: number }}
-     */
     offset = {
         top: 15,
         bottom: 5,
@@ -29,7 +17,6 @@ class Bottles extends DrawableObject {
         right: 2
     };
 
-    /** @type {string[]} Array of available bottle image paths. */
     IMAGES_BOTTLES = [
         'assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
         'assets/img/6_salsa_bottle/2_salsa_bottle_on_ground.png'

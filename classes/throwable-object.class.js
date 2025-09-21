@@ -1,5 +1,4 @@
 class ThrowableObject extends MoveableObject {
-    audioManager;
     hasSplashed = false;
 
     IMAGES_BOTTLES_THROWING = [
@@ -24,7 +23,7 @@ class ThrowableObject extends MoveableObject {
      * @param {AudioManager} audioManager
      * @param {boolean} throwLeft
      */
-    constructor(x, y, audioManager, throwLeft = false) {
+    constructor(x, y, throwLeft = false) {
         super();
         this.loadImages(this.IMAGES_BOTTLES_THROWING);
         this.loadImages(this.IMAGES_BOTTLES_SPLASH);
@@ -49,39 +48,26 @@ class ThrowableObject extends MoveableObject {
     }
 
     animateBottle() {
-        let soundPlayed = false;
-        let frameIndex = 0;
-        let animationImages = this.IMAGES_BOTTLES_THROWING;
-    
-        const frameDuration = 100; 
-        let lastFrameTime = Date.now();
+        let frameIndex = 0, soundPlayed = false;
+        let images = this.IMAGES_BOTTLES_THROWING;
+        let lastTime = Date.now();
     
         const animate = () => {
             const now = Date.now();
-            if (now - lastFrameTime >= frameDuration) {
-                lastFrameTime = now;
+            if (now - lastTime < 100) return this.animationId = requestAnimationFrame(animate);
+            lastTime = now;
     
-                if (this.hasSplashed) {
-                    animationImages = this.IMAGES_BOTTLES_SPLASH;
+            if (this.hasSplashed) images = this.IMAGES_BOTTLES_SPLASH;
+            this.img = this.imageCache[images[frameIndex]];
     
-                    if (frameIndex < animationImages.length - 1) {
-                        this.img = this.imageCache[animationImages[frameIndex]];
-                        frameIndex++;
-                    } else {
-                        this.img = this.imageCache[animationImages[animationImages.length - 1]];
-                        cancelAnimationFrame(this.animationId);
-                        clearInterval(this.moveInterval);
-                        return;
-                    }
-                } else {
-                    this.img = this.imageCache[animationImages[frameIndex]];
-                    frameIndex = (frameIndex + 1) % animationImages.length;
+            if (this.hasSplashed && frameIndex++ >= images.length - 1) {
+                clearInterval(this.moveInterval);
+                return cancelAnimationFrame(this.animationId);
+            }
     
-                    if (!soundPlayed) {
-                        this.audioManager.play('throw');
-                        soundPlayed = true;
-                    }
-                }
+            if (!this.hasSplashed) {
+                frameIndex = (frameIndex + 1) % images.length;
+                if (!soundPlayed) audioManager.play('throw'), soundPlayed = true;
             }
     
             this.animationId = requestAnimationFrame(animate);
@@ -90,7 +76,6 @@ class ThrowableObject extends MoveableObject {
         animate();
     }
     
-
     /**
      * Call this method externally when bottle hits something (like ground or enemy)
      */
