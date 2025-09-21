@@ -2,34 +2,16 @@
  * Represents the final boss enemy in the game.
  */
 class EndBoss extends MoveableObject {
-    /** @type {number} The current energy/health of the boss. */
     energy = 100;
-
-    /** @type {number} The height of the boss sprite. */
     height = 450;
-
-    /** @type {number} The width of the boss sprite. */
     width = 350;
-
-    /** @type {number} The vertical position of the boss. */
     y = 20;
-
-    /** @type {boolean} Whether the boss is currently attacking. */
     isAttacking = false;
-
-    /** @type {number} Movement speed of the boss. */
     speed = 10;
-
-    /** @type {number} Wie viele Treffer hat der Boss schon bekommen? */
     hitsTaken = 0;
-
-    /** @type {boolean} Ist der Boss im aggressiven Modus? */
     isAggressive = false;
+    attackLoopStarted = false;
 
-    /** 
-     * @type {{ top: number, bottom: number, left: number, right: number }} 
-     * Collision offset values for the boss.
-     */
     offset = {
         top: 90,
         bottom: 70,
@@ -37,7 +19,6 @@ class EndBoss extends MoveableObject {
         right: 30
     };
 
-    /** @type {string[]} Walking animation images. */
     IMAGES_WALK_ENDBOSS = [
         'assets/img/4_enemie_boss_chicken/1_walk/G1.png',
         'assets/img/4_enemie_boss_chicken/1_walk/G2.png',
@@ -45,7 +26,6 @@ class EndBoss extends MoveableObject {
         'assets/img/4_enemie_boss_chicken/1_walk/G4.png'
     ];
 
-    /** @type {string[]} Alert (idle) animation images. */
     IMAGES_ALERT_ENDBOSS = [
         'assets/img/4_enemie_boss_chicken/2_alert/G5.png',
         'assets/img/4_enemie_boss_chicken/2_alert/G6.png',
@@ -57,21 +37,18 @@ class EndBoss extends MoveableObject {
         'assets/img/4_enemie_boss_chicken/2_alert/G12.png',
     ];
 
-    /** @type {string[]} Hurt animation images. */
     IMAGES_HURT_ENDBOSS = [
         'assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
         'assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
         'assets/img/4_enemie_boss_chicken/4_hurt/G23.png'
     ];
 
-    /** @type {string[]} Death animation images. */
     IMAGES_DEAD_ENDBOSS = [
         'assets/img/4_enemie_boss_chicken/5_dead/G24.png',
         'assets/img/4_enemie_boss_chicken/5_dead/G25.png',
         'assets/img/4_enemie_boss_chicken/5_dead/G26.png'
     ];
 
-    /** @type {string[]} Attack animation images. */
     IMAGES_ATTACK_ENDBOSS = [
         'assets/img/4_enemie_boss_chicken/3_attack/G13.png',
         'assets/img/4_enemie_boss_chicken/3_attack/G14.png',
@@ -93,7 +70,7 @@ class EndBoss extends MoveableObject {
         this.loadImages(this.IMAGES_DEAD_ENDBOSS);
         this.loadImages(this.IMAGES_ATTACK_ENDBOSS);
         this.loadImages(this.IMAGES_WALK_ENDBOSS);
-        this.x = 2500; // Initial position off-screen
+        this.x = 2100; 
         this.animateEndboss();
         this.speed = 5;
         this.isMoving = false;
@@ -118,7 +95,6 @@ class EndBoss extends MoveableObject {
             } else {
                 this.playAnimation(this.IMAGES_ALERT_ENDBOSS);
             }
-
             lastX = this.x;
         }, 200);
     }
@@ -165,40 +141,154 @@ class EndBoss extends MoveableObject {
     }
 
     /**
-     * Applies damage to the EndBoss and updates its energy.
+     * Applies damage to the boss if not currently invulnerable.
+     * Triggers phase transitions based on current energy level and game difficulty.
      */
     hit() {
-        let selectedLevel = localStorage.getItem('selectedLevel');
-        this.energy -= 20;
-        if (this.energy < 0) this.energy = 0;
-        this.hitsTaken++;        
-        if (this.energy <= 90 && !this.phase1) {
-            this.becomeAggressive(1); 
-            this.phase1 = true;
-        } else if (this.energy <= 60 && !this.phase2) {
-            this.becomeAggressive(2); 
-            this.phase2 = true;
-        } else if (this.energy <= 30 && !this.phase3 && selectedLevel === 'expert') {
-            this.becomeAggressive(3); 
-            this.phase3 = true;
-        }
+        const now = Date.now();
+        const level = localStorage.getItem('selectedLevel');
+        const invulnerable = level === 'expert' ? 800 : 1000;
     
-        this.lastHit = new Date().getTime();
+        if (this.lastHit && now - this.lastHit < invulnerable) return;
+    
+        this.lastHit = now;
+        this.energy = Math.max(0, this.energy - 20);
+        this.hitsTaken++;
+    
+        this.handlePhaseActivation(90, 1);
+        this.handlePhaseActivation(60, 2);
+        if (level === 'expert') {
+            this.handlePhaseActivation(30, 3);
+        }
+    }
+    
+    /**
+     * Checks if the endboss energy has dropped below a threshold and activates the corresponding phase if not yet triggered.
+     * 
+     * @param {number} threshold - The energy value that triggers the phase.
+     * @param {number} phase - The phase number to activate
+     */
+    handlePhaseActivation(threshold, phase) {
+        if (this.energy <= threshold && !this[`phase${phase}`]) {
+            this.becomeAggressive(phase);
+            this[`phase${phase}`] = true;
+        }
     }
 
+    /**
+     * Activates aggressive behavior for the boss depending on the current phase.
+     * Adjusts speed, movement, and initiates attack loops as needed.
+     * 
+     * @param {number} phase - The phase of aggression to activate.
+     */
     becomeAggressive(phase) {
         this.isAggressive = true;
-    
+        let selectedLevel = localStorage.getItem('selectedLevel');
         if (phase === 1) {
             this.speed = 10;
         } else if (phase === 2) {
+            this.speed = 12;
+        } else if (phase === 3 && selectedLevel === 'expert') {
             this.speed = 14;
-        } else if (phase === 3) {
-            this.speed = 16;
-            this.attackEndboss(); 
+            this.attackEndboss();
         }
     
         this.isMoving = true;
+
+        if (!this.attackLoopStarted) {
+            this.attackLoopStarted = true;
+            this.startAttackingLoop();
+        }
+    
+        if(selectedLevel === 'expert') {
+            this.startAggressiveBehavior();
+        }
+    }
+    
+    /**
+     * Starts a repeating attack loop for the boss.
+     * Attacks the player every few seconds if aggressive and alive.
+     */
+    startAttackingLoop() {
+        setInterval(() => {
+            if (this.isAggressive && !this.isDead()) {
+                this.attackPlayer();
+            }
+        }, 2000); 
+    }
+
+    /**
+     * Triggers an attack animation and temporarily sets the boss into an attacking state.
+     */
+    attackPlayer() {
+        this.attackEndboss();
+        setTimeout(() => {
+            this.stopAttackEndboss();
+        }, 1000); 
+    }
+
+    /**
+     * Begins interval-based behavior when the boss is aggressive.
+     * Includes conditional dash or movement toward the player based on distance and randomness.
+     */
+    startAggressiveBehavior() {
+        setInterval(() => {
+            if (this.isDead() || !this.isAggressive) return;
+            let selectedLevel = localStorage.getItem('selectedLevel');
+            const positionCharacter = world.character.x; 
+            const distance = Math.abs(this.x - positionCharacter);
+            const closeEnough = distance < 300;
+
+            if (closeEnough && Math.random() < 0.4 && selectedLevel === 'beginner') {
+                this.performDashAttack(positionCharacter);
+            } else if(closeEnough && Math.random() < 0.2 && selectedLevel === 'expert') {
+                this.moveTowardsPlayer(positionCharacter);
+            }
+        }, 1200); 
+    }
+
+    /**
+     * Moves the boss toward the player's current position.
+     * 
+     * @param {number} positionCharacter - The X-coordinate of the player.
+     */
+    moveTowardsPlayer(positionCharacter) {
+        if (this.x > positionCharacter) {
+            this.moveLeftEndboss();
+        } else {
+            this.moveRightEndboss();
+        }
+    }
+    
+    /**
+     * Executes a short dash attack toward the player's position.
+     * Temporarily disables further dashing until cooldown is complete.
+     * 
+     * @param {number} positionCharacter - The X-coordinate of the player.
+     */
+    performDashAttack(positionCharacter) {
+        if (!this.canDash || this.isDead()) return;
+    
+        this.canDash = false;
+        this.attackEndboss();
+    
+        const dashDistance = 100;
+    
+        if (this.x > positionCharacter) {
+            this.x -= dashDistance;
+        } else {
+            this.x += dashDistance;
+        }
+    
+        setTimeout(() => {
+            this.stopAttackEndboss();
+        }, 500);
+    
+        setTimeout(() => {
+            this.canDash = true;
+        }, this.dashCooldown);
     }
     
 }
+
+
