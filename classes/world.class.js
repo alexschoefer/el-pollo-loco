@@ -70,7 +70,8 @@ class World {
             const isFullscreen = !!document.fullscreenElement;
             if (isFullscreen) {
                 this.canvas.classList.add('fullscreen');
-                this.resizeCanvas();
+                // Kurzer Timeout kann helfen
+                setTimeout(() => this.resizeCanvas(), 50);
             } else {
                 this.canvas.classList.remove('fullscreen');
                 this.canvas.width = 720;
@@ -82,6 +83,8 @@ class World {
                 : "assets/img-main-background/fullscreen-expand.png";
             localStorage.setItem("isFullscreen", JSON.stringify(this.isFullscreen));
         });
+        
+          
     }
 
     /**
@@ -160,28 +163,27 @@ class World {
     /**
      * Renders the entire game world on the canvas.
      */
-    draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.translate(this.camera_x, 0);
-        this.addObjectsToMap(this.level.backgroundObjects);
-        this.addObjectsToMap(this.level.clouds);
-        if (!this.gameIsOver) {
-            this.addToMap(this.character, this.height);
-            this.addToMap(this.endboss, this.height);
-            this.addObjectsToMap(this.level.enemies);
-            this.addObjectsToMap(this.throwableObjects);
-            this.addObjectsToMap(this.level.bottles);
-            this.addObjectsToMap(this.level.coins);
-            this.ctx.translate(-this.camera_x, 0);
-            this.addObjectsToMap([this.statusbarHealth, this.statusbarCoins, this.statusbarBottles, this.statusbarEndboss]);
-        } else {
-            this.ctx.translate(-this.camera_x, 0);
-            this.endScreen?.visible && this.endScreen.draw(this.ctx);
-        }
-        requestAnimationFrame(() => this.draw());
-        if (!this.gameIsOver) this.drawSoundIcon(), this.drawFullscreenIcon();
+ draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.translate(this.camera_x, 0);
+    this.addObjectsToMap(this.level.backgroundObjects);
+    this.addObjectsToMap(this.level.clouds);
+    if (!this.gameIsOver) {
+        this.addToMap(this.character, this.height);
+        this.addToMap(this.endboss, this.height);
+        this.addObjectsToMap(this.level.enemies);
+        this.addObjectsToMap(this.throwableObjects);
+        this.addObjectsToMap(this.level.bottles);
+        this.addObjectsToMap(this.level.coins);
+        this.ctx.translate(-this.camera_x, 0);
+        this.addObjectsToMap([this.statusbarHealth, this.statusbarCoins, this.statusbarBottles, this.statusbarEndboss]);
+    } else {
+        this.ctx.translate(-this.camera_x, 0);
+        this.endScreen?.visible && this.endScreen.draw(this.ctx);
     }
-    
+    requestAnimationFrame(() => this.draw());
+    if (!this.gameIsOver) this.drawSoundIcon(), this.drawFullscreenIcon();
+}
     /**
      * Draws the sound icon in the top-right corner of the canvas.
      * */

@@ -3,6 +3,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   overflow-x: hidden;
   font-family: 'rye', Arial, Helvetica, sans-serif;
 }
@@ -39,14 +40,14 @@ h1.fixed-headline {
   box-sizing: border-box;
 }
 
-.game-canvas {
+/* .game-canvas {
   display: block;
   width: 100%;
   max-width: 720px;
   height: auto;
   max-height: 100vh;
-}
-
+} */
+/* 
 .game-canvas {
   width: 90vw;
   height: auto;
@@ -57,7 +58,7 @@ h1.fixed-headline {
   border-radius: 20px;
   display: block;
   margin: 20px auto; 
-}
+} */
 
 .game-content-wrapper {
   width: 100%;
@@ -80,13 +81,23 @@ h1.fixed-headline {
 canvas {
   display: block;
   margin: 0 auto;
-  width: 90vw;
-  max-width: 720px;
-  height: auto;
-  max-height: 90vh;
   background-color: black;
   border: 3px solid;
   border-radius: 20px;
+}
+
+canvas.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  border-radius: 0;
+  z-index: 999;
 }
 
 .startscreen {

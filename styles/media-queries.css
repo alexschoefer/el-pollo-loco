@@ -47,7 +47,7 @@
 }
 
 /* MEDIA QUERY: TABLETS & SMALL DESKTOPS ---------- */
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1024px) and (orientation: landscape){
   h1 {
     font-size: 32px;
     text-align: center;
@@ -304,9 +304,9 @@
 
 @media screen and (orientation: landscape) and (max-width: 850px) {
   .overlay-wrapper {
-    width: 90vw;              /* Dynamisch statt 780px */
-    max-width: unset;         /* Wichtig: sonst bleibt 780px erhalten */
-    margin: 0 auto;           /* Zentriert */
+    width: 90vw;           
+    max-width: unset;        
+    margin: 0 auto;           
     padding: 10px;
     box-sizing: border-box;
     align-items: center;
