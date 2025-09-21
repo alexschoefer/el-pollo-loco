@@ -14,10 +14,10 @@ class Character extends MoveableObject {
     landedAt = 0;
 
     offset = {
-        top: 120,
+        top: 160,
         bottom: 20,
-        left: 40,
-        right: 40
+        left: 55,
+        right: 55
     };
 
     IMAGES_WALKING_CHARACTER = [

@@ -88,6 +88,10 @@ class MoveableObject extends DrawableObject {
             this.energy = 0;
         }
         this.lastHit = new Date().getTime();
+    
+        if (this.isDead() && this.world && !this.world.gameIsOver) {
+            this.world.checkGameOver();
+        }
     }
 
     /**
