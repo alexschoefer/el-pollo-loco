@@ -118,6 +118,12 @@ class Character extends MoveableObject {
         setInterval(() => {
             this.checkIfCharacterSleeping();
         }, 200);
+
+        setInterval(() => {
+            if (this.energy <= 0 && !this.world.gameIsOver) {
+                this.world.checkGameOver();
+            }
+        }, 100);
     }
 
     /**
@@ -415,18 +421,9 @@ class Character extends MoveableObject {
         if (this.energy <= 0) {
             this.energy = 0;
             this.world.statusbarHealth.setPercentage(0);
-            this.world.endScreen = new Endscreen(Endscreen.IMAGE_GAMEOVER);
-            this.world.endScreen.show();
-            this.world.gameIsOver = true;
-            this.world.stopEnemies();
-            this.world.showEndscreenButtons();
-            audioManager.stopAllSounds();
-            document.getElementById('mobile-buttons')?.classList.add('d_none');
-            if (!audioManager.isMuted) {
-                audioManager.play('gameover');
-            }
+            this.world.checkGameOver();
         } else {
             this.world.statusbarHealth.setPercentage(this.energy);
         }
-    }    
+    }
 }
