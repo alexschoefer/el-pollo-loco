@@ -33,6 +33,7 @@ function startGameLevelBeginner() {
     canvas = canvasRef;
     audioManager.sounds.menu.pause();
     let levelInstance = createLevelBeginner();
+    resetKeyboard();
     world = new World(canvas, keyboard, levelInstance);
     showMobileButtonsIfNeeded();
 }
@@ -49,6 +50,7 @@ function startGameLevelExpert() {
     canvas = canvasRef;
     audioManager.sounds.menu.pause();
     let levelInstance = createLevelExpert();
+    resetKeyboard();
     world = new World(canvas, keyboard, levelInstance);
     showMobileButtonsIfNeeded();
 }
@@ -171,6 +173,7 @@ function goBackToMainMenu() {
     canvasRef.classList.add('d_none');
     btnContainer.classList.add('d_none');
     startgameRef.classList.remove('d_none');
+    resetKeyboard();
     if (!audioManager.isMuted) {
         audioManager.play('menu');
     }
@@ -189,7 +192,7 @@ function saveSelectedLevelToLocalStorage(currentLevel) {
  */
 function restartGame() {
     if (world) {
-        audioManager.stopAllSounds(); // Spielsounds beenden
+        audioManager.stopAllSounds();
     }
     resetWorldIntervalle();
     const btnContainer = document.getElementById('btn-endscreen-container');
@@ -198,7 +201,6 @@ function restartGame() {
     let ctx = canvasRef.getContext('2d');
     ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
     resetKeyboard();
-
     let selectedLevel = localStorage.getItem('selectedLevel');
     if (selectedLevel === 'beginner') {
         world = new World(canvasRef, keyboard, createLevelBeginner());
