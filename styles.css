@@ -7,8 +7,44 @@ body {
   font-family: 'rye', Arial, Helvetica, sans-serif;
 }
 
-h1 {
+h1.fixed-headline {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 48px;
+  font-family: 'rye', Arial, Helvetica, sans-serif;
+  color: black;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+  z-index: 2000;
+  pointer-events: none;
+}
+
+
+.content-wrapper {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  position: relative; /* Wichtig für absolute Elemente darin */
+}
+
+.canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+
+.game-canvas {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+  max-height: 100vh;
 }
 
 .game-canvas {
@@ -59,21 +95,57 @@ canvas {
   justify-content: center;
 }
 
-.main-background {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+.game-wrapper {
   width: 100%;
-  min-height: 100vh;
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.main-background {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* statt min-height */
   background-image: url('assets/img-main-background/cactus-9085905_1920.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed; 
   background-position: center;
 
-  padding: 20px; 
-  box-sizing: border-box;
+  /* Diese 3 Zeilen machen den Zauber */
+  display: flex;
+  justify-content: center;   /* horizontal zentrieren */
+  align-items: center;       /* vertikal zentrieren */
+}
+
+.legal-notice-btn-container {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.btn-legal-notice {
+  width: 180px;
+  height: 60px;
+  font-size: 24px;
+  background-color: rgb(203, 175, 17);
+  color: white;
+  border: 2px solid;
+  border-radius: 20px;
+  font-family: 'rye', Arial, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.fixed-header-container {
+  width: 100%;
+  max-width: 1920px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 0; /* nimmt keinen Platz ein */
+  z-index: 1000;
 }
 
 .d_none {
@@ -180,8 +252,9 @@ canvas {
 
 .btn-endscreen-container {
   display: flex;
+  flex-direction: row;
   gap: 30px;
-  margin-top: 20px;
+  margin-top: 350px;
 }
 
 .fullscreen-btn-container {
@@ -242,14 +315,22 @@ canvas {
 }
 
 .overlay-wrapper {
-  width: 95vw;
+  width: 780px;              /* Fixe Breite – exakt wie Canvas */
   max-height: 100svh;
   overflow-y: auto; 
   padding: 10px;
-  margin: 0 auto;
   box-sizing: border-box;
+
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+}
+
+.overlay-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
 }

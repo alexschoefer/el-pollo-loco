@@ -43,12 +43,14 @@
 </head>
 
 <body onload="initMenu()">
-
   <!-- Game Wrapper -->
   <div class="main-background">
+
     <!-- Desktop-Version -->
-    <div class="legal-notice-btn-container">
-      <button class="btn-legal-notice" onclick="openLegalNotice()">Legal notice</button>
+    <div class="fixed-header-container">
+      <div class="legal-notice-btn-container">
+        <button class="btn-legal-notice" onclick="openLegalNotice()">Legal notice</button>
+      </div>
     </div>
 
     <!-- Mobile / Tablet-Version -->
@@ -59,59 +61,66 @@
         <!-- Optional: weitere Menüoptionen -->
       </div>
     </div>
-    <h1>El pollo loco</h1>
+    <h1 class="fixed-headline">El pollo loco</h1>
 
-    <!-- Canvas -->
-    <canvas id="canvas" height="480" width="720" class="game-canvas d_none"></canvas>
+    <div class="content-wrapper">
 
-    <!-- Startscreen -->
-    <div id="startgame" class="game-content-wrapper">
-      <div class="startscreen">
-        <div class="start-btn-container">
-          <button class="btn-start" onclick="chooseGameLevel()">Start game</button>
-          <button class="btn-controls" onclick="showControlOverview()">Controls</button>
+      <!-- Canvas -->
+      <div class="canvas-wrapper">
+        <canvas id="canvas" class="game-canvas d_none" width="720" height="480"></canvas>
+      </div>
+
+      <!-- Startscreen -->
+      <div id="startgame" class="game-content-wrapper overlay-center">
+        <div class="startscreen">
+          <div class="start-btn-container">
+            <button class="btn-start" onclick="chooseGameLevel()">Start game</button>
+            <button class="btn-controls" onclick="showControlOverview()">Controls</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Legal Notice -->
-    <div id="legal-notice" class="legal-notice-wrapper d_none"></div>
+      <!-- Legal Notice -->
+      <div id="legal-notice" class="legal-notice-wrapper overlay-center d_none"></div>
 
-    <!-- Control Screen -->
-    <div id="control-overlay" class="control-content-wrapper overlay-wrapper d_none"></div>
+      <!-- Control Screen -->
+      <div id="control-overlay" class="control-content-wrapper overlay-wrapper overlay-center d_none"></div>
 
-    <!-- Game Level Intro -->
-    <div id="game-level-overlay" class="gamelevel-content-wrapper d_none"></div>
+      <!-- Game Level Intro -->
+      <div id="game-level-overlay" class="gamelevel-content-wrapper overlay-center d_none"></div>
 
-    <!-- Endscreen Buttons -->
-    <div id="btn-endscreen-container" class="btn-endscreen-container d_none">
-      <button class="btn-restart-game" onclick="restartGame()">Restart game</button>
-      <button class="btn-back-to-menu" onclick="goBackToMainMenu()">Back to menu</button>
-    </div>
-
-    <!-- Mobile Buttons -->
-    <div class="mobile-btn-container d_none" id="mobile-buttons">
-      <!-- Linke Seite: Bewegung -->
-      <div class="mobile-left-controls">
-        <button id="btn-left">
-          <img class="btn-left" src="./assets/icons/mobile-icon-left-arrow.png" alt="left">
-        </button>
-        <button id="btn-right">
-          <img class="btn-right" src="./assets/icons/mobile-icon-right-arrow.png" alt="right">
-        </button>
+      <!-- Endscreen Buttons -->
+      <div id="btn-endscreen-container" class="btn-endscreen-container overlay-center d_none">
+        <button class="btn-restart-game" onclick="restartGame()">Restart game</button>
+        <button class="btn-back-to-menu" onclick="goBackToMainMenu()">Back to menu</button>
       </div>
 
-      <!-- Rechte Seite: Aktionen -->
-      <div class="mobile-right-controls">
-        <button id="btn-jump">
-          <img class="btn-jump" src="./assets/icons/mobile-icon-jumping.png" alt="jump">
-        </button>
-        <button id="btn-throw">
-          <img class="btn-throw" src="./assets/icons/mobile-icon-throw.png" alt="throw">
-        </button>
-      </div>
-    </div>
+      <!-- Mobile Buttons -->
+      <div class="mobile-btn-wrapper d_none" id="mobile-buttons">
+        <div class="mobile-btn-container">
+          <!-- Linke Seite: Bewegung -->
+          <div class="mobile-left-controls">
+            <button id="btn-left">
+              <img class="btn-left" src="./assets/icons/mobile-icon-left-arrow.png" alt="left">
+            </button>
+            <button id="btn-right">
+              <img class="btn-right" src="./assets/icons/mobile-icon-right-arrow.png" alt="right">
+            </button>
+          </div>
 
+          <!-- Rechte Seite: Aktionen -->
+          <div class="mobile-right-controls">
+            <button id="btn-jump">
+              <img class="btn-jump" src="./assets/icons/mobile-icon-jumping.png" alt="jump">
+            </button>
+            <button id="btn-throw">
+              <img class="btn-throw" src="./assets/icons/mobile-icon-throw.png" alt="throw">
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- ROTATE MESSAGE -->
