@@ -61,28 +61,6 @@ class World {
         this.fullscreenIcon.onload = () => {
             this.fullscreenIconLoaded = true;
         };
-        window.addEventListener('resize', () => {
-            if (document.fullscreenElement) {
-                this.resizeCanvas();
-            }
-        });
-
-        document.addEventListener('fullscreenchange', () => {
-            const isFullscreen = !!document.fullscreenElement;
-            if (isFullscreen) {
-                this.canvas.classList.add('fullscreen');
-                setTimeout(() => this.resizeCanvas(), 50);
-            } else {
-                this.canvas.classList.remove('fullscreen');
-                this.canvas.width = 720;
-                this.canvas.height = 480;
-            }
-            this.isFullscreen = isFullscreen;
-            this.fullscreenIcon.src = this.isFullscreen
-                ? "assets/img-main-background/fullscreen-minimize.png"
-                : "assets/img-main-background/fullscreen-expand.png";
-            localStorage.setItem("isFullscreen", JSON.stringify(this.isFullscreen));
-        });
     }
 
     /**
