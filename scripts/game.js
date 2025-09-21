@@ -25,6 +25,7 @@ function initMenuSound() {
  * Starts the beginner game level and initializes the game world.
  */
 function startGameLevelBeginner() {
+    audioManager.stopAllSounds();
     currentLevel = 'beginner';
     saveSelectedLevelToLocalStorage(currentLevel);
     document.getElementById('game-level-overlay').classList.add('d_none');
@@ -42,6 +43,7 @@ function startGameLevelBeginner() {
  * Starts the expert game level and initializes the game world.
  */
 function startGameLevelExpert() {
+    audioManager.stopAllSounds();
     currentLevel = 'expert';
     saveSelectedLevelToLocalStorage(currentLevel);
     document.getElementById('game-level-overlay').classList.add('d_none');
@@ -173,6 +175,7 @@ function goBackToMainMenu() {
     canvasRef.classList.add('d_none');
     btnContainer.classList.add('d_none');
     startgameRef.classList.remove('d_none');
+    audioManager.stopAllSounds();
     resetKeyboard();
     if (!audioManager.isMuted) {
         audioManager.play('menu');
@@ -194,20 +197,31 @@ function restartGame() {
     if (world) {
         audioManager.stopAllSounds();
     }
+
     resetWorldIntervalle();
+
     const btnContainer = document.getElementById('btn-endscreen-container');
     btnContainer.classList.add('d_none');
+
     let canvasRef = document.getElementById('canvas');
     let ctx = canvasRef.getContext('2d');
     ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+
     resetKeyboard();
+
     let selectedLevel = localStorage.getItem('selectedLevel');
     if (selectedLevel === 'beginner') {
         world = new World(canvasRef, keyboard, createLevelBeginner());
     } else {
         world = new World(canvasRef, keyboard, createLevelExpert());
     }
+
     showMobileButtonsIfNeeded();
+
+    // ✅ Nur wenn nicht gemutet und Sound nicht schon läuft
+    if (!audioManager.isMuted && !audioManager.isPlaying('game')) {
+        audioManager.safePlay('game');
+    }
 }
 
 /**

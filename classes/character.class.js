@@ -1,5 +1,4 @@
 class Character extends MoveableObject {
-    audioManager;
     height = 300;
     width = 150;
     y = 135;
@@ -98,7 +97,8 @@ class Character extends MoveableObject {
         this.loadImages(this.IMAGES_LONG_IDLE_CHARACTER);
         this.applyGravity();
         this.animateCharacter();
-        this.audioManager = audioManager;
+        this.walkSoundStarted = false;
+        this.snoreStarted = false;
         this.energy = 100;
     }
 
@@ -147,7 +147,8 @@ class Character extends MoveableObject {
 
         if (this.world.keyboard.SPACE && !this.isJumping && this.isOnGround()) {
             this.jump();
-            this.audioManager.play('jump');
+            // this.audioManager.play('jump');
+            audioManager.play('jump');
             this.isJumping = true;
             this.jumpAnimationFrame = 0;
         }
@@ -344,12 +345,15 @@ class Character extends MoveableObject {
      * Starts the walking sound if it's not already playing and audio is not muted.
      */
     startWalkSound() {
-        if (this.audioManager.isMuted) return;
-
-        const sound = this.audioManager.sounds['walk'];
-        if (sound && sound.paused) {
-            sound.loop = true;
-            sound.play();
+        if (audioManager.isMuted) return;
+    
+        if (!this.walkSoundStarted) {
+            this.walkSoundStarted = true;
+            const sound = audioManager.sounds['walk'];
+            if (sound) {
+                sound.loop = true;
+                audioManager.safePlay('walk');
+            }
         }
     }
 
@@ -357,32 +361,32 @@ class Character extends MoveableObject {
      * Stops the walking sound if it's currently playing.
      */
     stopWalkSound() {
-        const sound = this.audioManager.sounds['walk'];
+        const sound = audioManager.sounds['walk'];
         if (sound && !sound.paused) {
             sound.pause();
             sound.currentTime = 0;
         }
+        this.walkSoundStarted = false;
     }
 
     /**
      * Plays the snore sound if the character is sleeping and audio is not muted.
      */
     startSnoreSound() {
-        const snoreSound = this.audioManager.sounds['snore'];
-        if (snoreSound && snoreSound.paused && !this.audioManager.isMuted) {
-            snoreSound.currentTime = 0;
-            snoreSound.play();
+        if (!this.snoreStarted) {
+            this.snoreStarted = true;
+            audioManager.play('snore');
         }
     }
+    
 
     /**
      * Stops the snore sound if it's currently playing.
      */
     stopSnoreSound() {
-        const snoreSound = this.audioManager.sounds['snore'];
-        if (snoreSound && !snoreSound.paused) {
-            snoreSound.pause();
-            snoreSound.currentTime = 0;
+        if (this.snoreStarted) {
+            this.snoreStarted = false;
+            audioManager.stop('snore');
         }
     }
 
@@ -416,13 +420,45 @@ class Character extends MoveableObject {
             this.world.gameIsOver = true;
             this.world.stopEnemies();
             this.world.showEndscreenButtons();
-            this.world.audioManager.stopAllSounds();
+            audioManager.stopAllSounds();
             document.getElementById('mobile-buttons')?.classList.add('d_none');
-            if (!this.world.audioManager.isMuted) {
-                this.world.audioManager.play('gameover');
+            if (!audioManager.isMuted) {
+                audioManager.play('gameover');
             }
         } else {
             this.world.statusbarHealth.setPercentage(this.energy);
         }
     }
+
+    safePlay(name) {
+        const sound = this.sounds[name];
+        if (!sound || this.isMuted) return;
+    
+        const now = Date.now();
+        const last = this.lastPlayed[name] || 0;
+        const minDelay = 100;
+    
+        if (now - last < minDelay) return;
+        this.lastPlayed[name] = now;
+    
+        // Nur abspielen, wenn nicht schon aktiv
+        if (!sound.paused && !sound.ended && sound.currentTime > 0) return;
+    
+        try {
+            const playPromise = sound.play();
+    
+            if (playPromise !== undefined) {
+                playPromise
+                    .then(() => {
+                        // optional: console.log(`[AUDIO] '${name}' playing.`);
+                    })
+                    .catch(error => {
+                        console.warn(`AudioManager: Fehler beim Abspielen von '${name}':`, error);
+                    });
+            }
+        } catch (error) {
+            console.warn(`AudioManager: Fehler beim Abspielen von '${name}':`, error);
+        }
+    }
+    
 }

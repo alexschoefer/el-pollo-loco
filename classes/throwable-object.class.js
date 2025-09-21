@@ -1,5 +1,4 @@
 class ThrowableObject extends MoveableObject {
-    audioManager;
     hasSplashed = false;
 
     IMAGES_BOTTLES_THROWING = [
@@ -24,7 +23,7 @@ class ThrowableObject extends MoveableObject {
      * @param {AudioManager} audioManager
      * @param {boolean} throwLeft
      */
-    constructor(x, y, audioManager, throwLeft = false) {
+    constructor(x, y, throwLeft = false) {
         super();
         this.loadImages(this.IMAGES_BOTTLES_THROWING);
         this.loadImages(this.IMAGES_BOTTLES_SPLASH);
@@ -78,7 +77,7 @@ class ThrowableObject extends MoveableObject {
                     frameIndex = (frameIndex + 1) % animationImages.length;
     
                     if (!soundPlayed) {
-                        this.audioManager.play('throw');
+                        audioManager.play('throw');
                         soundPlayed = true;
                     }
                 }

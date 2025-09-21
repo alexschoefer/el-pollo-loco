@@ -12,6 +12,10 @@ class World {
     animationFrameId = null;
 
     constructor(canvas, keyboard, level) {
+        audioManager.stop('game');
+        if (!audioManager.isMuted) {
+            audioManager.play('game');
+        }
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
@@ -19,7 +23,6 @@ class World {
         this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
         this.maxCoins = this.level.coins.length;
         this.maxBottles = this.level.bottles.length;
-        this.audioManager = new AudioManager();
         this.character = new Character(this.audioManager);
         this.endboss = this.level.endboss;
         this.statusbarHealth = new StatusbarHealth();
@@ -37,10 +40,8 @@ class World {
         this.setWorld();
         this.draw();
         this.run();
-        if (!this.audioManager.isMuted) {
-            this.audioManager.sounds.game.play().catch((e) => {
-                console.warn('Autoplay blockiert den Gamesound:', e);
-            });
+        if (!audioManager.isMuted && !audioManager.isPlaying('game')) {
+            audioManager.play('game');
         }
         this.soundIcon = new Image();
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
@@ -263,9 +264,11 @@ class World {
             this.stopEnemies();
             this.showEndscreenButtons();
             this.audioManager.stopAllSounds();
+            this.audioManager.checkActiveSounds(); 
             document.getElementById('mobile-buttons')?.classList.add('d_none');
-            if (!this.audioManager.isMuted) {
-                this.audioManager.play('gameover');
+            audioManager.stopAllSounds();
+            if (!audioManager.isMuted) {
+                audioManager.play('gameover'); // oder 'gameover'
             }
         } else if (this.endboss.isDead()) {
             this.endScreen = new Endscreen(Endscreen.IMAGE_WIN);
@@ -273,10 +276,12 @@ class World {
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            this.audioManager.stopAllSounds();
+            audioManager.stopAllSounds();
+            audioManager.checkActiveSounds(); 
             document.getElementById('mobile-buttons')?.classList.add('d_none');
-            if (!this.audioManager.isMuted) {
-                this.audioManager.play('win');
+            audioManager.stopAllSounds();
+            if (!audioManager.isMuted) {
+                audioManager.play('win'); // oder 'gameover'
             }
         }
     }
@@ -299,7 +304,6 @@ class World {
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
         }
-        this.audioManager.stopAllSounds();
         if (this.intervalId) {
             clearInterval(this.intervalId);
             this.intervalId = null;
@@ -318,8 +322,9 @@ class World {
         this.camera_x = 0;
         this.draw();
         this.run();
-        if (!this.audioManager.isMuted) {
-            this.audioManager.play('game'); // ganz am Ende
+        audioManager.stopAllSounds();
+        if (!audioManager.isMuted && !audioManager.isPlaying('game')) {
+            audioManager.play('game');
         }
     }
 
@@ -328,16 +333,25 @@ class World {
      */
     toggleSound() {
         this.isMuted = !this.isMuted;
+    
         this.soundIcon.src = this.isMuted
             ? "assets/img-main-background/muted-icon.png"
             : "assets/img-main-background/unmuted-icon.png";
-        this.audioManager.muteAll(this.isMuted);
+    
+        audioManager.muteAll(this.isMuted);
         localStorage.setItem("isMuted", JSON.stringify(this.isMuted));
+    
         if (!this.isMuted) {
-            this.audioManager.sounds.game.play().catch(e => console.warn('Konnte Gamesound nicht abspielen:', e));
+            // Nur starten, wenn "game" nicht schon läuft
+            if (!audioManager.isPlaying('game')) {
+                audioManager.safePlay('game');
+            }
+        } else {
+            // Beim Muten auch stoppen
+            audioManager.stop('game');
         }
     }
-
+    
     /**
      * Toggles fullscreen mode for the canvas. Updates icon and saves state to localStorage.
      */
