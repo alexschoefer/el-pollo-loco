@@ -117,12 +117,15 @@ class World {
      * Checks if there are collected bottles for throwing from the character
      */
     checkThrowObjects() {
-        if (this.keyboard.D && this.bottleCollection.length > 0) {
+        const now = Date.now();
+        const canThrow = now - this.character.lastBottleThrowTime >= this.character.throwCooldown;
+        if (this.keyboard.D && this.bottleCollection.length > 0 && canThrow) {
             const isLeft = this.character.otherDirection;
             const offsetX = isLeft ? -40 : this.character.width - 20;
             this.character.isSleeping = false;
             this.character.stopSnoreSound();
-            this.character.lastIdleTime = Date.now();
+            this.character.lastIdleTime = now;
+            this.character.lastBottleThrowTime = now;
             const bottle = new ThrowableObject(
                 this.character.x + offsetX,
                 this.character.y + 150,
@@ -134,7 +137,7 @@ class World {
             this.updateBottleStatusbar();
         }
     }
-
+    
     /**
      * Renders the entire game world on the canvas.
      */

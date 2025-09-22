@@ -14,6 +14,8 @@ class Character extends MoveableObject {
     landedAt = 0;
     isHurt = false;
     lastHit = 0;
+    lastBottleThrowTime = 0;
+    throwCooldown = 600;
 
     offset = {
         top: 160,
@@ -413,7 +415,7 @@ class Character extends MoveableObject {
         this.stopSnoreSound();
         this.lastIdleTime = Date.now();
         this.isHurt = true;
-        this.lastHit = Date.now(); 
+        this.lastHit = Date.now();
         if (this.energy <= 0) {
             this.energy = 0;
             this.world.statusbarHealth.setPercentage(0);
