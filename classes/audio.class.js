@@ -20,7 +20,7 @@ class AudioManager {
         this.defaultVolume = 0.15;
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
 
-        this.lastPlayed = {}; // Neu: Zeitstempel pro Sound
+        this.lastPlayed = {}; 
 
         for (const [name, sound] of Object.entries(this.sounds)) {
             sound.volume = this.defaultVolume;

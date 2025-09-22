@@ -418,6 +418,10 @@ class Character extends MoveableObject {
      */
     hit() {
         this.energy -= 5;
+        this.isSleeping = false;
+        this.stopSnoreSound();
+        this.lastIdleTime = Date.now();
+    
         if (this.energy <= 0) {
             this.energy = 0;
             this.world.statusbarHealth.setPercentage(0);

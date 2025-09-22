@@ -80,7 +80,6 @@ class World {
         }
         this.intervalId = setInterval(() => {
             if (this.gameIsOver) return;
-            this.checkThrowObjects();
             this.checkGameOver();
         }, 200);
 
@@ -91,8 +90,16 @@ class World {
             if (this.gameIsOver) return;
             this.collisionHandler.checkAll();
         }, 50);
+    
+        if (this.throwObjectsIntervalId) {
+            clearInterval(this.throwObjectsIntervalId);
+        }
+        this.throwObjectsIntervalId = setInterval(() => {
+            if (this.gameIsOver) return;
+            this.checkThrowObjects();
+        }, 100); 
     }
-
+    
     /**
      * Removes an item (bottle or coin) from map
      * @param {*} arrayName - coin or bottle
