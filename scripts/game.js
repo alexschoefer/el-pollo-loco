@@ -166,7 +166,7 @@ function closeGameLevelOverlay() {
  */
 function goBackToMainMenu() {
     if (world) {
-        audioManager.stopAllSounds(); 
+        audioManager.stopAllSounds();
     }
     localStorage.removeItem("selectedLevel");
     let btnContainer = document.getElementById('btn-endscreen-container');
@@ -194,24 +194,16 @@ function saveSelectedLevelToLocalStorage(currentLevel) {
  * Restarts the current game level by resetting world state and reloading the level.
  */
 function restartGame() {
-    if (world) {
-        audioManager.stopAllSounds();
-    }
+    if (world) audioManager.stopAllSounds();
     resetWorldIntervalle();
-    const btnContainer = document.getElementById('btn-endscreen-container');
-    btnContainer.classList.add('d_none');
-
-    let canvasRef = document.getElementById('canvas');
-    let ctx = canvasRef.getContext('2d');
-    ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-
+    document.getElementById('btn-endscreen-container')?.classList.add('d_none');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     resetKeyboard();
-    let selectedLevel = localStorage.getItem('selectedLevel');
-    if (selectedLevel === 'beginner') {
-        world = new World(canvasRef, keyboard, createLevelBeginner());
-    } else {
-        world = new World(canvasRef, keyboard, createLevelExpert());
-    }
+    const selectedLevel = localStorage.getItem('selectedLevel');
+    const level = selectedLevel === 'beginner' ? createLevelBeginner() : createLevelExpert();
+    world = new World(canvas, keyboard, level);
     showMobileButtonsIfNeeded();
     if (!audioManager.isMuted && !audioManager.isPlaying('game')) {
         audioManager.safePlay('game');
@@ -283,7 +275,6 @@ function closeLegalNotice() {
 function generateEnemies(Type, count, startX, minSpacing, maxSpacing) {
     const enemies = [];
     let currentX = startX;
-
     for (let i = 0; i < count; i++) {
         const enemy = new Type();
         enemy.x = currentX;
@@ -333,7 +324,6 @@ function showMobileButtonsIfNeeded() {
     }
 }
 
-
 /**
  * Toggles the visibility of the burger menu dropdown.
  */
@@ -348,7 +338,6 @@ function toggleBurgerMenu() {
 document.addEventListener('click', function (event) {
     const dropdown = document.getElementById('burgerDropdown');
     const burgerBtn = document.querySelector('.burger-icon');
-
     if (!dropdown.contains(event.target) && !burgerBtn.contains(event.target)) {
         dropdown.classList.add('d_none');
     }
@@ -358,40 +347,21 @@ document.addEventListener('click', function (event) {
  * Toggles the visibility of an orientation overlay message depending on device orientation.
  */
 function toggleRotateOverlay() {
+    const ids = ['canvas', 'startgame', 'mobile-buttons', 'game-level-overlay', 'control-overlay', 'btn-endscreen-container'];
+    const elements = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
     const rotateMessage = document.getElementById('rotate-message');
-    const canvas = document.getElementById('canvas');
-    const startgame = document.getElementById('startgame');
-    const mobileButtons = document.getElementById('mobile-buttons');
-    const gameLevelOverlay = document.getElementById('game-level-overlay');
-    const controlOverlay = document.getElementById('control-overlay');
-    const endscreenButtons = document.getElementById('btn-endscreen-container');
-
     const isPortrait = window.matchMedia("(orientation: portrait)").matches;
-
     if (isPortrait) {
         rotateMessage.style.display = 'flex';
-        canvas?.classList.add('d_none');
-        startgame?.classList.add('d_none');
-        mobileButtons?.classList.add('d_none');
-        gameLevelOverlay?.classList.add('d_none');
-        controlOverlay?.classList.add('d_none');
-        endscreenButtons?.classList.add('d_none');
+        ids.forEach(id => elements[id]?.classList.add('d_none'));
         if (world) {
             resetWorldIntervalle();
             audioManager?.stopAllSounds();
         }
     } else {
         rotateMessage.style.display = 'none';
-
-        if (!world) {
-            startgame?.classList.remove('d_none');
-        }
-
-        if (currentLevel && canvas) {
-            canvas.classList.remove('d_none');
-        }
+        if (!world) elements.startgame?.classList.remove('d_none');
+        if (currentLevel) elements.canvas?.classList.remove('d_none');
         showMobileButtonsIfNeeded();
     }
 }
-
-
