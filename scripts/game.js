@@ -1,4 +1,3 @@
-
 let canvas;
 let world;
 let keyboard = new GameKeyBoard();
