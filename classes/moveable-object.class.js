@@ -17,21 +17,16 @@ class MoveableObject extends DrawableObject {
      */
     applyGravity() {
         this.gravityInterval = setInterval(() => {
-            // Vertikale Bewegung
             if (this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
             }
             this.speedY -= this.acceleration;
-    
-            // Horizontale Bewegung (z. B. Flasche fliegt weiter)
             if (this.speedX) {
                 this.x += this.speedX;
             }
         }, 1000 / 25);
     }
     
-    
-
     /**
      * Checks whether the object is currently above the ground level.
      * @returns {boolean} True if the object is above ground, false otherwise.
