@@ -311,16 +311,10 @@ function showMobileButtonsIfNeeded() {
         mobileButtons.classList.add('d_none');
         return;
     }
-
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const isSmallScreen = window.innerWidth <= 1180;
-    const shouldShowMobileButtons = isTouchDevice && isSmallScreen;
-
-    if (shouldShowMobileButtons) {
-        mobileButtons.classList.remove('d_none');
-    } else {
-        mobileButtons.classList.add('d_none');
-    }
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+    const isTabletOrSmaller = window.innerWidth <= 1400;
+    const shouldShowMobileButtons = isTouchDevice && isTabletOrSmaller;
+    mobileButtons.classList.toggle('d_none', !shouldShowMobileButtons);
 }
 
 /**
