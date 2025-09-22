@@ -17,7 +17,6 @@
   .game-content-wrapper {
     display: flex;
   }
-
 }
 
 /* ---------- SHOW MOBILE BUTTONS ON SMALLER WIDTHS ---------- */
@@ -51,7 +50,11 @@
 /* MEDIA QUERY: TABLETS & SMALL DESKTOPS ---------- */
 @media only screen and (max-width: 1024px) and (orientation: landscape) {
   h1 {
-   display: none;
+    display: none;
+  }
+
+  .btn-endscreen-container {
+    margin-top: 120px;
   }
 
   .legal-notice-btn-container {
@@ -83,16 +86,17 @@
     justify-content: flex-end;
     padding: 5px;
   }
- 
+
   .canvas-wrapper {
     padding: 0px;
   }
 
-.game-content-wrapper {
-  padding-right: 0px;
-}
+  .game-content-wrapper {
+    padding-right: 0px;
+    max-height: 320px;
+    width: 85vw;
+  }
 
-  .game-content-wrapper,
   .game-introduction-container,
   .legal-notice-screen {
     max-height: 300px;
@@ -100,7 +104,8 @@
     overflow-y: auto;
   }
 
-  canvas, .game-canvas {
+  canvas,
+  .game-canvas {
     max-height: 300px;
   }
 
@@ -419,7 +424,7 @@
     width: 95vw;
     height: auto;
     max-height: 80vh;
-    margin: 10px auto 140px auto;
+    margin: 10px auto 20px auto;
   }
 
   .btn-start,
@@ -555,7 +560,7 @@
   }
 
   h1 {
-    font-size: 18px;
+    display: none;
   }
 }
 
