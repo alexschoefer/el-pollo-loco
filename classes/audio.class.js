@@ -1,19 +1,19 @@
 class AudioManager {
     constructor() {
         this.sounds = {
-            coin: new Audio('assets/audio/collision-character-coin.wav'),
-            bottle: new Audio('assets/audio/collision-character-bottle.wav'),
-            hurt: new Audio('assets/audio/character-hurt.wav'),
-            jump: new Audio('assets/audio/character-jump.wav'),
-            walk: new Audio('assets/audio/character-walking.wav'),
-            throw: new Audio('assets/audio/bottle-throw.wav'),
+            coin: new Audio('assets/audio/collision-character-coin.mp3'),
+            bottle: new Audio('assets/audio/collision-character-bottle.mp3'),
+            hurt: new Audio('assets/audio/character-hurt.mp3'),
+            jump: new Audio('assets/audio/character-jump.mp3'),
+            walk: new Audio('assets/audio/character-walking.mp3'),
+            throw: new Audio('assets/audio/bottle-throw.mp3'),
             game: new Audio('assets/audio/game-background-sound.mp3'),
-            gameover: new Audio('assets/audio/character-lose.wav'),
+            gameover: new Audio('assets/audio/character-lose.mp3'),
             win: new Audio('assets/audio/character-win.mp3'),
             menu: new Audio('assets/audio/game-menu.mp3'),
-            chickenHurt: new Audio('assets/audio/chicken-hurt.wav'),
-            endbossAttack: new Audio('assets/audio/chicken-attack.wav'),
-            snore: new Audio('assets/audio/character-snore.wav')
+            chickenHurt: new Audio('assets/audio/chicken-hurt.mp3'),
+            endbossAttack: new Audio('assets/audio/chicken-attack.mp3'),
+            snore: new Audio('assets/audio/character-snore.mp3')
         };
 
         this.loopedSounds = ['game', 'menu', 'snore'];
