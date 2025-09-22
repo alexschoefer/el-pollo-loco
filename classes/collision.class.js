@@ -1,4 +1,8 @@
 class Collision {
+    /**
+     * Handles all collision logic between the character and game objects.
+     * @param {world} world 
+     */
     constructor(world) {
         this.world = world;
         this.level = world.level;

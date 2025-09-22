@@ -11,6 +11,14 @@ class World {
     gameIsOver = false;
     animationFrameId = null;
 
+    /**
+     * Creates the game world, initializes all main components, and starts the game loop.
+     *
+     * @class World
+     * @param {HTMLCanvasElement} canvas - The canvas element where the game will be rendered.
+     * @param {Keyboard} keyboard - The keyboard input handler.
+     * @param {Level} level - The current level object containing all enemies, items, and the endboss.
+     */
     constructor(canvas, keyboard, level) {
         audioManager.stop('game');
         if (!audioManager.isMuted) {

@@ -18,6 +18,7 @@ class ThrowableObject extends MoveableObject {
     ];
 
     /**
+     * Creates a new throwable bottle object and initializes its motion, images, and animation.
      * @param {number} x
      * @param {number} y
      * @param {AudioManager} audioManager

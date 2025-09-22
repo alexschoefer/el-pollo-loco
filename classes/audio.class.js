@@ -1,4 +1,8 @@
 class AudioManager {
+    /**
+     * Creates a new instance of the AudioManager. Initializes and loads all game audio assets, sets default volume levels,
+     * applies looping to specific background sounds, and restores mute state from localStorage if previously saved.
+     */
     constructor() {
         this.sounds = {
             coin: new Audio('assets/audio/collision-character-coin.mp3'),
@@ -19,9 +23,7 @@ class AudioManager {
         this.loopedSounds = ['game', 'menu', 'snore'];
         this.defaultVolume = 0.15;
         this.isMuted = JSON.parse(localStorage.getItem('isMuted')) || false;
-
-        this.lastPlayed = {}; 
-
+        this.lastPlayed = {};
         for (const [name, sound] of Object.entries(this.sounds)) {
             sound.volume = this.defaultVolume;
             sound.loop = this.loopedSounds.includes(name);
@@ -39,32 +41,55 @@ class AudioManager {
     play(name) {
         const sound = this.sounds[name];
         if (!sound || this.isMuted) return;
-        if (this.loopedSounds.includes(name) && !sound.paused) return;
-
+        if (this.skipSoundIfAlreadyPlay(name, sound)) return;
+    
+        this.lastPlayed[name] = Date.now();
+        try {
+            this.resetSound(name, sound);
+            sound.play()?.catch(err => this.logError(name, err));
+        } catch (err) {
+            this.logError(name, err);
+        }
+    }
+    
+    /**
+     * Determines whether the sound playback should be skipped.
+     * Skips playback if the sound is already playing in a loop or 
+     * if the minimum delay between plays has not passed.
+     * 
+     * @param {string} name - The name/key of the sound to check.
+     * @param {HTMLAudioElement} sound - The sound object to evaluate.
+     * @returns {boolean} True if playback should be skipped, false otherwise.
+     */
+    skipSoundIfAlreadyPlay(name, sound) {
         const now = Date.now();
         const last = this.lastPlayed[name] || 0;
-        const minDelay = 100;
+        return this.loopedSounds.includes(name) && !sound.paused || (now - last < 100);
+    }
 
-        if (now - last < minDelay) return;
-        this.lastPlayed[name] = now;
-
-        try {
-            if (!this.loopedSounds.includes(name)) {
-                sound.pause();
-                sound.currentTime = 0;
-            }
-
-            const playPromise = sound.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.warn(`AudioManager: Fehler beim Abspielen von '${name}':`, error);
-                });
-            }
-        } catch (error) {
-            console.warn(`AudioManager: Fehler beim Abspielen von '${name}':`, error);
+    /**
+     * Prepares a sound for replay by resetting it,
+     * but only if it's not a looped sound.
+     * 
+     * @param {string} name - The name/key of the sound to prepare.
+     * @param {HTMLAudioElement} sound - The sound object to prepare.
+     */
+    resetSound(name, sound) {
+        if (!this.loopedSounds.includes(name)) {
+            sound.pause();
+            sound.currentTime = 0;
         }
     }
 
+    /**
+     * Logs an error to the console when sound playback fails.
+     * 
+     * @param {string} name - The name/key of the sound that failed to play.
+     * @param {any} error - The error object or message thrown during playback.
+     */
+    logError(name, error) {
+        console.warn(`AudioManager: Fehler beim Abspielen von '${name}':`, error);
+    }
 
     /**
      * Mutes or unmutes all sounds and resets their playback position.
@@ -75,32 +100,21 @@ class AudioManager {
     muteAll(mute) {
         this.isMuted = mute;
         localStorage.setItem('isMuted', JSON.stringify(mute));
-
         for (const [name, sound] of Object.entries(this.sounds)) {
             sound.pause();
             sound.currentTime = 0;
-
-            if (mute) {
-                sound.volume = 0;
-                if (this.loopedSounds.includes(name)) {
-                    sound.loop = false;
-                }
-            } else {
-                sound.volume = this.defaultVolume;
+            sound.volume = mute ? 0 : this.defaultVolume;
+            if (this.loopedSounds.includes(name)) {
+                sound.loop = !mute;
             }
         }
-
         if (!mute) {
-            setTimeout(() => {
-                this.loopedSounds.forEach(name => {
-                    if (this.sounds[name]) {
-                        this.sounds[name].loop = true;
-                    }
-                });
-            }, 200);
+            setTimeout(() => this.loopedSounds.forEach(name => {
+                this.sounds[name] && (this.sounds[name].loop = true);
+            }), 200);
         }
     }
-
+    
     /**
      * Stops all sounds immediately.
      */
@@ -115,7 +129,6 @@ class AudioManager {
             }
         }
     }
-
 
     /**
      * Returns true if the sound is actively playing.

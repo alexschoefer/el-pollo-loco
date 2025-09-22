@@ -90,7 +90,12 @@ class Character extends MoveableObject {
 
     world;
 
-    constructor(audioManager) {
+    /**
+     * Creates a new Character instance with preloaded animations and physics behavior.
+     * Initializes image sequences for different character states
+     * 
+     */
+    constructor() {
         super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING_CHARACTER);
         this.loadImages(this.IMAGES_JUMPING_CHARACTER);
