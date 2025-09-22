@@ -57,7 +57,7 @@ class DrawableObject {
      * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context.
      */
     drawFrame(ctx) {
-    //   if (this instanceof Character || this instanceof Bottles)  {
+    //   if (this instanceof Character || this instanceof Bottles || this instanceof Chicken)  {
     //         ctx.beginPath();
     //         ctx.lineWidth = "6";
     //         ctx.strokeStyle = "blue";

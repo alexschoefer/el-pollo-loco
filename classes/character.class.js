@@ -18,10 +18,10 @@ class Character extends MoveableObject {
     throwCooldown = 600;
 
     offset = {
-        top: 160,
+        top: 140,
         bottom: 20,
-        left: 55,
-        right: 55
+        left: 45,
+        right: 45
     };
 
     IMAGES_WALKING_CHARACTER = [
