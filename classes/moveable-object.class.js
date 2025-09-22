@@ -6,6 +6,7 @@ class MoveableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
     speedY = 0;
+    speedX = 0;
     acceleration = 2.5;
     energy = 100;
     lastHit = 0;
@@ -15,12 +16,21 @@ class MoveableObject extends DrawableObject {
      * at regular intervals. Simulates falling or jumping.
      */
     applyGravity() {
-        setInterval(() => {
-            if (this.isAboveGround() || this.speedY > 0)
+        this.gravityInterval = setInterval(() => {
+            // Vertikale Bewegung
+            if (this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
+            }
             this.speedY -= this.acceleration;
+    
+            // Horizontale Bewegung (z. B. Flasche fliegt weiter)
+            if (this.speedX) {
+                this.x += this.speedX;
+            }
         }, 1000 / 25);
     }
+    
+    
 
     /**
      * Checks whether the object is currently above the ground level.

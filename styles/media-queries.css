@@ -88,6 +88,10 @@
     padding: 0px;
   }
 
+.game-content-wrapper {
+  padding-right: 0px;
+}
+
   .game-content-wrapper,
   .game-introduction-container,
   .legal-notice-screen {

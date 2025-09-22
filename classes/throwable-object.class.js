@@ -23,7 +23,7 @@ class ThrowableObject extends MoveableObject {
      * @param {AudioManager} audioManager
      * @param {boolean} throwLeft
      */
-    constructor(x, y, throwLeft = false) {
+    constructor(x, y, audioManager, throwLeft = false) {
         super();
         this.loadImages(this.IMAGES_BOTTLES_THROWING);
         this.loadImages(this.IMAGES_BOTTLES_SPLASH);
@@ -33,20 +33,38 @@ class ThrowableObject extends MoveableObject {
         this.width = 60;
         this.img = this.imageCache[this.IMAGES_BOTTLES_THROWING[0]];
         this.audioManager = audioManager;
-        this.direction = throwLeft ? -1 : 1;
+
+        // ✅ Flugrichtung korrekt setzen
+        this.speedX = throwLeft ? -10 : 10;
+        this.speedY = 25;
+
         this.hasHitEndboss = false;
-        this.throwBottle();
+        this.applyGravity();
         this.animateBottle();
+    }
+
+    applyGravity() {
+        this.gravityInterval = setInterval(() => {
+            // Vertikal
+            if (this.isAboveGround() || this.speedY > 0) {
+                this.y -= this.speedY;
+            }
+            this.speedY -= this.acceleration;
+
+            // ✅ Horizontal
+            if (this.speedX) {
+                this.x += this.speedX;
+            }
+        }, 1000 / 25);
     }
 
     throwBottle() {
         this.speedY = 25;
-        this.applyGravity();
-        this.moveInterval = setInterval(() => {
-            this.x += 10 * this.direction;
-        }, 50);
+        this.speedX = 10 * this.direction;
+        this.applyGravity(); // bewegt automatisch mit speedX und speedY
     }
-
+    
+    
     animateBottle() {
         let frameIndex = 0, soundPlayed = false;
         let images = this.IMAGES_BOTTLES_THROWING;

@@ -124,11 +124,13 @@ class World {
      */
     checkThrowObjects() {
         if (this.keyboard.D && this.bottleCollection.length > 0) {
-            const isThrowLeft = this.character.otherDirection === true;
-            const offsetX = isThrowLeft ? -20 : 100;
+            const isThrowLeft = this.character.otherDirection;
+            const offsetX = isThrowLeft ? -40 : this.character.width - 20;
+    
             this.character.isSleeping = false;
             this.character.stopSnoreSound();
             this.character.lastIdleTime = new Date().getTime();
+    
             const bottle = new ThrowableObject(
                 this.character.x + offsetX,
                 this.character.y + 150,
@@ -141,7 +143,7 @@ class World {
             this.updateBottleStatusbar();
         }
     }
-
+    
     /**
      * Renders the entire game world on the canvas.
      */
@@ -185,7 +187,6 @@ class World {
      */
     drawFullscreenIcon() {
         if (!this.fullscreenIconLoaded) return;
-    
         if (window.innerWidth > window.innerHeight && window.innerWidth < 700) {
             return; 
         }
@@ -197,7 +198,6 @@ class World {
         this.ctx.drawImage(this.fullscreenIcon, x, y, iconSize, iconSize);
     }
     
-
     /**
      * Adds an array of drawable objects to the canvas.
      * @param {*} objects - An array of drawable game objects
