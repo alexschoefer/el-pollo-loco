@@ -7,6 +7,10 @@ class Endscreen extends DrawableObject {
 
     static IMAGE_WIN = 'assets/img/You won, you lost/You win B.png';
     
+    /**
+     * Creates the endscreen at the end of the game for losing or winning
+     * @param {*} imagePath - path for show the correct endscreen
+     */
     constructor(imagePath) {
         super();
         this.loadImage(imagePath);

@@ -7,6 +7,13 @@ class BackgroundObject extends MoveableObject {
 
     height = 480;
 
+    /**
+     * Creates a new BackgroundObject and places it at a specified horizontal position. 
+     * Loads the image and aligns the object vertically to the bottom of the canvas.
+     * @param {string} imagePath - Path to the image file.
+     * @param {number} x - Horizontal position (in pixels) where the background object should be placed.
+     */
+
     constructor(imagePath, x) {
         super().loadImage(imagePath);
         this.x = x;

@@ -17,7 +17,6 @@
   .game-content-wrapper {
     display: flex;
   }
-
 }
 
 /* ---------- SHOW MOBILE BUTTONS ON SMALLER WIDTHS ---------- */
@@ -51,8 +50,11 @@
 /* MEDIA QUERY: TABLETS & SMALL DESKTOPS ---------- */
 @media only screen and (max-width: 1024px) and (orientation: landscape) {
   h1 {
-    font-size: 32px;
-    text-align: center;
+    display: none;
+  }
+
+  .btn-endscreen-container {
+    margin-top: 120px;
   }
 
   .legal-notice-btn-container {
@@ -63,6 +65,11 @@
     display: block;
   }
 
+  .mobile-btn-container {
+    max-width: 450px;
+    margin: 10px;
+  }
+
   .btn-start,
   .btn-controls,
   .btn-restart-game,
@@ -70,19 +77,44 @@
   .btn-legal-notice,
   .btn-close-control-overview,
   .btn-close-gamelevel-overview {
-    width: 90%;
-    font-size: 18px;
+    width: 100%;
+    font-size: 16px;
     height: 50px;
   }
 
-  .controlscreen,
-  .legal-notice-screen,
+  .legal-notice-headline-container {
+    justify-content: flex-end;
+    padding: 5px;
+  }
+
+  .canvas-wrapper {
+    padding: 0px;
+  }
+
+  .game-content-wrapper {
+    padding-right: 0px;
+    max-height: 320px;
+    width: 85vw;
+  }
+
   .game-introduction-container,
+  .legal-notice-screen {
+    max-height: 300px;
+    width: 85vw;
+    overflow-y: auto;
+  }
+
+  canvas,
+  .game-canvas {
+    max-height: 300px;
+  }
+
+  .startscreen,
+  .controlscreen,
   .gamelevel-content-wrapper {
-    width: 95vw;
-    aspect-ratio: auto;
-    padding: 15px;
-    margin: 20px auto;
+    /* width: 95vw; */
+    max-height: 320px;
+    overflow-y: auto;
   }
 
   .game-description-container p {
@@ -392,7 +424,7 @@
     width: 95vw;
     height: auto;
     max-height: 80vh;
-    margin: 10px auto 140px auto;
+    margin: 10px auto 20px auto;
   }
 
   .btn-start,
@@ -528,7 +560,7 @@
   }
 
   h1 {
-    font-size: 18px;
+    display: none;
   }
 }
 
@@ -538,3 +570,5 @@
     display: flex;
   }
 }
+
+

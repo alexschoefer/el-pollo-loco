@@ -8,16 +8,20 @@ class Character extends MoveableObject {
     playedFallStart = false;
     fallFrameIndex = 0;
     fallFrameDelayCounter = 0;
-    lastFallFrameTime = 0; 
+    lastFallFrameTime = 0;
     fallFrameDelay = 150;
     landingShown = false;
     landedAt = 0;
+    isHurt = false;
+    lastHit = 0;
+    lastBottleThrowTime = 0;
+    throwCooldown = 600;
 
     offset = {
-        top: 160,
+        top: 140,
         bottom: 20,
-        left: 55,
-        right: 55
+        left: 45,
+        right: 45
     };
 
     IMAGES_WALKING_CHARACTER = [
@@ -86,7 +90,12 @@ class Character extends MoveableObject {
 
     world;
 
-    constructor(audioManager) {
+    /**
+     * Creates a new Character instance with preloaded animations and physics behavior.
+     * Initializes image sequences for different character states
+     * 
+     */
+    constructor() {
         super().loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.loadImages(this.IMAGES_WALKING_CHARACTER);
         this.loadImages(this.IMAGES_JUMPING_CHARACTER);
@@ -103,8 +112,7 @@ class Character extends MoveableObject {
     }
 
     /**
-     * Initializes and starts the character's animation logic.
-     * Sets up intervals to handle movement, animation frames, and sleep detection.
+     * Initializes and starts the character's animation logic. Sets up intervals to handle movement, animation frames, and sleep detection.
      */
     animateCharacter() {
         setInterval(() => {
@@ -118,11 +126,22 @@ class Character extends MoveableObject {
         setInterval(() => {
             this.checkIfCharacterSleeping();
         }, 200);
+
+        setInterval(() => {
+            if (this.energy <= 0 && !this.world.gameIsOver) {
+                this.world.checkGameOver();
+            }
+        }, 100);
+
+        setInterval(() => {
+            if (this.isHurt && Date.now() - this.lastHit > 1000) {
+                this.isHurt = false;
+            }
+        }, 50);
     }
 
     /**
-     * Handles character movement based on keyboard input.
-     * Moves character left or right, starts/stops walking sound, triggers jump logic,
+     * Handles character movement based on keyboard input. Moves character left or right, starts/stops walking sound, triggers jump logic,
      */
     moveCharacter() {
         this.isHoldingJump = this.world.keyboard.SPACE;
@@ -147,7 +166,6 @@ class Character extends MoveableObject {
 
         if (this.world.keyboard.SPACE && !this.isJumping && this.isOnGround()) {
             this.jump();
-            // this.audioManager.play('jump');
             audioManager.play('jump');
             this.isJumping = true;
             this.jumpAnimationFrame = 0;
@@ -156,14 +174,12 @@ class Character extends MoveableObject {
     }
 
     /**
-     * Displays the appropriate animation images based on the character's current state.
-     * Handles dead, hurt, jumping, walking, idle, and sleeping animations.
-     * Resets jump and sleep state if character lands on the ground.
+     * Displays the appropriate animation images based on the character's current state. Handles dead, hurt, jumping, walking, idle, and sleeping animations.
      */
     showImagesOfMovementCharacter() {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD_CHARACTER);
-        } else if (this.isHurt()) {
+        } else if (this.isHurt) {
             this.playAnimation(this.IMAGES_HURT_CHARACTER);
         } else if (this.isJumping || this.isAboveGround()) {
             this.updateJumpAnimation();
@@ -183,7 +199,6 @@ class Character extends MoveableObject {
 
     /**
      * Updates the jump animation based on the character's current vertical speed and state.
-     * This method delegates to the various handle* methods for different jump phases.
      */
     updateJumpAnimation() {
         const now = Date.now();
@@ -267,19 +282,16 @@ class Character extends MoveableObject {
     handleLandingAnimation(now) {
         const j38 = "assets/img/2_character_pepe/3_jump/J-38.png";
         const j39 = "assets/img/2_character_pepe/3_jump/J-39.png";
-
         if (!this.isAboveGround() && this.playedFallStart && !this.landingShown) {
             this.landingShown = true;
             this.landedAt = now;
             this.playAnimation([j38]);
             return true;
         }
-
         if (this.landingShown && now - this.landedAt < 200) {
             this.playAnimation([j38]);
             return true;
         }
-
         if (this.landingShown && now - this.landedAt >= 200) {
             this.img = this.imageCache[j39];
             this.resetJumpState();
@@ -290,7 +302,6 @@ class Character extends MoveableObject {
 
     /**
      * Resets all internal jump-related states and animation flags.
-     * Called when the character has completed the landing animation.
      */
     resetJumpState() {
         this.isJumping = false;
@@ -305,7 +316,6 @@ class Character extends MoveableObject {
 
     /**
     * Initiates the jump by applying vertical speed and setting appropriate flags.
-    * Prevents jumping if already in a jump.
     */
     jump() {
         if (this.isJumping) return;
@@ -317,8 +327,6 @@ class Character extends MoveableObject {
 
     /**
      * Checks if the character has been idle for more than 10 seconds.
-     * If so, sets the sleeping state to true.
-     * Resets the sleep timer if the character has moved or jumped.
      */
     checkIfCharacterSleeping() {
         if (this.world.gameIsOver) {
@@ -334,7 +342,6 @@ class Character extends MoveableObject {
         } else {
             const now = new Date().getTime();
             const sleepingTime = now - this.lastIdleTime;
-
             if (sleepingTime > 10000) {
                 this.isSleeping = true;
             }
@@ -346,7 +353,6 @@ class Character extends MoveableObject {
      */
     startWalkSound() {
         if (audioManager.isMuted) return;
-    
         if (!this.walkSoundStarted) {
             this.walkSoundStarted = true;
             const sound = audioManager.sounds['walk'];
@@ -378,7 +384,6 @@ class Character extends MoveableObject {
             audioManager.play('snore');
         }
     }
-    
 
     /**
      * Stops the snore sound if it's currently playing.
@@ -407,26 +412,21 @@ class Character extends MoveableObject {
     }
 
     /**
-     * Reduces the character's energy by 10 and handles game over logic if energy reaches zero.
-     * Updates the health status bar.
+     * Reduces the character's energy by 10 and handles game over logic if energy reaches zero. Updates the health status bar.
      */
     hit() {
         this.energy -= 5;
+        this.isSleeping = false;
+        this.stopSnoreSound();
+        this.lastIdleTime = Date.now();
+        this.isHurt = true;
+        this.lastHit = Date.now();
         if (this.energy <= 0) {
             this.energy = 0;
             this.world.statusbarHealth.setPercentage(0);
-            this.world.endScreen = new Endscreen(Endscreen.IMAGE_GAMEOVER);
-            this.world.endScreen.show();
-            this.world.gameIsOver = true;
-            this.world.stopEnemies();
-            this.world.showEndscreenButtons();
-            audioManager.stopAllSounds();
-            document.getElementById('mobile-buttons')?.classList.add('d_none');
-            if (!audioManager.isMuted) {
-                audioManager.play('gameover');
-            }
+            this.world.checkGameOver();
         } else {
             this.world.statusbarHealth.setPercentage(this.energy);
         }
-    }    
+    }
 }

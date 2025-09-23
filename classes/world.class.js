@@ -11,6 +11,14 @@ class World {
     gameIsOver = false;
     animationFrameId = null;
 
+    /**
+     * Creates the game world, initializes all main components, and starts the game loop.
+     *
+     * @class World
+     * @param {HTMLCanvasElement} canvas - The canvas element where the game will be rendered.
+     * @param {Keyboard} keyboard - The keyboard input handler.
+     * @param {Level} level - The current level object containing all enemies, items, and the endboss.
+     */
     constructor(canvas, keyboard, level) {
         audioManager.stop('game');
         if (!audioManager.isMuted) {
@@ -75,24 +83,25 @@ class World {
     * Starts the main game logic loop with a fixed interval.
     */
     run() {
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-        }
+        this.intervalId && clearInterval(this.intervalId);
         this.intervalId = setInterval(() => {
             if (this.gameIsOver) return;
-            this.checkThrowObjects();
             this.checkGameOver();
         }, 200);
-
-        if (this.collisionIntervalId) {
-            clearInterval(this.collisionIntervalId);
-        }
+    
+        this.collisionIntervalId && clearInterval(this.collisionIntervalId);
         this.collisionIntervalId = setInterval(() => {
             if (this.gameIsOver) return;
             this.collisionHandler.checkAll();
         }, 50);
+    
+        this.throwObjectsIntervalId && clearInterval(this.throwObjectsIntervalId);
+        this.throwObjectsIntervalId = setInterval(() => {
+            if (this.gameIsOver) return;
+            this.checkThrowObjects();
+        }, 200);
     }
-
+    
     /**
      * Removes an item (bottle or coin) from map
      * @param {*} arrayName - coin or bottle
@@ -109,32 +118,34 @@ class World {
     removeDeadChickenFromMap(enemy) {
         setTimeout(() => {
             this.level.enemies = this.level.enemies.filter(e => e !== enemy);
-        }, 2500);
+        }, 2000);
     }
 
     /**
      * Checks if there are collected bottles for throwing from the character
      */
     checkThrowObjects() {
-        if (this.keyboard.D && this.bottleCollection.length > 0) {
-            const isThrowLeft = this.character.otherDirection === true;
-            const offsetX = isThrowLeft ? -20 : 100;
+        const now = Date.now();
+        const canThrow = now - this.character.lastBottleThrowTime >= this.character.throwCooldown;
+        if (this.keyboard.D && this.bottleCollection.length > 0 && canThrow) {
+            const isLeft = this.character.otherDirection;
+            const offsetX = isLeft ? -40 : this.character.width - 20;
             this.character.isSleeping = false;
             this.character.stopSnoreSound();
-            this.character.lastIdleTime = new Date().getTime();
+            this.character.lastIdleTime = now;
+            this.character.lastBottleThrowTime = now;
             const bottle = new ThrowableObject(
                 this.character.x + offsetX,
                 this.character.y + 150,
                 this.audioManager,
-                isThrowLeft
+                isLeft
             );
-
             this.throwableObjects.push(bottle);
             this.bottleCollection.pop();
             this.updateBottleStatusbar();
         }
     }
-
+    
     /**
      * Renders the entire game world on the canvas.
      */
@@ -146,16 +157,12 @@ class World {
         if (!this.gameIsOver) {
             this.addToMap(this.character, this.height);
             this.addToMap(this.endboss, this.height);
-            this.addObjectsToMap(this.level.enemies);
-            this.addObjectsToMap(this.throwableObjects);
-            this.addObjectsToMap(this.level.bottles);
-            this.addObjectsToMap(this.level.coins);
+            this.addToMap(this.character, this.height);
+            this.addToMap(this.endboss, this.height);
+            this.addObjectsToMap([...this.level.enemies, ...this.throwableObjects, ...this.level.bottles, ...this.level.coins]);
             this.ctx.translate(-this.camera_x, 0);
             this.addObjectsToMap([this.statusbarHealth, this.statusbarCoins, this.statusbarBottles, this.statusbarEndboss]);
-        } else {
-            this.ctx.translate(-this.camera_x, 0);
-            this.endScreen?.visible && this.endScreen.draw(this.ctx);
-        }
+        } else this.ctx.translate(-this.camera_x, 0), this.endScreen?.visible && this.endScreen.draw(this.ctx);
         requestAnimationFrame(() => this.draw());
         if (!this.gameIsOver) this.drawSoundIcon(), this.drawFullscreenIcon();
     }
@@ -178,9 +185,8 @@ class World {
      */
     drawFullscreenIcon() {
         if (!this.fullscreenIconLoaded) return;
-    
         if (window.innerWidth > window.innerHeight && window.innerWidth < 700) {
-            return; 
+            return;
         }
         const iconSize = 30;
         const padding = 50;
@@ -189,7 +195,6 @@ class World {
         this.fullscreenIconBounds = { x, y, width: iconSize, height: iconSize };
         this.ctx.drawImage(this.fullscreenIcon, x, y, iconSize, iconSize);
     }
-    
 
     /**
      * Adds an array of drawable objects to the canvas.
@@ -240,29 +245,18 @@ class World {
      * Checks if the game has ended due to character or endboss death.
      */
     checkGameOver() {
-        if (this.character.isDead()) {
-            this.endScreen = new Endscreen(Endscreen.IMAGE_GAMEOVER);
+        const isCharDead = this.character.isDead(), isBossDead = this.endboss.isDead();
+        if (isCharDead || isBossDead) {
+            this.endScreen = new Endscreen(isCharDead ? Endscreen.IMAGE_GAMEOVER : Endscreen.IMAGE_WIN);
             this.endScreen.show();
             this.gameIsOver = true;
             this.stopEnemies();
             this.showEndscreenButtons();
-            audioManager.stopAllSounds();
-            audioManager.checkActiveSounds(); 
-            document.getElementById('mobile-buttons')?.classList.add('d_none');
-            if (!audioManager.isMuted) {
-                audioManager.play('gameover'); 
-            }
-        } else if (this.endboss.isDead()) {
-            this.endScreen = new Endscreen(Endscreen.IMAGE_WIN);
-            this.endScreen.show();
-            this.gameIsOver = true;
-            this.stopEnemies();
-            this.showEndscreenButtons();
-            audioManager.checkActiveSounds(); 
             document.getElementById('mobile-buttons')?.classList.add('d_none');
             audioManager.stopAllSounds();
+            audioManager.checkActiveSounds();
             if (!audioManager.isMuted) {
-                audioManager.play('win');
+                audioManager.play(isCharDead ? 'gameover' : 'win');
             }
         }
     }
@@ -282,20 +276,10 @@ class World {
      * Resets the game world and UI to its initial state.
      */
     resetWorld() {
-        if (this.animationFrameId) {
-            cancelAnimationFrame(this.animationFrameId);
-        }
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-            this.intervalId = null;
-        }
-        if (this.collisionIntervalId) {
-            clearInterval(this.collisionIntervalId);
-            this.collisionIntervalId = null;
-        }
-        for (let key in this.keyboard) {
-            this.keyboard[key] = false;
-        }
+        this.animationFrameId && cancelAnimationFrame(this.animationFrameId);
+        this.intervalId && (clearInterval(this.intervalId), this.intervalId = null);
+        this.collisionIntervalId && (clearInterval(this.collisionIntervalId), this.collisionIntervalId = null);
+        for (let key in this.keyboard) this.keyboard[key] = false;
         this.character = new Character(this.audioManager);
         this.character.world = this;
         this.endScreen = null;
@@ -314,14 +298,12 @@ class World {
      */
     toggleSound() {
         this.isMuted = !this.isMuted;
-    
         this.soundIcon.src = this.isMuted
             ? "assets/img-main-background/muted-icon.png"
             : "assets/img-main-background/unmuted-icon.png";
-    
+
         audioManager.muteAll(this.isMuted);
         localStorage.setItem("isMuted", JSON.stringify(this.isMuted));
-    
         if (!this.isMuted) {
             if (!audioManager.isPlaying('game')) {
                 audioManager.safePlay('game');
@@ -330,7 +312,7 @@ class World {
             audioManager.stop('game');
         }
     }
-    
+
     /**
      * Toggles fullscreen mode for the canvas. Updates icon and saves state to localStorage.
      */
